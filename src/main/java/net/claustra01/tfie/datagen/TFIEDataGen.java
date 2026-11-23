@@ -1,0 +1,17 @@
+package net.claustra01.tfie.datagen;
+
+import net.neoforged.neoforge.data.event.GatherDataEvent;
+
+public final class TFIEDataGen
+{
+    private TFIEDataGen()
+    {
+    }
+
+    public static void gatherData(GatherDataEvent event)
+    {
+        event.createProvider(LangProvider::new);
+        event.createProvider(output -> new TFIEItemModelProvider(output, event.getExistingFileHelper()));
+        event.createProvider(GameTestStructureProvider::new);
+    }
+}

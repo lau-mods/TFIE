@@ -1,4 +1,0 @@
-{
-  "parent": "block/crop",
-  "textures": { "crop": "tfie:block/crop/hemp_dead_bottom" }
-}

@@ -1,4 +1,80 @@
 {
-  "gameTests": [],
-  "e2e": []
+  "gameTests": [
+    {
+      "acId": "AC-F001-001",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "mod_identity_and_server_tick"
+    },
+    {
+      "acId": "AC-F001-001",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "required_and_optional_dependencies"
+    },
+    {
+      "acId": "AC-F001-002",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "required_and_optional_dependencies"
+    },
+    {
+      "acId": "AC-F001-002",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "conditional_loading_support"
+    },
+    {
+      "acId": "AC-F001-003",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "registry_contents"
+    },
+    {
+      "acId": "AC-F001-003",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "item_stack_limits"
+    },
+    {
+      "acId": "AC-F001-003",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "blueprint_default_mode"
+    },
+    {
+      "acId": "AC-F001-002",
+      "report": "build/test-results/gametest/TEST-tfie-firmalife.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "conditional_loading_support"
+    },
+    {
+      "acId": "AC-F001-002",
+      "report": "build/test-results/gametest/TEST-tfie-advancedtfctech.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "conditional_loading_support"
+    },
+    {
+      "acId": "AC-F001-002",
+      "report": "build/test-results/gametest/TEST-tfie-afc.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "conditional_loading_support"
+    },
+    {
+      "acId": "AC-F001-002",
+      "report": "build/test-results/gametest/TEST-tfie-overdims.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "conditional_loading_support"
+    }
+  ],
+  "e2e": [
+    {
+      "acId": "AC-F001-004",
+      "scenario": "tests/e2e/creative-tab.mjs"
+    },
+    {
+      "acId": "AC-F001-001",
+      "scenario": "tests/e2e/server-startup.mjs"
+    }
+  ]
 }

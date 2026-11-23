@@ -115,6 +115,14 @@ neoForge {
             systemProperty 'tfie.gametest.report', project.file('build/test-results/gametest/TEST-tfie-overdims.xml').absolutePath
         }
 
+        gameTestServerTfcmDisabled {
+            type = "gameTestServer"
+            gameDirectory = project.file('run/tfcm-disabled')
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'tfie.gametest.disabledContent', 'true'
+            systemProperty 'tfie.gametest.report', project.file('build/test-results/gametest/TEST-tfie-tfcm-disabled.xml').absolutePath
+        }
+
         data {
             data()
             // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
@@ -225,9 +233,17 @@ tasks.withType(JavaCompile).configureEach {
 tasks.named('runGameTestServerAdvancedTfcTech') { mustRunAfter 'runGameTestServerFirmalife' }
 tasks.named('runGameTestServerAfc') { mustRunAfter 'runGameTestServerAdvancedTfcTech' }
 tasks.named('runGameTestServerOverdims') { mustRunAfter 'runGameTestServerAfc' }
+def tfcmDisabledConfig = layout.projectDirectory.file('run/tfcm-disabled/config/tfcm-common.toml').asFile
+tasks.named('runGameTestServerTfcmDisabled') {
+    mustRunAfter 'runGameTestServerOverdims'
+    doFirst {
+        tfcmDisabledConfig.parentFile.mkdirs()
+        tfcmDisabledConfig.text = 'enableCustomVeinGeneration = true\ndisabledMetals = ["titanium"]\ndisabledOres = ["hematite"]\n'
+    }
+}
 tasks.named('runGameTestServer') {
     dependsOn 'runGameTestServerFirmalife', 'runGameTestServerAdvancedTfcTech',
-            'runGameTestServerAfc', 'runGameTestServerOverdims'
+            'runGameTestServerAfc', 'runGameTestServerOverdims', 'runGameTestServerTfcmDisabled'
 }
 
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.

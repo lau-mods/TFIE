@@ -65,6 +65,48 @@
       "report": "build/test-results/gametest/TEST-tfie-overdims.xml",
       "classname": "tfie:gametest/empty_platform",
       "name": "conditional_loading_support"
+    },
+    {
+      "acId": "AC-F002-001",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "metal_sets_and_standard_outputs"
+    },
+    {
+      "acId": "AC-F002-001",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "input_tags_and_load_conditions"
+    },
+    {
+      "acId": "AC-F002-001",
+      "report": "build/test-results/gametest/TEST-tfie-firmalife.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "metal_sets_and_standard_outputs"
+    },
+    {
+      "acId": "AC-F002-002",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "shape_amounts_and_upstream_exceptions"
+    },
+    {
+      "acId": "AC-F002-003",
+      "report": "build/test-results/gametest/TEST-tfie-tfcm-disabled.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "disabled_materials_are_skipped_and_logged"
+    },
+    {
+      "acId": "AC-F002-004",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "material_tags_fuels_and_heat"
+    },
+    {
+      "acId": "AC-F002-004",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "shape_amounts_and_upstream_exceptions"
     }
   ],
   "e2e": [

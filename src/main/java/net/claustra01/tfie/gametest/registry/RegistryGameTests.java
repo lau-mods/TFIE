@@ -237,12 +237,13 @@ public final class RegistryGameTests
             helper.assertTrue(BuiltInRegistries.ITEM.containsKey(id) == ModList.get().isLoaded(id.getNamespace()),
                     "The representative wood item must exist exactly when its mod is installed: " + itemId);
         }
+        boolean disabledContent = Boolean.getBoolean("tfie.gametest.disabledContent");
         helper.assertTrue(new MetalEnabledCondition(Metal.TITANIUM)
-                        .test(net.neoforged.neoforge.common.conditions.ICondition.IContext.EMPTY),
-                "TFCM titanium must be enabled in the baseline configuration");
+                        .test(net.neoforged.neoforge.common.conditions.ICondition.IContext.EMPTY) != disabledContent,
+                "The titanium condition must reflect the active GameTest configuration");
         helper.assertTrue(new OreEnabledCondition("hematite")
-                        .test(net.neoforged.neoforge.common.conditions.ICondition.IContext.EMPTY),
-                "TFCM hematite must be enabled in the baseline configuration");
+                        .test(net.neoforged.neoforge.common.conditions.ICondition.IContext.EMPTY) != disabledContent,
+                "The hematite condition must reflect the active GameTest configuration");
 
         StringWriter log = new StringWriter();
         var logger = (org.apache.logging.log4j.core.Logger) LogManager.getLogger(TFIE.class);

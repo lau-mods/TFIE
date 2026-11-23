@@ -13,5 +13,8 @@ public final class TFIEDataGen
         event.createProvider(LangProvider::new);
         event.createProvider(output -> new TFIEItemModelProvider(output, event.getExistingFileHelper()));
         event.createProvider(GameTestStructureProvider::new);
+        event.createProvider(MaterialDataProvider::new);
+        event.createProvider((output, lookup) -> new MaterialItemTagsProvider(output, lookup,
+                event.getExistingFileHelper()));
     }
 }

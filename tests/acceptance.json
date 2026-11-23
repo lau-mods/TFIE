@@ -137,6 +137,132 @@
       "report": "build/test-results/gametest/TEST-tfie.xml",
       "classname": "tfie:gametest/empty_platform",
       "name": "crop_state_save_sync_and_top_fertilizing"
+    },
+    {
+      "acId": "AC-F019-001",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "external_heater_six_sides_and_cost"
+    },
+    {
+      "acId": "AC-F019-002",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "external_heater_startup_storage_and_stop"
+    },
+    {
+      "acId": "AC-F019-003",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "external_heater_startup_storage_and_stop"
+    },
+    {
+      "acId": "AC-F019-004",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "external_heater_multiple_crucibles_and_runtime_config"
+    },
+    {
+      "acId": "AC-F020-001",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "dynamo_connection_and_lifecycle"
+    },
+    {
+      "acId": "AC-F020-002",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "dynamo_rotation_formula_and_disconnect"
+    },
+    {
+      "acId": "AC-F020-002",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "dynamo_receives_rotation_during_level_tick"
+    },
+    {
+      "acId": "AC-F020-003",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "dynamo_modifiers_and_receiver_limits"
+    },
+    {
+      "acId": "AC-F021-001",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "crate_size_boundaries_and_ie_prohibitions"
+    },
+    {
+      "acId": "AC-F021-002",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "crate_size_boundaries_and_ie_prohibitions"
+    },
+    {
+      "acId": "AC-F021-003",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "crate_routes_and_runtime_config"
+    },
+    {
+      "acId": "AC-F025-001",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "server_config_defaults_types_and_ranges"
+    },
+    {
+      "acId": "AC-F025-001",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "external_heater_six_sides_and_cost"
+    },
+    {
+      "acId": "AC-F025-001",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "dynamo_rotation_formula_and_disconnect"
+    },
+    {
+      "acId": "AC-F025-001",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "crate_size_boundaries_and_ie_prohibitions"
+    },
+    {
+      "acId": "AC-F025-002",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "external_heater_multiple_crucibles_and_runtime_config"
+    },
+    {
+      "acId": "AC-F025-002",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "server_config_defaults_types_and_ranges"
+    },
+    {
+      "acId": "AC-F025-003",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "crate_routes_and_runtime_config"
+    },
+    {
+      "acId": "AC-F025-003",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "server_config_defaults_types_and_ranges"
+    },
+    {
+      "acId": "AC-F025-004",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "dynamo_modifiers_and_receiver_limits"
+    },
+    {
+      "acId": "AC-F025-004",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "server_config_defaults_types_and_ranges"
     }
   ],
   "e2e": [

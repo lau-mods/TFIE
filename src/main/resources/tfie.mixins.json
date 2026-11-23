@@ -3,7 +3,11 @@
   "minVersion": "0.8",
   "package": "net.claustra01.tfie.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [],
+  "mixins": [
+    "CrateMixin",
+    "CrucibleBlockEntityAccessor",
+    "DynamoBlockEntityMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

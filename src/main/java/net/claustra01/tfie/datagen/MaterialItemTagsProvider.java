@@ -8,6 +8,7 @@ import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.util.concurrent.CompletableFuture;
@@ -24,6 +25,8 @@ public final class MaterialItemTagsProvider extends IntrinsicHolderTagsProvider<
     @Override
     protected void addTags(HolderLookup.Provider lookup)
     {
+        tag(TagKey.create(Registries.ITEM, ResourceLocation.parse("immersiveengineering:forbidden_in_crates")))
+                .add(Items.BUNDLE);
         tag(TagKey.create(Registries.ITEM, ResourceLocation.parse("c:dusts/saltpeter")))
                 .addOptional(ResourceLocation.parse("tfc:powder/saltpeter"));
         tag(TagKey.create(Registries.ITEM, ResourceLocation.parse("c:dusts/sulfur")))

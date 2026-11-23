@@ -1,7 +1,7 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
-    id 'net.neoforged.moddev' version '2.0.141'
+    id 'net.neoforged.moddev' version '2.0.148'
     id 'idea'
 }
 
@@ -27,25 +27,7 @@ sourceSets.main.resources {
 }
 
 repositories {
-    exclusiveContent {
-        forRepository { maven { url = 'https://www.cursemaven.com' } }
-        filter { includeGroup 'curse.maven' }
-    }
-    exclusiveContent {
-        forRepository { maven { url = 'https://maven.blamejared.com' } }
-        filter {
-            includeGroup 'blusunrize.immersiveengineering'
-            includeGroup 'vazkii.patchouli'
-        }
-    }
-    exclusiveContent {
-        forRepository { maven { url = 'https://maven.blamejared.com' } }
-        filter { includeGroup 'malte0811' }
-    }
-    exclusiveContent {
-        forRepository { maven { url = 'https://api.modrinth.com/maven' } }
-        filter { includeGroup 'maven.modrinth' }
-    }
+    // Add here additional repositories if required by some of the dependencies below.
 }
 
 base {
@@ -72,7 +54,6 @@ neoForge {
     runs {
         client {
             client()
-
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
@@ -93,7 +74,6 @@ neoForge {
 
         data {
             data()
-
             // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
             // gameDirectory = project.file('run-data')
 
@@ -136,16 +116,6 @@ configurations {
 }
 
 dependencies {
-    implementation group: 'curse.maven', name: 'terrafirmacraft-302973', version: '7452541'
-    implementation "blusunrize.immersiveengineering:ImmersiveEngineering:${ie_version}"
-    implementation "maven.modrinth:advanced-tfc-tech-unofficial:${advanced_tfctech_version}"
-    implementation "vazkii.patchouli:Patchouli:${patchouli_version}"
-    jarJar(implementation('malte0811:DualCodecs:0.1.2')) {
-        version {
-            strictly('[0.1.2, 1)')
-            prefer('0.1.2')
-        }
-    }
     // Example optional mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
     // compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"
@@ -181,9 +151,6 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             mod_name               : mod_name,
             mod_license            : mod_license,
             mod_version            : mod_version,
-            tfc_version            : tfc_version,
-            ie_version             : ie_version,
-            advanced_tfctech_version: advanced_tfctech_version,
     ]
     inputs.properties replaceProperties
     expand replaceProperties
@@ -212,12 +179,6 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
-}
-
-tasks.named('jar', Jar).configure {
-    from('LICENCE') {
-        into 'META-INF'
-    }
 }
 
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.

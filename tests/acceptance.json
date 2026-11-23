@@ -107,6 +107,36 @@
       "report": "build/test-results/gametest/TEST-tfie.xml",
       "classname": "tfie:gametest/empty_platform",
       "name": "shape_amounts_and_upstream_exceptions"
+    },
+    {
+      "acId": "AC-F014-001",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "planting_registration_tags_and_properties"
+    },
+    {
+      "acId": "AC-F014-002",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "climate_nutrients_and_double_growth"
+    },
+    {
+      "acId": "AC-F014-003",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "controlled_crop_loot_and_upper_half_deduplication"
+    },
+    {
+      "acId": "AC-F014-004",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "wild_worldgen_and_seasonal_states"
+    },
+    {
+      "acId": "AC-F014-005",
+      "report": "build/test-results/gametest/TEST-tfie.xml",
+      "classname": "tfie:gametest/empty_platform",
+      "name": "crop_state_save_sync_and_top_fertilizing"
     }
   ],
   "e2e": [
@@ -117,6 +147,10 @@
     {
       "acId": "AC-F001-001",
       "scenario": "tests/e2e/server-startup.mjs"
+    },
+    {
+      "acId": "AC-F014-006",
+      "scenario": "tests/e2e/hemp-crop.mjs"
     }
   ]
 }

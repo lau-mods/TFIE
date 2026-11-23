@@ -1,0 +1,61 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "conditions": [
+                {
+                  "block": "tfie:dead_crop/hemp",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "mature": "true",
+                    "part": "bottom"
+                  }
+                }
+              ],
+              "functions": [
+                {
+                  "add": false,
+                  "count": {
+                    "type": "minecraft:uniform",
+                    "max": 3.0,
+                    "min": 1.0
+                  },
+                  "function": "minecraft:set_count"
+                }
+              ],
+              "name": "immersiveengineering:seed"
+            },
+            {
+              "type": "minecraft:item",
+              "conditions": [
+                {
+                  "block": "tfie:dead_crop/hemp",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "mature": "false",
+                    "part": "bottom"
+                  }
+                }
+              ],
+              "name": "immersiveengineering:seed"
+            }
+          ]
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "tfie:blocks/dead_crop/hemp"
+}

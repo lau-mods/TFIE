@@ -7,12 +7,16 @@ import net.claustra01.tfie.common.ModCreativeTabs;
 import net.claustra01.tfie.common.ModDataComponents;
 import net.claustra01.tfie.common.ModItems;
 import net.claustra01.tfie.common.condition.TFIEConditions;
+import blusunrize.immersiveengineering.common.register.IEItems;
+import net.dries007.tfc.util.BlockItemPlacement;
+import net.dries007.tfc.util.InteractionManager;
 import net.claustra01.tfie.datagen.TFIEDataGen;
 import net.claustra01.tfie.gametest.material.DisabledMaterialGameTests;
 import net.minecraft.gametest.framework.GlobalTestReporter;
 import net.minecraft.gametest.framework.JUnitLikeTestReporter;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import org.slf4j.Logger;
 
@@ -34,6 +38,7 @@ public final class TFIE
         ModCreativeTabs.register(modEventBus);
         TFIEConditions.register(modEventBus);
         modEventBus.addListener(TFIEDataGen::gatherData);
+        modEventBus.addListener(TFIE::commonSetup);
         modEventBus.addListener(TFIE::registerDisabledMaterialTest);
         String reportPath = System.getProperty("tfie.gametest.report");
         if(reportPath != null)
@@ -51,6 +56,12 @@ public final class TFIE
                 throw new IllegalStateException("Unable to create the GameTest report", exception);
             }
         }
+    }
+
+    private static void commonSetup(FMLCommonSetupEvent event)
+    {
+        event.enqueueWork(() -> InteractionManager.registerBlock(
+                new BlockItemPlacement(IEItems.Misc.HEMP_SEEDS, ModBlocks.HEMP_CROP)));
     }
 
     private static void registerDisabledMaterialTest(RegisterGameTestsEvent event)

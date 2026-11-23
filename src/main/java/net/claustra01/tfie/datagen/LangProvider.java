@@ -2,6 +2,7 @@ package net.claustra01.tfie.datagen;
 
 import net.claustra01.tfie.TFIE;
 import net.claustra01.tfie.common.ModItems;
+import net.claustra01.tfie.common.ModBlocks;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 
@@ -18,6 +19,9 @@ public final class LangProvider extends LanguageProvider
         addItem(ModItems.TREATED_WOOD_LUMBER, "Treated Wood Lumber");
         addItem(ModItems.IE_HAMMER_HEAD, "Engineer's Hammer Head");
         addItem(ModItems.WIRECUTTER_HEAD, "Wirecutter Head");
+        addBlock(ModBlocks.HEMP_CROP, "Hemp");
+        addBlock(ModBlocks.DEAD_HEMP_CROP, "Dead Hemp");
+        addBlock(ModBlocks.WILD_HEMP_CROP, "Wild Hemp");
         add("tfie.creative_tab.main", "TFC x IE");
     }
 }

@@ -10,145 +10,9 @@
         "gametest": 0,
         "e2e": 0
       },
-      "recoveries": 0,
-      "codeReview": {
-        "kind": "code",
-        "issues": [
-          {
-            "target": "src/main/java/net/claustra01/tfie/gametest/multiblock/MultiblockGameTests.java:91-107",
-            "acId": "AC-F012-004",
-            "problem": "The Arc Black Steel position is swapped for `immersiveengineering:storage_steel`, which is a steel block, not a black steel block. It does not share the `c:storage_blocks/black_steel` tag. None of the substitutions (Black Steel, Fire Bricks, Crucible, and the ATT steel case) checks that IE's unpatched `BlockMatcher` would have accepted the substitute. So the assertions pass with or without `TemplateMultiblockMixin`.",
-            "reason": "The AC precondition asks for a non-TFC Black Steel block from the same storage-block tag. The expected result is that tag-equivalent blocks are rejected only because of the exact-ID rule. Swapping in a block IE already rejects never exercises the mixin.",
-            "fix": "For the Black Steel position, use a non-TFC block in `c:storage_blocks/black_steel` and assert that tag membership, as the steel case does. For every substitution, assert `BlockMatcher.matches(expected, substitute, level, pos, List.of()).isAllow()` before asserting that `createStructure`/the hammer rejects the structure. That proves the rejection comes from the exact-ID requirement.",
-            "id": "CR-001",
-            "status": "accepted",
-            "history": [
-              {
-                "status": "accepted",
-                "by": "codex",
-                "note": "accepted: The shipped black-steel storage tag contains only the TFC block, so this runtime has no non-TFC tag-equivalent substitute. IE already rejects the Fire Bricks and Crucible substitutes; the redundant mixin checks were removed. The ATT steel test now confirms IE’s matcher accepts its tag-equivalent substitute before checking exact-ID rejection.",
-                "at": "2026-11-23T18:33:19.651Z"
-              }
-            ]
-          },
-          {
-            "target": "src/main/java/net/claustra01/tfie/gametest/multiblock/MultiblockGameTests.java:144-160",
-            "acId": "AC-F012-005",
-            "problem": "Only one empty template cell (`firstEmptyCoordinate`) gets a comparison block. After forming, the test checks only the master's MIRRORED/FACING. It never checks that every required position was converted at its rotated/mirrored coordinate with the matching template position.",
-            "reason": "The AC asks for comparison blocks on the template coordinates that are not in the table. It expects the same transform on all coordinates and directional states, and empty cells must never become match or replacement targets.",
-            "fix": "Put a comparison block on every empty cell of the template volume. After forming, assert that each one is still unchanged. For each requirement, assert that the block entity at `origin.offset(getAbsoluteOffset(pos, mirror, rotation))` is an `IMultiblockBE` whose `getPositionInMB()` equals the table coordinate.",
-            "id": "CR-002",
-            "status": "resolved",
-            "history": [
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: The test now fills and checks every empty template cell and verifies each formed part’s transformed position and template coordinate.",
-                "at": "2026-11-23T18:33:19.651Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The test now fills every empty cell with a comparison block, then asserts each is preserved. It also checks every part's block entity position at the transformed coordinate against the table coordinate.",
-                "at": "2026-11-23T18:33:41.728Z"
-              }
-            ]
-          },
-          {
-            "target": "src/main/java/net/claustra01/tfie/gametest/multiblock/MultiblockGameTests.java:207-224,263-310",
-            "acId": "AC-F012-007",
-            "problem": "The persistence test only round-trips block entities with `removeBlockEntity`/`loadStatic` in a loaded chunk. It never saves and reloads the chunk and never runs a save/restart-equivalent load. It compares `getPositionInMB` with a value taken from the same block entity before saving. It counts masters but does not check that the master sits at the chapter-16 position or that parts still resolve to it and work as a formed machine.",
-            "reason": "The expected result requires that the formed state, orientation, master position and part-to-master connections survive a chunk reload and a server restart, with no duplicate master and no reversion to the template.",
-            "fix": "Serialize and reload the chunk that holds each formed machine through the chunk save path (`ChunkSerializer` write/read or forced unload/reload), so block entities load the way they do after a restart. Then assert the following: the single master is at `getAbsoluteOffset(spec.master(), mirror, rotation)`; every part resolves its master to that position (for example through the part helper's master/state); the template blocks have not been restored.",
-            "id": "CR-003",
-            "status": "resolved",
-            "history": [
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: The persistence test now writes and reads chunks through ChunkSerializer, then checks the chapter 16 master position, formed state, part positions, facing, mirroring, and single-master count.",
-                "at": "2026-11-23T18:33:19.651Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The test round-trips chunks through ChunkSerializer write/read. It then checks the master at the chapter-16 position, each part's template position, formed state, facing, mirroring and the single-master count.",
-                "at": "2026-11-23T18:33:41.728Z"
-              }
-            ]
-          },
-          {
-            "target": "src/main/java/net/claustra01/tfie/gametest/multiblock/MultiblockGameTests.java:189-205",
-            "acId": "AC-F012-006",
-            "problem": "`advanced_tfc_tech_optional_loading` checks only that the ATT multiblocks are registered. When `advancedtfctech` is loaded, it never forms the Grist Mill and Power Loom, although the AC Action requires it. This test is the only one mapped to AC-F012-006.",
-            "reason": "The AC-F012-006 Action is '追加Mod導入時にはGrist MillとPower Loomを形成する', and its evidence must show that the overrides apply when ATT is present.",
-            "fix": "When `advancedtfctech` is loaded, build the Grist Mill and Power Loom in the same test and form them with `useHammer`. Assert that a `MultiblockBlockEntityMaster` exists at each chapter-16 master position.",
-            "id": "CR-004",
-            "status": "resolved",
-            "history": [
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: The optional-loading test now forms the Grist Mill and Power Loom with the hammer and checks their master positions when ATT is loaded.",
-                "at": "2026-11-23T18:33:19.651Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "When advancedtfctech is loaded, the test builds the Grist Mill and Power Loom, forms them with the hammer, and asserts a MultiblockBlockEntityMaster at each master position.",
-                "at": "2026-11-23T18:33:41.728Z"
-              }
-            ]
-          },
-          {
-            "target": "tests/e2e/multiblock-structures.mjs:35-58",
-            "acId": "AC-F012-008",
-            "problem": "The scenario takes a single Engineer's Manual screenshot, of the Arc Furnace only, reached by blind clicks at fixed offsets, and never checks that the structure page opened. It never shows the Grist Mill or Power Loom manual structures, never shows any manual structure from several directions, and never forms or captures the Grist Mill and Power Loom models. The E2E environment in `AGENTS.md` and `.harness-config.json` does not install Advanced TFC Tech, so those two machines cannot be formed or shown in the manual.",
-            "reason": "AC-F012-008 needs manual structure displays of all three machines from several directions, with Slab, Hopper and Fence orientation visible, plus unformed and formed in-world models of all three.",
-            "fix": "Add the Advanced TFC Tech Unofficial JAR to the server and client mods in the E2E setup. Open the Arc Furnace, Grist Mill and Power Loom manual structure pages, check each page through the GUI snapshot before taking the screenshot, and rotate each view to capture several angles. Form the Grist Mill and Power Loom with the hammer on their triggers, check that their masters exist, and screenshot the formed models.",
-            "id": "CR-005",
-            "status": "open",
-            "history": [
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: The scenario now checks manual pages, captures multiple views, and forms and captures both ATT machines. Its ATT path could not be run because ATT is absent from the read-only E2E runtime.",
-                "at": "2026-11-23T18:33:19.651Z"
-              },
-              {
-                "status": "open",
-                "by": "claude",
-                "note": "The scenario script now covers manual pages and ATT machines. The required fix also asked for the ATT JAR in the E2E server and client mods. Neither AGENTS.md nor .harness-config.json mentions Advanced TFC Tech, so the ATT steps cannot run in the documented environment.",
-                "at": "2026-11-23T18:33:41.728Z"
-              }
-            ]
-          },
-          {
-            "target": "src/main/java/net/claustra01/tfie/gametest/multiblock/Chapter16Structures.java:102-103",
-            "acId": null,
-            "problem": "`positions` throws `IllegalArgumentException` when the number of coordinates is not a multiple of three. That can only happen through a typo in this file's constants.",
-            "reason": "Code style: validate only states the game can produce. Constant test data does not need a runtime guard.",
-            "fix": "Remove the length check.",
-            "id": "CR-006",
-            "status": "resolved",
-            "history": [
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: Removed the runtime guard for malformed constant coordinate data.",
-                "at": "2026-11-23T18:33:19.651Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The length guard in positions() is removed.",
-                "at": "2026-11-23T18:33:41.728Z"
-              }
-            ]
-          }
-        ]
-      },
-      "codeReviewTree": "77429de9790d8a61b131028089b4ec77436f9527",
+      "recoveries": 1,
+      "codeReview": null,
+      "codeReviewTree": null,
       "e2eReview": null,
       "failure": null,
       "conflicts": [],
@@ -161,7 +25,7 @@
       "failures": {
         "build": 0,
         "gametest": 0,
-        "e2e": 0
+        "e2e": 1
       },
       "recoveries": 0,
       "codeReview": {
@@ -174,8 +38,39 @@
             "reason": "The code style says to use vanilla and NeoForge mechanisms and existing base classes before custom code, and to keep one path per behaviour. The milestone also says the conditions come 'from M01'. Hand-written JSON skips codec validation, so a wrong field name such as secondaryOutputs or input_item is only found at load time, and the condition format now exists in two places.",
             "fix": "Turn WoodRecipeProvider into a RecipeProvider. Use ShapedRecipeBuilder for tfie:crafting/treated_wood_horizontal. Build SawmillRecipe objects (TagOutput #c:dusts/wood, Ingredient.of(stripped_log, stripped_wood)) and a SealedBarrelRecipe and pass them to RecipeOutput.accept. Attach the conditions with output.withConditions(TFIEConditions.recipe(...)) and NeoForgeConditions/FalseCondition for the IE override. Delete optionalWoodConditions, itemInput, tagInput, fluidInput, itemOutput, dustOutputs, save and saveData.",
             "id": "CR-001",
-            "status": "open",
-            "history": []
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Recipes now use RecipeProvider, codec-backed recipe objects, ShapedRecipeBuilder and the M01 condition helper.",
+                "at": "2026-11-23T19:10:53.913Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "WoodRecipeProvider now extends RecipeProvider and uses SawmillRecipe, BarrelRecipe.Builder and ShapedRecipeBuilder. Conditions come from TFIEConditions.recipe and FalseCondition. The hand-built JSON helpers are gone.",
+                "at": "2026-11-23T19:11:23.618Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff; WoodRecipeProvider still uses RecipeProvider and codec-backed recipe objects.",
+                "at": "2026-11-23T19:21:05.042Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The diff only changes tests/e2e/wood-processing.mjs. WoodRecipeProvider is unchanged and still uses RecipeProvider with codec-backed recipe objects.",
+                "at": "2026-11-23T19:29:46.492Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The diff changes only tests/e2e/wood-processing.mjs. WoodRecipeProvider is unchanged and still uses RecipeProvider with codec-backed recipe objects.",
+                "at": "2026-11-23T19:46:07.373Z"
+              }
+            ]
           },
           {
             "target": "src/main/java/net/claustra01/tfie/datagen/WoodRecipeProvider.java:69-74",
@@ -184,8 +79,39 @@
             "reason": "Tags should be generated with the vanilla TagsProvider mechanism. A raw file at data/tfc/tags/fluid/usable_in_barrel.json will collide with the FluidTagsProvider that the F-022 milestone needs for the same path. The barrel recipe needs Creosote in this tag to work in a real barrel, so the entry is needed, but not in this form.",
             "fix": "Generate the Creosote entry with a FluidTagsProvider subclass registered in TFIEDataGen (tag(TagKey tfc:usable_in_barrel).add(creosote)), and remove the raw tag JSON from WoodRecipeProvider.",
             "id": "CR-002",
-            "status": "open",
-            "history": []
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Creosote's barrel tag entry is generated by FluidTagsProvider.",
+                "at": "2026-11-23T19:10:53.913Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The Creosote entry in tfc:usable_in_barrel is now generated by WoodFluidTagsProvider, a FluidTagsProvider subclass registered in TFIEDataGen. The raw tag JSON is gone from the recipe provider.",
+                "at": "2026-11-23T19:11:23.618Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff; the tag is still generated by a FluidTagsProvider.",
+                "at": "2026-11-23T19:21:05.042Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff. The tfc:usable_in_barrel entry is still generated by the FluidTagsProvider.",
+                "at": "2026-11-23T19:29:46.492Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff. The tfc:usable_in_barrel entry is still generated by the FluidTagsProvider.",
+                "at": "2026-11-23T19:46:07.373Z"
+              }
+            ]
           },
           {
             "target": "src/main/java/net/claustra01/tfie/gametest/wood/WoodGameTests.java:61-98",
@@ -194,8 +120,39 @@
             "reason": "The Preconditions require a configuration where the target mod is present but a referenced ID is missing. The Action requires startup and data reload in each configuration, and the Expected Result requires the count for each specific configuration.",
             "fix": "Have each run declare its expected mods (for example a comma-separated tfie.gametest.expectedMods property) and assert the exact count: 80, 136, 88 or 144. Add the missing-item case by evaluating a generated AFC/Overdims recipe's conditions, decoded through the condition codec with one referenced item ID replaced by an unregistered one, in a run where the mod is loaded. Or add a GameTest-only datapack recipe with mod_loaded tfc plus a missing item, run /reload (server.reloadResources), and assert that only that recipe is missing and the server is still running. Remove the tautological assertion.",
             "id": "CR-003",
-            "status": "open",
-            "history": []
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Tests assert exact counts for declared mod configurations and decode missing-item conditions. An actual resource reload with a missing-item datapack remains unverified.",
+                "at": "2026-11-23T19:10:53.913Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Each run declares its expected mods, and the test asserts that the loaded mods match them and that the exact count is 80, 136, 88 or 144. The tautological check is gone. The generated condition is decoded through the codec with a missing item swapped in while the mod is loaded.",
+                "at": "2026-11-23T19:11:23.618Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff; the exact-count and expected-mod checks remain.",
+                "at": "2026-11-23T19:21:05.042Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff. The exact-count and expected-mod checks in WoodGameTests are unchanged.",
+                "at": "2026-11-23T19:29:46.492Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff. The exact-count and expected-mod checks are unchanged.",
+                "at": "2026-11-23T19:46:07.373Z"
+              }
+            ]
           },
           {
             "target": "build.gradle:120-134",
@@ -204,8 +161,39 @@
             "reason": "Without this check, the 'both mods' configuration (AC-F013-001/002/003) and the AFC+FirmaLife configuration (AC-F013-008) can quietly run as AFC-only and still pass.",
             "fix": "Allow several expected mods (for example 'afc,tfcoverdims' and 'afc,firmalife') and assert every one of them in the existing expected-mod GameTest.",
             "id": "CR-004",
-            "status": "open",
-            "history": []
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Combined runs now declare and assert every expected mod.",
+                "at": "2026-11-23T19:10:53.913Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The combined runs now declare 'afc,tfcoverdims' and 'afc,firmalife'. RegistryGameTests splits the property on commas and asserts that every listed mod is loaded.",
+                "at": "2026-11-23T19:11:23.618Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff; the combined runs still declare and assert every expected mod.",
+                "at": "2026-11-23T19:21:05.042Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff. The combined runs still declare and assert every expected mod.",
+                "at": "2026-11-23T19:29:46.492Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff. The combined runs still declare and assert every expected mod.",
+                "at": "2026-11-23T19:46:07.373Z"
+              }
+            ]
           },
           {
             "target": "src/main/java/net/claustra01/tfie/gametest/wood/WoodGameTests.java:102-138",
@@ -214,8 +202,39 @@
             "reason": "The Expected Result fixes these numbers and IDs. Comparing the recipe with itself cannot catch a wrong generated recipe.",
             "fix": "For each wood and shape, assert the expected item ID and count (12 for log/wood/stripped_log, 4 for planks). Assert a stripping dust count of 1/1/0/0 and a cutting dust count of 1/1/1/0, with the dust item in #c:dusts/wood. Assert that each tick extracts 20 FE. Assert the stripped_log inputs are exactly {stripped_log, stripped_wood} of the same namespace and wood. Assert IEServerConfig sawmill energy and time modifiers equal 1.",
             "id": "CR-005",
-            "status": "open",
-            "history": []
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Tests use independent expected IDs, quantities, dust stages and 20 FE per tick.",
+                "at": "2026-11-23T19:10:53.913Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The tests now pin independent expectations: namespace-derived lumber IDs, counts of 12 and 4, dust stages of 1/1/0/0 for stripping and 1/1/1/0 for cutting, 20 FE per tick, and IE modifiers of 1. The stripped_log alternatives are asserted as an exact set.",
+                "at": "2026-11-23T19:11:23.618Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff; the independent expected values remain.",
+                "at": "2026-11-23T19:21:05.042Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff. The independent expected values remain.",
+                "at": "2026-11-23T19:29:46.492Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff. The independent expected values remain.",
+                "at": "2026-11-23T19:46:07.373Z"
+              }
+            ]
           },
           {
             "target": "src/main/java/net/claustra01/tfie/gametest/wood/WoodGameTests.java:141-165",
@@ -224,8 +243,39 @@
             "reason": "The Expected Result fixes dust counts per input shape and forbids Lumber. Comparing against the recipe's own field passes for any generated recipe.",
             "fix": "Assert a dust count of exactly 1 for log and wood and 0 for stripped_log, stripped_wood and planks, and that no output is in #tfc:lumber. Also run at least one input through a formed Sawmill multiblock with no blade in the GameTest structure.",
             "id": "CR-006",
-            "status": "open",
-            "history": []
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Blade-free outputs are checked against fixed expectations, including a formed Sawmill run.",
+                "at": "2026-11-23T19:10:53.913Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Blade-free outputs are checked against fixed dust counts, and the tests assert that no lumber is produced. A formed Sawmill without a blade is also run.",
+                "at": "2026-11-23T19:11:23.618Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff; the blade-free checks remain.",
+                "at": "2026-11-23T19:21:05.042Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff. The blade-free checks remain.",
+                "at": "2026-11-23T19:29:46.492Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff. The blade-free checks remain.",
+                "at": "2026-11-23T19:46:07.373Z"
+              }
+            ]
           },
           {
             "target": "src/main/java/net/claustra01/tfie/gametest/wood/WoodGameTests.java:167-190",
@@ -234,8 +284,39 @@
             "reason": "The Preconditions and Action require a real Sawmill with these states. Reading constants by reflection checks IE's source, not the behaviour the AC requires.",
             "fix": "Add a GameTest structure with a formed IE Sawmill multiblock, an energy source, output inventories and a Redstone input. Then assert: no progress while Redstone is off or FE is below one tick's worth; the machine's energy capacity is 32,000; at most 6 queued processes, each holding 1 item; removing the blade after tick 25 and before 69 skips the cutting dust and gives the stripped main output; fitting it after 69 gives Lumber with no cutting dust; full targets make items drop from the respective outputs. Remove the reflection checks.",
             "id": "CR-007",
-            "status": "open",
-            "history": []
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Formed-machine tests cover queue size, FE, Redstone stopping and output spills. Mid-process blade swaps and exact outlet behavior remain incompletely verified.",
+                "at": "2026-11-23T19:10:53.913Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Formed-machine tests now cover 32,000 FE capacity, Redstone stopping, FE below one tick, the six-process queue with one item each, rejection of a seventh input, and spill when the outputs are full. Blade removal and late fitting are checked at process level.",
+                "at": "2026-11-23T19:11:23.618Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff; the formed-machine tests remain.",
+                "at": "2026-11-23T19:21:05.042Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff. The formed-machine tests remain.",
+                "at": "2026-11-23T19:29:46.492Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff. The formed-machine tests remain.",
+                "at": "2026-11-23T19:46:07.373Z"
+              }
+            ]
           },
           {
             "target": "src/main/java/net/claustra01/tfie/gametest/wood/WoodGameTests.java:193-225",
@@ -244,8 +325,45 @@
             "reason": "Every one of these is in the Preconditions, Action or Expected Result. Only the detached-process NBT round-trip after stripping and after sawing is covered.",
             "fix": "Using the Sawmill multiblock structure, interact with a mock player to fit, swap and remove the blade (with Redstone active, and with FE at zero only). Complete a process and assert durability drops by 5 for log, stripped and planks inputs. Fit a blade with 5 durability left and assert it breaks after the main output and the next process follows the blade-free stages. Save and reload the block entity (saveWithFullMetadata/loadWithComponents) before stripping, after stripping and after sawing, and assert input, progress, blade damage and no re-emitted secondaries. Break the master block and assert the blade drops. For the 2000-process lifetime, assert the blade is not empty after 1999 completions and is empty after the 2000th.",
             "id": "CR-008",
-            "status": "open",
-            "history": []
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Added formed-machine interaction, wear and save/load checks. A 2,000-completion machine run and disassembly drop remain unverified.",
+                "at": "2026-11-23T19:10:53.913Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "Still missing: a blade with 5 durability left breaking after the main output, a machine-level 2,000-completion lifetime, and the blade dropping when the master block is broken. The 2,000 wear count is still simulated with damageStackableItem.",
+                "at": "2026-11-23T19:11:23.618Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: 形成済みSawmillで2,000処理の刃寿命、残り耐久5での破損、入力形状別の消耗、保存・再読込、解体時の刃ドロップを検証しました。",
+                "at": "2026-11-23T19:20:51.990Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "New formed-Sawmill tests run 2,000 completions: the blade is non-empty at damage 9995 after 1999 and empty after the 2000th. A blade with 5 durability left breaks after its lumber output. Wear is exactly 5 for log, stripped_log and planks. The next process after breakage produces no lumber. Destroying the master block drops the blade. Save/reload assertions now also check input, progress and blade damage. The 2,000-wear simulation by damageStackableItem was removed.",
+                "at": "2026-11-23T19:21:05.042Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The diff changes only the E2E script. The formed-Sawmill lifetime, wear and blade-drop tests are unchanged.",
+                "at": "2026-11-23T19:29:46.492Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The diff changes only the E2E script. The formed-Sawmill lifetime, wear and blade-drop tests are unchanged.",
+                "at": "2026-11-23T19:46:07.373Z"
+              }
+            ]
           },
           {
             "target": "src/main/java/net/claustra01/tfie/gametest/wood/WoodGameTests.java:228-241,356-371",
@@ -254,8 +372,39 @@
             "reason": "The Action explicitly requires sealing, opening partway, chunk reload and save/reload with TFC's standard barrel timing. A fake inventory checks only the recipe arithmetic.",
             "fix": "Place a tfc:wood/barrel block in the GameTest, fill it with Lumber and Creosote through its capabilities, and seal it. Advance the TFC calendar by 8000 ticks and assert min(n, floor(f/50)) output with the leftover items and fluid. Also unseal before 8000 and assert there is no output. Save and reload the block entity and assert the recipe and seal tick are kept. Remove TestBarrelInventory.",
             "id": "CR-009",
-            "status": "open",
-            "history": []
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Tests use a real sealed TFC barrel, Creosote tank and calendar progression. Chunk reload remains unverified.",
+                "at": "2026-11-23T19:10:53.913Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The tests now use a real tfc:wood/barrel block with Creosote accepted by its tank, seal it, and advance the TFC calendar. They cover output quantities with leftovers, early unsealing, and a save/reload that keeps the seal tick. TestBarrelInventory is removed.",
+                "at": "2026-11-23T19:11:23.618Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff; the real-barrel tests remain.",
+                "at": "2026-11-23T19:21:05.042Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff. The real-barrel tests remain.",
+                "at": "2026-11-23T19:29:46.492Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff. The real-barrel tests remain.",
+                "at": "2026-11-23T19:46:07.373Z"
+              }
+            ]
           },
           {
             "target": "src/main/java/net/claustra01/tfie/gametest/wood/WoodGameTests.java:243-262",
@@ -264,8 +413,39 @@
             "reason": "The Action requires crafting the 2×2, checking the Slab-substituted layout and checking the existing orientation, Slab and Stairs recipes.",
             "fix": "Build CraftingInput.of(2, 2, 4× treated lumber) and assert the recipe matches and assembles to 1 immersiveengineering:treated_wood_horizontal. Replace one cell with immersiveengineering:slab_treated_wood_horizontal and assert no match. Add the IE stairs recipe ID to the retained list. Check that 4 lumber × 50 mB equals 200 mB through the barrel recipe values.",
             "id": "CR-010",
-            "status": "open",
-            "history": []
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The test matches and assembles the 2×2 craft, rejects a slab substitution and checks the retained stairs route.",
+                "at": "2026-11-23T19:10:53.913Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The test builds a CraftingInput and asserts the 2x2 match and assembly. It rejects a slab in place of lumber, checks the retained stairs recipe, and checks the 4 lumber to 200 mB values.",
+                "at": "2026-11-23T19:11:23.618Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff; the craft-matching tests remain.",
+                "at": "2026-11-23T19:21:05.042Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff. The craft-matching tests remain.",
+                "at": "2026-11-23T19:29:46.492Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Not touched by this diff. The craft-matching tests remain.",
+                "at": "2026-11-23T19:46:07.373Z"
+              }
+            ]
           },
           {
             "target": "src/main/java/net/claustra01/tfie/gametest/wood/WoodGameTests.java:264-301",
@@ -274,8 +454,45 @@
             "reason": "The Expected Result lists these exact values and forbidden routes. Checking that IDs exist cannot detect a value being overridden or a route added under another name.",
             "fix": "Use the five chapter-23 routes (afc:pot/rubber, afc:pot/rubber_temp, afc:vat/rubber, afc:crafting/latex_bucket, afc:crafting/sealed_bricks_rubber) and assert their temperatures, durations, inputs and output counts from the recipe objects. Check the tree_tapping recipes separately for temperature range, amount and season. Assert that no IE bottling, squeezer, mixer or other recipe has afc:rubber_bar as output, that no recipe with a Conveyor or wire coil output takes afc:rubber_bar, and that no IE recipe whose fluid ingredient accepts afc:latex produces Phenolic Resin products. Remove the string replace.",
             "id": "CR-011",
-            "status": "open",
-            "history": []
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: AFC tests now check recipe values, tapping conditions and selected forbidden additions. The full cross-namespace forbidden-route search remains incomplete.",
+                "at": "2026-11-23T19:10:53.913Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The forbidden-route search is still partial. It covers only the immersiveengineering namespace for bottling, squeezer and mixer, and only for afc:rubber_bar output. It does not check Phenolic Resin or latex use. Vat, brick and glue inputs are not asserted.",
+                "at": "2026-11-23T19:11:23.618Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: AFCの既存経路の材料・数量・条件を照合し、全名前空間でRubberの追加経路とLatexを使うPhenolic Resin経路を検査します。",
+                "at": "2026-11-23T19:20:51.990Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The AFC tests now assert the Pot, Vat, glue and sealed-brick ingredients, outputs and counts alongside the temperatures and durations. The recipe scan covers every namespace for an added afc:rubber_bar output, for Conveyor and wire coil use of rubber, and for a Latex-to-Phenolic-Resin route.",
+                "at": "2026-11-23T19:21:05.042Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The diff changes only the E2E script. The AFC recipe-value and cross-namespace forbidden-route checks are unchanged.",
+                "at": "2026-11-23T19:29:46.492Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The diff changes only the E2E script. The AFC recipe-value and cross-namespace forbidden-route checks are unchanged.",
+                "at": "2026-11-23T19:46:07.373Z"
+              }
+            ]
           },
           {
             "target": "tests/e2e/wood-processing.mjs:19-53",
@@ -284,22 +501,278 @@
             "reason": "AC-F013-009 needs a JEI environment with TFC, AFC and Overdims, a second environment without AFC/Overdims, the Sawmill shown on a real machine, and every listed recipe display.",
             "fix": "Add JEI (and AFC and Overdims for the full configuration) to the E2E client and server mod setup. Build a formed Sawmill in the scenario and screenshot it with and without a blade while it processes a log. Open the JEI recipes for a TFC, an AFC and an Overdims log, wood, stripped log and planks, the treated lumber barrel recipe and the treated wood block. Check JEI's uses of planks + creosote to confirm the IE oil craft is absent. Repeat the recipe listing in a configuration without AFC/Overdims. Add the GUI-close guard at the start.",
             "id": "CR-012",
-            "status": "open",
-            "history": []
+            "status": "accepted",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The scenario now prepares a Sawmill and captures recipe views, but JEI and optional-mod screenshots could not be validated with the read-only harness deployment configuration.",
+                "at": "2026-11-23T19:10:53.913Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The scenario still relies on JEI screenshots, but the E2E runtime documented in AGENTS.md installs only TFC, IE, TFCM and Patchouli. It has no JEI, AFC or Overdims, and there is no second configuration without AFC/Overdims. The JEI and optional-mod views cannot be shown.",
+                "at": "2026-11-23T19:11:23.618Z"
+              },
+              {
+                "status": "accepted",
+                "by": "codex",
+                "note": "accepted: シナリオに任意木材と削除済み油クラフトの画面を追加しました。ただしAC-F013-009が前提とするJEI・AFC・Overdims入りのクライアント構成は、読み取り専用のHarness配備設定では用意できません。E2Eは未実施で、この受け入れ条件は未確認です。",
+                "at": "2026-11-23T19:20:51.990Z"
+              }
+            ]
           }
         ]
       },
-      "codeReviewTree": "6b9f31980bd07334d715850e68d0d15d94101146",
-      "e2eReview": null,
-      "failure": null,
+      "codeReviewTree": "4798d4f229d809a0c5f1dda926e9f969ce993429",
+      "e2eReview": {
+        "kind": "e2e",
+        "issues": [
+          {
+            "target": ".harness-state/runs/2026-11-23T19-37-29-756Z-118-M04-e2e/scenarios/tests-e2e-wood-processing.mjs/screenshots/AC-F013-009-sawmill-without-blade.png",
+            "acId": "AC-F013-009",
+            "problem": "No Sawmill is visible. The frame shows only an empty superflat grass field and the held Engineer's Hammer. The quartz floor and Sawmill structure placed at y=101–102 are not on screen, and the summoned oak log is not visible either.",
+            "reason": "The Expected Result needs the real Sawmill without a blade, with its processed item drawn correctly. There is nothing here to compare: the camera teleport to (0,103,5) and the block placement had not been rendered when the screenshot was taken.",
+            "fix": "In tests/e2e/wood-processing.mjs, wait until the camera position is applied and the placed blocks are rendered before taking the screenshot (for example, poll `block get` for the floor and the sawmill blocks). Confirm the Sawmill multiblock has formed (see the staged-outputs finding), and frame the formed machine with the log on its conveyor.",
+            "id": "ER-001",
+            "status": "open",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: 撮影前にカメラ位置、床、形成済み製材機を確認するよう変更しました。新しいスクリーンショットによる確認は未実施です。",
+                "at": "2026-11-23T19:45:58.376Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-23T19-37-29-756Z-118-M04-e2e/scenarios/tests-e2e-wood-processing.mjs/screenshots/AC-F013-009-sawmill-with-blade.png",
+            "acId": "AC-F013-009",
+            "problem": "No Sawmill and no mounted blade are visible. Only the grass field and the Sawblade held in first person are shown. The blade is not drawn on a machine and no input or processed item is shown.",
+            "reason": "The AC requires the blade on the Sawmill and the processed items to render without missing textures or broken display. The held-item model alone does not show the machine with a blade.",
+            "fix": "After the Sawmill has formed, insert the sawblade with a valid interaction on the formed machine's blade position. Wait for rendering, then frame the formed Sawmill so the mounted blade and the item on the conveyor are visible. Assert that the blade is installed before taking the screenshot.",
+            "id": "ER-002",
+            "status": "open",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: 形成済み製材機へ刃を操作し、手持ちから刃がなくなったことを確認してから撮影するよう変更しました。実画面での確認は未実施です。",
+                "at": "2026-11-23T19:45:58.376Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-23T19-37-29-756Z-118-M04-e2e/scenarios/tests-e2e-wood-processing.mjs/screenshots/AC-F013-009-lumber-sawblade-and-staged-outputs.png",
+            "acId": "AC-F013-009",
+            "problem": "The Sawmill is still an unformed template. Loose Light Engineering blocks and Steel Scaffolding show as separate cubes instead of the formed Sawmill model, and no blade is mounted. The wood dust item entity (centre) is seen edge-on as a thin vertical strip, so the dust and its stage outputs cannot be identified.",
+            "reason": "The Expected Result needs the formed Sawmill with its blade and staged outputs (Lumber, stage-specific Dust) displayed correctly. The hammer interaction at (0,102,2) did not form the multiblock, and the dust sprite cannot be read from this angle.",
+            "fix": "Form the multiblock by using the hammer on the correct trigger block and facing of the `immersiveengineering:multiblocks/sawmill` template. Verify the formed state, mount the blade and run one real process. Show the outputs in a readable way: give them NoGravity and a fixed rotation, or wait until they face the camera, or show them in a container or inventory.",
+            "id": "ER-003",
+            "status": "open",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: 正しい形成起点を操作して形成済みブロックを確認し、Wood Dust のアイコンもホットバーに表示するよう変更しました。実加工中の撮影と再審査は未実施です。",
+                "at": "2026-11-23T19:45:58.376Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-23T19-37-29-756Z-118-M04-e2e/scenarios/tests-e2e-wood-processing.mjs/screenshots/AC-F013-009-jei-sawmill-lumber.png",
+            "acId": "AC-F013-009",
+            "problem": "No JEI recipe view is shown. The screen is the vanilla creative inventory with only an item tooltip for Oak Lumber, and there is no JEI ingredient list or recipe GUI. The Sawmill recipes producing Lumber 12/4, the Dust stages and 1,600 FE are not displayed.",
+            "reason": "The Expected Result requires JEI to show each Sawmill recipe with input ×1, Lumber 12 or 4, staged Dust and 1,600 FE. Pressing 'R' opened no recipe screen, because JEI is not among the deployed client mods (AGENTS.md lists only TFC, IE, TFCM, Patchouli).",
+            "fix": "Add JEI for 1.21.1 NeoForge to the E2E client mods directory and the harness setup. In openRecipe(), assert that the open screen is JEI's recipes GUI before taking the screenshot. Set the client language to en_us as PROJECT.md specifies for display ACs.",
+            "id": "ER-004",
+            "status": "open",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: JEI のレシピ画面を確認するまで撮影しないよう変更しました。ただし検証クライアントに JEI がなく、JEI 表示の確認は未完了です。",
+                "at": "2026-11-23T19:45:58.376Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-23T19-37-29-756Z-118-M04-e2e/scenarios/tests-e2e-wood-processing.mjs/screenshots/AC-F013-009-jei-sawmill-log.png",
+            "acId": "AC-F013-009",
+            "problem": "No JEI 'uses' view is shown for the oak Log. Only the creative inventory with a tooltip is visible, so the Log→Lumber 12 + 2 Dust (stripping + cutting) Sawmill recipe and the 1,600 FE value are not displayed.",
+            "reason": "The AC requires the Log recipe to be shown correctly in JEI. No recipe GUI opened.",
+            "fix": "Install JEI in the E2E client and make sure that pressing 'U' over the slot opens the JEI uses screen on the IE Sawmill category. Wait for that screen, check it, then take the screenshot.",
+            "id": "ER-005",
+            "status": "open",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Log の用途画面も JEI 画面確認後に撮影するよう変更しました。JEI 未導入のため表示結果は未確認です。",
+                "at": "2026-11-23T19:45:58.376Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-23T19-37-29-756Z-118-M04-e2e/scenarios/tests-e2e-wood-processing.mjs/screenshots/AC-F013-009-jei-sawmill-wood.png",
+            "acId": "AC-F013-009",
+            "problem": "No JEI 'uses' view is shown for oak Wood. Only the creative inventory with a tooltip is visible, so the Wood→Lumber 12 + 2 staged Dust recipe is not displayed.",
+            "reason": "The AC requires the Wood recipe to be shown in JEI with its quantities and FE. No recipe GUI opened.",
+            "fix": "Install JEI in the E2E client and check that the JEI uses screen (Sawmill category) is open before taking the screenshot.",
+            "id": "ER-006",
+            "status": "open",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Wood の用途画面も JEI 画面確認後に撮影するよう変更しました。JEI 未導入のため表示結果は未確認です。",
+                "at": "2026-11-23T19:45:58.376Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-23T19-37-29-756Z-118-M04-e2e/scenarios/tests-e2e-wood-processing.mjs/screenshots/AC-F013-009-jei-sawmill-stripped-log.png",
+            "acId": "AC-F013-009",
+            "problem": "No JEI 'uses' view is shown for Stripped Log. Only the creative inventory with a tooltip is visible, so you cannot check that one recipe takes the two choices (Stripped Log or Stripped Wood) as input and gives Lumber 12 + 1 Dust.",
+            "reason": "The AC requires the shared stripped recipe to be displayed as one recipe with a choice of two inputs. No recipe GUI opened.",
+            "fix": "Install JEI in the E2E client and take the screenshot only after the JEI uses screen on the Sawmill category is open. Make sure the input slot cycles between Stripped Log and Stripped Wood.",
+            "id": "ER-007",
+            "status": "open",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Stripped Log の用途画面も JEI 画面確認後に撮影するよう変更しました。選択入力の画面表示は未確認です。",
+                "at": "2026-11-23T19:45:58.376Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-23T19-37-29-756Z-118-M04-e2e/scenarios/tests-e2e-wood-processing.mjs/screenshots/AC-F013-009-jei-sawmill-stripped-wood.png",
+            "acId": "AC-F013-009",
+            "problem": "No JEI 'uses' view is shown for Stripped Wood. Only the creative inventory with a tooltip is visible, so you cannot check that the same shared stripped recipe is shown, with no fifth recipe.",
+            "reason": "The AC requires Stripped Wood to resolve to the single shared recipe in JEI. No recipe GUI opened.",
+            "fix": "Install JEI in the E2E client and check that the JEI uses screen is open before taking the screenshot.",
+            "id": "ER-008",
+            "status": "open",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Stripped Wood の用途画面も JEI 画面確認後に撮影するよう変更しました。同一レシピへの表示は未確認です。",
+                "at": "2026-11-23T19:45:58.376Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-23T19-37-29-756Z-118-M04-e2e/scenarios/tests-e2e-wood-processing.mjs/screenshots/AC-F013-009-jei-sawmill-planks.png",
+            "acId": "AC-F013-009",
+            "problem": "No JEI 'uses' view is shown for oak Planks. Only the creative inventory with a tooltip is visible, so the Planks→Lumber 4 (no Dust) Sawmill recipe is not displayed.",
+            "reason": "The AC requires the Planks recipe with Lumber ×4 and 1,600 FE to be shown in JEI. No recipe GUI opened.",
+            "fix": "Install JEI in the E2E client and check that the JEI uses screen on the Sawmill category is open before taking the screenshot.",
+            "id": "ER-009",
+            "status": "open",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Planks の用途画面も JEI 画面確認後に撮影するよう変更しました。JEI 未導入のため表示結果は未確認です。",
+                "at": "2026-11-23T19:45:58.376Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-23T19-37-29-756Z-118-M04-e2e/scenarios/tests-e2e-wood-processing.mjs/screenshots/AC-F013-009-jei-sealed-barrel-treated-lumber.png",
+            "acId": "AC-F013-009",
+            "problem": "No JEI recipe view is shown. Only the creative inventory with a 'Treated Wood Lumber' tooltip is visible, so the TFC sealed-barrel recipe (Lumber 1 + Creosote 50 mB, duration 8,000 → Treated Wood Lumber 1) is not displayed. This image is also identical to the jei-treated-wood-assembly screenshot.",
+            "reason": "The AC requires the sealed barrel recipe and its values to be shown. No recipe GUI opened.",
+            "fix": "Install JEI in the E2E client. Press 'R' on tfie:treated_wood_lumber and wait for the TFC sealed-barrel category in the JEI recipes screen, checking it before the screenshot.",
+            "id": "ER-010",
+            "status": "open",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: 処理木材 Lumber の製法画面も JEI 画面確認後に撮影するよう変更しました。密閉樽カテゴリの表示は未確認です。",
+                "at": "2026-11-23T19:45:58.376Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-23T19-37-29-756Z-118-M04-e2e/scenarios/tests-e2e-wood-processing.mjs/screenshots/AC-F013-009-jei-treated-wood-assembly.png",
+            "acId": "AC-F013-009",
+            "problem": "No JEI 'uses' view is shown for Treated Wood Lumber. The creative inventory and tooltip are pixel-identical to the sealed-barrel screenshot, so the 2×2 Treated Lumber ×4 → Treated Wood (horizontal) ×1 crafting recipe is not displayed.",
+            "reason": "The AC requires the assembly recipe to be shown in JEI. No recipe GUI opened.",
+            "fix": "Install JEI in the E2E client. Press 'U' on tfie:treated_wood_lumber and wait for the crafting category with tfie:crafting/treated_wood_horizontal, checking it before the screenshot.",
+            "id": "ER-011",
+            "status": "open",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: 処理木材 Lumber の用途画面も JEI 画面確認後に撮影するよう変更しました。組立カテゴリの表示は未確認です。",
+                "at": "2026-11-23T19:45:58.376Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-23T19-37-29-756Z-118-M04-e2e/scenarios/tests-e2e-wood-processing.mjs/screenshots/AC-F013-009-jei-treated-wood-block.png",
+            "acId": "AC-F013-009",
+            "problem": "No JEI recipe view is shown for Treated Wood (horizontal). Only the creative inventory with a tooltip is visible, so you cannot confirm that the TFIE Lumber assembly is shown and the removed IE Planks + Creosote oil craft is not.",
+            "reason": "The AC requires the block's recipe list to show the TFIE route only, with no removed standard oil craft. No recipe GUI opened.",
+            "fix": "Install JEI in the E2E client. Press 'R' on immersiveengineering:treated_wood_horizontal and wait for the JEI recipes screen, checking it before the screenshot.",
+            "id": "ER-012",
+            "status": "open",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: 処理木材ブロックの製法画面も JEI 画面確認後に撮影するよう変更しました。削除済み油クラフトの画面上での不在は未確認です。",
+                "at": "2026-11-23T19:45:58.376Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-23T19-37-29-756Z-118-M04-e2e/scenarios/tests-e2e-wood-processing.mjs/screenshots/AC-F013-009-jei-planks-uses-without-oil-craft.png",
+            "acId": "AC-F013-009",
+            "problem": "No JEI 'uses' view is shown for oak planks. Only the creative inventory with a tooltip is visible, so you cannot see that the Planks ×8 + Creosote → Treated Wood ×8 oil craft is missing from the uses list.",
+            "reason": "The AC requires that the deleted standard oil craft is not shown as a valid route. No recipe GUI opened.",
+            "fix": "Install JEI in the E2E client. Press 'U' on minecraft:oak_planks and wait for the JEI uses screen, checking it before the screenshot. Page to the crafting category so that the absence of the oil craft can be seen.",
+            "id": "ER-013",
+            "status": "open",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Planks の用途画面も JEI 画面確認後に撮影するよう変更しました。油クラフトの不在を示す画面は未取得です。",
+                "at": "2026-11-23T19:45:58.376Z"
+              }
+            ]
+          }
+        ]
+      },
+      "failure": {
+        "phase": "e2e",
+        "summary": "1 E2E scenario(s) failed",
+        "details": "tests/e2e/wood-processing.mjs: Error: Missing immersiveengineering:light_engineering at 0 102 2\n    at waitForBlock (file://.harness-state/runtime/worktrees/M04/tests/e2e/wood-processing.mjs:42:56)\n    at async file://.harness-state/runtime/worktrees/M04/tests/e2e/wood-processing.mjs:66:3\n    at async scenario (file://.harness/e2e/lib.mjs:59:5)\n    at async file://.harness-state/runtime/worktrees/M04/tests/e2e/wood-processing.mjs:55:1\nAC-F013-009 Expected Result: 各提供元の素材、入力1個、Lumber12個または4個、段階別Dust、1,600 FEを該当レシピで正しく表示し、剥皮済み2入力を1レシピの選択入力として扱う。刃なし加工と剥皮中間形状を、刃ありの追加Lumber出力として表示しない。密閉樽はLumber1個・Creosote50 mB・duration8,000、組立はTreated Lumber4個→処理木材1個を表示する。未導入Modの製材、Beneath製材、削除済み標準油クラフトをTFIEの有効経路として表示しない。Treated Wood Lumberのモデル・テクスチャ・名称、Sawmillの刃と加工物にmissing texture、表示崩れ、数量文字の欠落を生じない。検証方式はE2Eとする。",
+        "logs": [
+          ".harness-state/runs/2026-11-23T19-50-54-694Z-142-M04-e2e/runtime/server.log",
+          ".harness-state/runs/2026-11-23T19-50-54-694Z-142-M04-e2e/runtime/client-tfie-a.log",
+          ".harness-state/runs/2026-11-23T19-50-54-694Z-142-M04-e2e/scenarios/tests-e2e-wood-processing.mjs/stdout.log",
+          ".harness-state/runs/2026-11-23T19-50-54-694Z-142-M04-e2e/scenarios/tests-e2e-wood-processing.mjs/stderr.log"
+        ],
+        "screenshots": []
+      },
       "conflicts": [],
       "reviewConflicts": []
     }
   ],
   "completed": [
     "M01",
-    "M02"
+    "M02",
+    "M05"
   ],
-  "lastCheckpoint": "4855a5e320fcdeb4682adf8cdaa7bcd86bda3826",
+  "lastCheckpoint": "33218fe377352a165d743325fdf8561d4de09438",
   "fatal": null
 }

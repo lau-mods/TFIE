@@ -1,0 +1,6 @@
+{
+  "parent": "tfc:block/wild_crop/crop",
+  "textures": {
+    "crop": "tfie:block/crop/hemp_wild_bottom"
+  }
+}

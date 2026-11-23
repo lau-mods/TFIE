@@ -1,0 +1,70 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "tfie:crop/hemp",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "age": "4",
+                "part": "bottom"
+              }
+            }
+          ],
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "tfc:crop_yield_uniform",
+                "max": {
+                  "type": "minecraft:uniform",
+                  "max": 10.0,
+                  "min": 6.0
+                },
+                "min": 0.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "immersiveengineering:hemp_fiber"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "tfie:crop/hemp",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "part": "bottom"
+              }
+            }
+          ],
+          "name": "immersiveengineering:seed"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "tfie:blocks/crop/hemp"
+}

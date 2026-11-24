@@ -1,4 +1,7 @@
 {
+  "__comment__": "This file was automatically created by mcresources",
   "parent": "block/crop",
-  "textures": { "crop": "tfie:block/crop/hemp_dead_young" }
+  "textures": {
+    "crop": "tfie:block/crop/hemp_dead_young"
+  }
 }

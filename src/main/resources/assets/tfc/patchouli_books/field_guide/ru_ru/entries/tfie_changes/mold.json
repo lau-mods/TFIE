@@ -1,0 +1,24 @@
+{
+  "__comment__": "This file was automatically created by mcresources",
+  "name": "Новые пресс-формы",
+  "category": "tfc:tfie_changes",
+  "icon": "tfie:mold_sheet",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "tfie:mold_sheet",
+      "title": "Пресс-форма: лист",
+      "link_recipes": false,
+      "text": "$(thing)\"Пресс-форма: лист\"$() создаётся с помощью $(thing)чертежа инженера$() в $(thing)верстаке инженера$()."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "tfie:mold_block",
+      "title": "Пресс-форма: блок",
+      "link_recipes": false,
+      "text": "$(thing)\"Пресс-форма: блок\"$() создаётся аналогично."
+    }
+  ],
+  "read_by_default": true,
+  "sortnum": 2
+}

@@ -1,18 +1,18 @@
 {
   "autoload_priority": 4,
-  "tfie:tfc_ie_changes": {
+  "tfie:tfie_changes": {
     "category_weight": 8,
     "entry_list": [
-      "tfie:tfc_ie_mold",
-      "tfie:tfc_ie_chemicals",
-      "tfie:tfc_ie_multiblocks",
-      "tfie:tfc_ie_blueprint",
-      "tfie:tfc_ie_jute",
-      "tfie:tfc_ie_hemp",
-      "tfie:tfc_ie_herbicide",
-      "tfie:tfc_ie_external_heater",
-      "tfie:tfc_ie_drill",
-      "tfie:tfc_ie_dynamo"
+      "tfie:tfie_chemicals",
+      "tfie:tfie_multiblocks",
+      "tfie:tfie_blueprint",
+      "tfie:tfie_jute",
+      "tfie:tfie_hemp",
+      "tfie:tfie_herbicide",
+      "tfie:tfie_external_heater",
+      "tfie:tfie_dynamo",
+      "tfie:tfie_mold",
+      "tfie:tfie_drill"
     ]
   }
 }

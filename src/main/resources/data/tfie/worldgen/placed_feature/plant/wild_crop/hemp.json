@@ -1,4 +1,5 @@
 {
+  "__comment__": "This file was automatically created by mcresources",
   "feature": "tfie:plant/wild_crop/hemp",
   "placement": [
     {
@@ -7,7 +8,9 @@
     },
     {
       "type": "block_predicate_filter",
-      "predicate": { "type": "tfc:replaceable" }
+      "predicate": {
+        "type": "tfc:replaceable"
+      }
     },
     {
       "type": "block_predicate_filter",
@@ -15,7 +18,9 @@
         "type": "would_survive",
         "state": {
           "Name": "tfie:wild_crop/hemp",
-          "Properties": { "part": "bottom" }
+          "Properties": {
+            "part": "bottom"
+          }
         }
       }
     }

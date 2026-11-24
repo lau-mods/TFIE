@@ -1,0 +1,19 @@
+{
+  "__comment__": "This file was automatically created by mcresources",
+  "block.tfie.crop.hemp": "Конопля",
+  "block.tfie.dead_crop.hemp": "Погибшая конопля",
+  "block.tfie.wild_crop.hemp": "Дикорастущая конопля",
+  "item.tfie.treated_wood_lumber": "Доска из обработанной древесины",
+  "manual.tfie.tfie_changes": "Новое с TerraFirmaCraft",
+  "pack.tfie.immersivepetroleum.title": "'TFIE' Корректировка 'Immersive Petroleum'",
+  "pack.tfie.immersivepetroleum.description": "Совместимость с 'Immersive Petroleum'",
+  "tfc.recipe.barrel.tfie.barrel.treated_wood_lumber": "Доска из обработанной древесины",
+  "tfie.creative_tab.main": "TFIE",
+  "item.tfie.tool_head.wirecutter": "Головка кусачек инженера",
+  "item.tfie.tool_head.ie_hammer": "Головка молота инженера",
+  "item.tfie.mold_sheet": "Металлическая пресс-форма: Лист",
+  "item.tfie.mold_block": "Металлическая пресс-форма: Блок",
+  "item.tfie.drillhead_black_steel": "Головка бура из черной стали",
+  "item.tfie.drillhead_blue_steel": "Головка бура из синей стали",
+  "item.tfie.drillhead_red_steel": "Головка бура из красной стали"
+}

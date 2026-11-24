@@ -1,7 +1,9 @@
 {
+  "__comment__": "This file was automatically created by mcresources",
   "type": "minecraft:block",
   "pools": [
     {
+      "name": "loot_pool",
       "rolls": 1,
       "entries": [
         {
@@ -11,7 +13,10 @@
             {
               "condition": "minecraft:block_state_property",
               "block": "tfie:crop/hemp",
-              "properties": { "age": "4", "part": "bottom" }
+              "properties": {
+                "age": "4",
+                "part": "bottom"
+              }
             }
           ],
           "functions": [
@@ -30,9 +35,14 @@
           ]
         }
       ],
-      "conditions": [{ "condition": "minecraft:survives_explosion" }]
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
     },
     {
+      "name": "loot_pool",
       "rolls": 1,
       "entries": [
         {
@@ -42,12 +52,18 @@
             {
               "condition": "minecraft:block_state_property",
               "block": "tfie:crop/hemp",
-              "properties": { "part": "bottom" }
+              "properties": {
+                "part": "bottom"
+              }
             }
           ]
         }
       ],
-      "conditions": [{ "condition": "minecraft:survives_explosion" }]
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
     }
   ]
 }

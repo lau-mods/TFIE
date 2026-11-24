@@ -1,4 +1,7 @@
 {
+  "__comment__": "This file was automatically created by mcresources",
   "type": "tfc:tall_wild_crop",
-  "config": { "block": "tfie:wild_crop/hemp" }
+  "config": {
+    "block": "tfie:wild_crop/hemp"
+  }
 }

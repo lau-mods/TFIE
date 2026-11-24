@@ -1,0 +1,24 @@
+{
+  "__comment__": "This file was automatically created by mcresources",
+  "name": "New Molds",
+  "category": "tfc:tfie_changes",
+  "icon": "tfie:mold_sheet",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "tfie:mold_sheet",
+      "title": "Sheet Mold",
+      "link_recipes": false,
+      "text": "The $(thing)Sheet Mold$() is created with an $(thing)Engineering's Blueprint$() at the $(thing)Engineering's Workbench$()."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "tfie:mold_block",
+      "title": "Block Mold",
+      "link_recipes": false,
+      "text": "The $(thing)Block Mold$() is created in the same way."
+    }
+  ],
+  "read_by_default": true,
+  "sortnum": 2
+}

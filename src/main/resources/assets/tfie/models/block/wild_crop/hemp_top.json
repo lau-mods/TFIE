@@ -1,4 +1,7 @@
 {
+  "__comment__": "This file was automatically created by mcresources",
   "parent": "block/crop",
-  "textures": { "crop": "immersiveengineering:block/hemp/top0" }
+  "textures": {
+    "crop": "immersiveengineering:block/hemp/top0"
+  }
 }

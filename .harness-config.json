@@ -9,20 +9,15 @@
     "plan": {
       "command": "claude",
       "model": "claude-opus-5-5",
-      "effort": "high"
+      "effort": "high",
+      "type": "claude"
     },
     "implementation": {
       "command": "codex",
-      "initial": {
-        "model": "gpt-5.6-sol",
-        "effort": "high"
-      },
-      "retry": {
-        "model": "gpt-6-sol",
-        "effort": "medium"
-      },
       "fast": false,
-      "provider": null
+      "type": "codex",
+      "model": "gpt-5.6-sol",
+      "effort": "high"
     },
     "codeReview": {
       "command": "claude",
@@ -33,7 +28,8 @@
       "retry": {
         "model": "claude-sonnet-5-5",
         "effort": "medium"
-      }
+      },
+      "type": "claude"
     },
     "e2eReview": {
       "command": "claude",
@@ -44,7 +40,8 @@
       "retry": {
         "model": "claude-sonnet-5-5",
         "effort": "high"
-      }
+      },
+      "type": "claude"
     }
   },
   "runtime": {

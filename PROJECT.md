@@ -1052,7 +1052,7 @@ Action:
 Log、Wood、Stripped LogとStripped Woodの共通レシピ、Planks、Treated Wood Lumber、処理木材ブロックのレシピと実機表示を確認する。AFC・Overdims未導入の構成でもレシピ一覧を表示する。
 
 Expected Result:
-各提供元の素材、入力1個、Lumber12個または4個、段階別Dust、1,600 FEを該当レシピで正しく表示し、剥皮済み2入力を1レシピの選択入力として扱う。刃なし加工と剥皮中間形状を、刃ありの追加Lumber出力として表示しない。密閉樽はLumber1個・Creosote50 mB・duration8,000、組立はTreated Lumber4個→処理木材1個を表示する。未導入Modの製材、Beneath製材、削除済み標準油クラフトをTFIEの有効経路として表示しない。Treated Wood Lumberのモデル・テクスチャ・名称、Sawmillの刃と加工物にmissing texture、表示崩れ、数量文字の欠落を生じない。検証方式はE2Eとする。
+各提供元の素材、入力1個、Lumber12個または4個、段階別Dustを該当レシピで正しく表示し、剥皮済み2入力を1レシピの選択入力として扱う。TFIEはJEIの製材レシピ画面に消費FEを表示しない。消費FEはAC-F013-002のGameTestで確認する。刃なし加工と剥皮中間形状を、刃ありの追加Lumber出力として表示しない。密閉樽はLumber1個・Creosote50 mB・duration8,000、組立はTreated Lumber4個→処理木材1個を表示する。未導入Modの製材、Beneath製材、削除済み標準油クラフトをTFIEの有効経路として表示しない。Treated Wood Lumberのモデル・テクスチャ・名称、Sawmillの刃と加工物にmissing texture、表示崩れ、数量文字の欠落を生じない。検証方式はE2Eとする。
 
 ### F-014: 麻の栽培
 

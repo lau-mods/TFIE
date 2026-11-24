@@ -1,0 +1,407 @@
+{
+  "milestones": [
+    {
+      "id": "M01",
+      "features": [
+        "F-001",
+        "F-012",
+        "F-013"
+      ],
+      "dependsOn": [],
+      "approach": "Foundation milestone. Every later milestone builds on it.\n\n**Build and metadata.** Set up build.gradle: compile and runtime dependencies on TFC 4.2.16, IE 12.4.2-194, TFCM 2.2.1 and Patchouli. FirmaLife, Advanced TFC Tech Unofficial (advancedtfctech) and JEI are compileOnly/localRuntime. AFC and Overdims are runtime-only test jars kept under .tmp/ and are never declared as dependencies. Add the src/data source set and runData. Add gameTestServer run variants for the optional-mod configurations (base, +FirmaLife, +advancedtfctech, +AFC, +Overdims, all, TFCM metal/ore disabled). Rewrite neoforge.mods.toml so that tfc, immersiveengineering, tfcm and patchouli are required with minimum versions, and firmalife and advancedtfctech are optional with AFTER ordering. Mod id tfie, version 0.1.0, mixin config enabled.\n\n**Registrations (chapter 4).** Register every item, block, block entity, creative tab and data component in chapter 4 with its final ID and stack limit:\n- treated lumber and both tool heads\n- mold_sheet\n- the 7 TFIE drill heads, registered through Drillhead with the chapter 13 stats\n- tfie:arc_furnace_blueprint (stack size 1) and the integer data component tfie:arc_furnace_mode (default 1, persistent and network-synced)\n- the hemp crop, dead crop and wild crop blocks and the tfie:crop block entity\n- the tfie:main tab, with Treated Lumber as its icon\n\nRemove mold_block. Provide models and en_us names for every registered item by reusing existing textures.\n\n**Shared infrastructure.**\n- An empty-recipe override for removing upstream recipe IDs.\n- A conditional-load helper that checks that a mod is loaded and that the referenced items and fluids exist, and logs the recipe ID and the reason when a recipe is skipped. Later milestones reuse it for TFCM metal and ore conditions and for FirmaLife conditions.\n- Restructure DataEntryPoint into one provider per feature area. Delete legacy providers and generated files that ship content outside the spec: mold_block, the chemthrower/jerrycan/special-bullet tfie recipes, the brick-disabling overrides, and the old IE crafting overrides. Later milestones re-add their own domains.\n- GameTest scaffolding: a test namespace, independent expected-value tables, and JUnit report output. Register tests in tests/acceptance.json.\n\n**F-012 Multiblocks.** Ship arcfurnace.nbt and, for advancedtfctech, grist_mill.nbt and power_loom.nbt with the chapter 16 blocks, template states, trigger points and master positions. Use a narrow mixin on IE TemplateMultiblock block matching that requires exact block IDs for tfc:metal/block/steel, tfc:metal/block/black_steel, tfc:fire_bricks and tfc:crucible. The advancedtfctech part is applied only when that mod is loaded, without class references on the normal load path.\n\n**F-013 Wood.** Datagen the 144 Sawmill recipes: 4 per species for 20 TFC, 14 AFC and 2 Overdims species. Each recipe uses OR input for the two stripped shapes, takes dust from the #c:dusts/wood TagOutput, costs 1600 FE, and is conditional on afc/tfcoverdims plus item existence. No Beneath recipes. Datagen the sealed-barrel recipe for tfie:treated_wood_lumber (Lumber 1 + Creosote 50 mB, duration 8000) and the 2×2 crafting of treated_wood_horizontal. Disable immersiveengineering:crafting/treated_wood_horizontal. AFC latex/rubber is left untouched.\n\n**Tests.** GameTests cover the registry set, metadata (no afc/tfcoverdims dependency entries), the optional configurations, structure formation in 4 rotations plus mirroring, strict IDs, persistence, and Sawmill blade/no-blade staging. E2E covers the creative tab, item rendering, structures and the JEI wood display.",
+      "scope": [
+        "build.gradle",
+        "gradle.properties",
+        "settings.gradle",
+        "src/main/templates/META-INF/neoforge.mods.toml",
+        "src/main/java/net/claustra01/tfie/TFIE.java",
+        "src/main/java/net/claustra01/tfie/common/items/Items.java",
+        "src/main/java/net/claustra01/tfie/common/items/Drillhead.java",
+        "src/main/java/net/claustra01/tfie/common/blocks/Blocks.java",
+        "src/main/java/net/claustra01/tfie/common/blockentities/BlockEntities.java",
+        "src/main/java/net/claustra01/tfie/common/CreativeTabs.java",
+        "src/main/java/net/claustra01/tfie/common/DataComponents.java",
+        "src/main/java/net/claustra01/tfie/common/conditions/ (conditional load + logging)",
+        "src/main/java/net/claustra01/tfie/util/EmptyRecipe.java",
+        "src/main/java/net/claustra01/tfie/mixin/ (TemplateMultiblock strict matching)",
+        "src/main/resources/tfie.mixins.json",
+        "src/main/resources/data/immersiveengineering/structure/multiblocks/arcfurnace.nbt",
+        "src/main/resources/data/advancedtfctech/structure/multiblocks/",
+        "src/main/resources/assets/tfie/ (models, lang/en_us.json)",
+        "src/data/java/net/claustra01/tfie/data/DataEntryPoint.java",
+        "src/data/java/net/claustra01/tfie/data/recipes/SawmillRecipes.java",
+        "src/data/java/net/claustra01/tfie/data/recipes/BarrelRecipes.java (treated lumber)",
+        "src/generated/resources/data/tfie/recipe/sawmill/",
+        "src/generated/resources/data/tfie/recipe/barrel/treated_wood_lumber.json",
+        "src/generated/resources/ (removal of legacy out-of-spec files)",
+        "src/main/java/net/claustra01/tfie/gametest/ (scaffold, registry, multiblock, sawmill tests)",
+        "tests/acceptance.json",
+        "tests/e2e/"
+      ]
+    },
+    {
+      "id": "M02",
+      "features": [
+        "F-002",
+        "F-003"
+      ],
+      "dependsOn": [
+        "M01"
+      ],
+      "approach": "**Metal table (chapter 6).** Build the metal table as a datagen and runtime data class covering TFC's 19 shaped metals, TFCM's 42 metals and FirmaLife's 2 metals. For each metal record the shapes that exist, the standard output namespace rule (TFC / FirmaLife / TFCM), the input tags and the condition set (tfcm:metal_enabled, tfcm:ore_enabled, neoforge:mod_loaded firmalife). Recipes are wrapped with the M01 conditional-load/log helper, so a disabled or missing metal skips only that recipe, with a log line. No substitution.\n\n**Common material data (chapter 30).** Add the saltpeter, sulfur, forge_fuel and leather_knapping tags, the coal_coke and coke TFC fuels, and item heat for bricks and slag. Shape metal amounts stay TFC/TFCM-defined (Plate 100, Sheet 200, Rod 50, Wire 25). Wrought Iron is never added to iron tags.\n\n**F-003 Metal Press.**\n- Datagen tfie:metalpress/{plate,sheet,rod,wire}/M for every valid metal: Ingot→Plate 1, 2 Ingot→Sheet 1, Ingot→Rod 2, Ingot→Wire 4. All cost 2400 FE; 60 ticks is IE's default.\n- Remove the 64 IE metalpress plate/rod/wire(+rod_netherite) IDs with empty overrides.\n- Molds Blueprint crafting (Wrought Iron Plate) for immersiveengineering:crafting/blueprint_molds; the IE mold blueprint recipes stay.\n- tfie:blueprint/mold_sheet (Steel Plate 3 + Wirecutter; durability is consumed and the tool returned).\n- The tfie:molds tag and its TFC item size (normal/medium).\n- Sheet mold model and texture, recoloured or cropped from the existing IE mold.\n\n**Tests.** GameTests compare against an independent 63-metal/252-recipe expectation table, run actual pressing, and check the disabled-metal configuration. E2E covers the press and workbench displays.",
+      "scope": [
+        "src/main/java/net/claustra01/tfie/common/metal/ (metal table shared with datagen)",
+        "src/data/java/net/claustra01/tfie/data/recipes/MetalPressRecipes.java",
+        "src/data/java/net/claustra01/tfie/data/recipes/BlueprintRecipes.java",
+        "src/data/java/net/claustra01/tfie/data/providers/BuiltinItemTags.java",
+        "src/data/java/net/claustra01/tfie/data/providers/BuiltinFuels.java",
+        "src/data/java/net/claustra01/tfie/data/providers/BuiltinItemHeat.java",
+        "src/data/java/net/claustra01/tfie/data/providers/BuiltinItemSizes.java",
+        "src/generated/resources/data/tfie/recipe/metalpress/",
+        "src/generated/resources/data/tfie/recipe/blueprint/mold_sheet.json",
+        "src/generated/resources/data/immersiveengineering/recipe/metalpress/",
+        "src/generated/resources/data/immersiveengineering/recipe/crafting/blueprint_molds.json",
+        "src/generated/resources/data/tfie/tags/item/molds.json",
+        "src/generated/resources/data/c/tags/item/dusts/",
+        "src/generated/resources/data/tfc/tags/item/forge_fuel.json",
+        "src/generated/resources/data/tfc/tags/item/leather_knapping.json",
+        "src/generated/resources/data/tfie/tfc/",
+        "src/main/resources/assets/tfie/models/item/mold_sheet.json",
+        "src/main/resources/assets/tfie/textures/item/mold_sheet.png",
+        "src/main/java/net/claustra01/tfie/gametest/ (metal, press tests)",
+        "tests/acceptance.json",
+        "tests/e2e/"
+      ]
+    },
+    {
+      "id": "M03",
+      "features": [
+        "F-014"
+      ],
+      "dependsOn": [
+        "M01"
+      ],
+      "approach": "Complete hemp as a TFC double crop on the blocks and block entity registered in M01. All values are from chapter 18.\n- **Climate range** tfie:crop/hemp: 10–31℃, hydration 30–80, no extension. Nutrients N0.6/P0.2/K0.6.\n- **Planting** interaction for immersiveengineering:seed.\n- **Growth**: the bottom part only grows and consumes nutrients; the top part appears at age 4; growth is capped at 0.75 when the top position is obstructed. Interacting with or fertilizing the top part is forwarded to the bottom/farmland.\n- **Loot tables** for crop, dead and wild hemp, using tfc:crop_yield_uniform 0..uniform(6,10) and survives_explosion.\n- **Block tags**: crops and mineable/hoe for all 3 blocks; can_be_snow_piled for wild only.\n- **Wild generation**: tfie:plant/wild_crop/hemp(_patch) configured and placed features (6 tries, xz 5, y 1, rarity 90, temperature 10–40, groundwater 140–360, WORLD_SURFACE_WG) and the #tfc:feature/crops tag.\n- **Rendering**: blockstates and models with cutout render type.\n\nGameTests cover planting, climate boundaries, growth and nutrient uptake, loot under seeded random, persistence and the top-part proxy. E2E covers rendering of all stages.",
+      "scope": [
+        "src/main/java/net/claustra01/tfie/util/IECrop.java",
+        "src/main/java/net/claustra01/tfie/common/blocks/ (hemp crop classes)",
+        "src/main/java/net/claustra01/tfie/util/ModInteractionManager.java",
+        "src/data/java/net/claustra01/tfie/data/providers/BuiltinClimateRanges.java",
+        "src/data/java/net/claustra01/tfie/data/providers/BuiltinBlockTags.java",
+        "src/data/java/net/claustra01/tfie/data/providers/ (hemp loot/worldgen providers)",
+        "src/generated/resources/data/tfie/tfc/climate_range/crop/hemp.json",
+        "src/generated/resources/data/tfie/loot_table/blocks/",
+        "src/generated/resources/data/tfie/worldgen/",
+        "src/generated/resources/data/tfc/tags/worldgen/placed_feature/feature/crops.json",
+        "src/generated/resources/data/minecraft/tags/block/",
+        "src/generated/resources/data/tfc/tags/block/can_be_snow_piled.json",
+        "src/main/resources/assets/tfie/blockstates/",
+        "src/main/resources/assets/tfie/models/block/",
+        "src/main/resources/assets/tfie/textures/block/crop/",
+        "src/main/java/net/claustra01/tfie/gametest/ (hemp tests)",
+        "tests/acceptance.json",
+        "tests/e2e/"
+      ]
+    },
+    {
+      "id": "M04",
+      "features": [
+        "F-016",
+        "F-017",
+        "F-018"
+      ],
+      "dependsOn": [
+        "M01"
+      ],
+      "approach": "Datagen the non-metal IE machine recipes from chapters 20–23.\n\n**Squeezer and Fermenter**\n- 23 seed recipes tfie:squeezer/<crop>, type immersiveengineering:squeezer: seed 1 → plantoil 80 mB, 6400 FE. This corrects the old Fermenter type.\n- 26 food recipes tfie:fermenter/<id> plus tfie:fermenter/grains (#c:foods/grain): Ethanol 80 mB, 6400 FE, no rot condition.\n- FirmaLife-gated tfie:fermenter/raw_honey: 250 mB.\n\n**F-018 recipes**\n- Coke Oven: bituminous coal and lignite (1 → coke 1 + creosote 500 mB, 6000 ticks, batch limit 16).\n- Crusher: 24 non-metal recipes.\n- 8 TFC chisel recipes and 2 TFC heating recipes.\n- Redstone acid (instant barrel), herbicide, limewater and salt water (Mixer), brine and the non-FirmaLife milk vinegar (Refinery, neoforge:not mod_loaded).\n- The 6 FirmaLife-gated recipes: Mixer olive_oil_water, tallow, lye and caramel (caramel uses a not-rotten butter ingredient), Squeezer wild_honeycomb → raw_honey, and Refinery milk_vinegar using #firmalife:milks.\n\n**Removals**: the 54 IE crusher IDs (ore_*, raw_ore_*, raw_block_*, nether_gold, wool) and crafting/gunpowder_from_dusts, all as empty overrides. Add no AFC latex/rubber routes or tags.\n\n**Coke Oven capacity fix**: a narrow mixin on IE CokeOvenLogic computes the batch as min(16, input count, remaining solid capacity, floor(remaining fluid / 500)). Remaining solid capacity counts existing same-item/same-component output; a different item in the output gives 0.\n\n**Tests**: GameTests in base and FirmaLife configurations against independent expectation tables, including seeded byproducts and the coke capacity cases. E2E covers the JEI category displays.",
+      "scope": [
+        "src/data/java/net/claustra01/tfie/data/recipes/SqueezerRecipes.java",
+        "src/data/java/net/claustra01/tfie/data/recipes/FermenterRecipes.java",
+        "src/data/java/net/claustra01/tfie/data/recipes/CokeOvenRecipes.java",
+        "src/data/java/net/claustra01/tfie/data/recipes/CrusherRecipes.java",
+        "src/data/java/net/claustra01/tfie/data/recipes/ChiselRecipes.java",
+        "src/data/java/net/claustra01/tfie/data/recipes/HeatRecipes.java",
+        "src/data/java/net/claustra01/tfie/data/recipes/MixerRecipes.java",
+        "src/data/java/net/claustra01/tfie/data/recipes/RefineryRecipes.java",
+        "src/data/java/net/claustra01/tfie/data/recipes/BarrelRecipes.java (redstone acid)",
+        "src/main/java/net/claustra01/tfie/mixin/CokeOvenLogicMixin.java",
+        "src/generated/resources/data/tfie/recipe/{squeezer,fermenter,cokeoven,crusher,chisel,heating,mixer,refinery}/",
+        "src/generated/resources/data/tfie/recipe/barrel/redstone_acid.json",
+        "src/generated/resources/data/immersiveengineering/recipe/crusher/",
+        "src/generated/resources/data/immersiveengineering/recipe/crafting/gunpowder_from_dusts.json",
+        "src/main/java/net/claustra01/tfie/gametest/ (non-metal tests)",
+        "tests/acceptance.json",
+        "tests/e2e/"
+      ]
+    },
+    {
+      "id": "M05",
+      "features": [
+        "F-019",
+        "F-020",
+        "F-021",
+        "F-025"
+      ],
+      "dependsOn": [
+        "M01"
+      ],
+      "approach": "**Server config (chapter 31).** Implement the SERVER config with exactly 4 keys and their stated types and ranges:\n- crucibleExternalHeater.fePerTick\n- crucibleExternalHeater.temperature\n- compatibility.crateMaximumItemSize (TFC Size enum)\n- compatibility.tfcRotationalEnergyModifier (MIN_NORMAL..MAX_VALUE)\n\n**F-019 Crucible heating.** CrucibleHeater, registered as an IE ExternalHeater capability on the TFC crucible from all 6 sides. Each call consumes the configured FE and sets the target temperature plus a stable time of 5 ticks with a sync. If energy is missing or a redstone signal is present, the call sets target 0 and consumes nothing. Actual temperature follows TFC's normal behaviour. IE's 3200 FE start threshold is untouched.\n\n**F-020 Dynamo.** DynamoBlockEntityMixin registers the IE dynamo as a TFC rotation sink on its facing side, adding and removing it on load, unload and removal. Each tick it feeds abs(ω×500×m) into IE's rotation input, only when a Rotation is obtained.\n\n**F-021 Crates.** AllowInCrateMixin applies TFC ItemSizeManager ≤ configured max on the Wooden and Reinforced crate slot validity, keeping IE's own rejections. GUI, shift-click and capability insertion all share one check.\n\n**Tests.** GameTests cover default and changed configs actually applied in game: FE drain per crucible, start threshold, redstone stop, both rotation directions, each size boundary for every insertion path, and the declared spec ranges.",
+      "scope": [
+        "src/main/java/net/claustra01/tfie/config/",
+        "src/main/java/net/claustra01/tfie/util/CrucibleHeater.java",
+        "src/main/java/net/claustra01/tfie/mixin/DynamoBlockEntityMixin.java",
+        "src/main/java/net/claustra01/tfie/mixin/AllowInCrateMixin.java",
+        "src/main/java/net/claustra01/tfie/mixin/accessor/CrucibleBlockEntityAccessor.java",
+        "src/main/java/net/claustra01/tfie/mixin/accessor/BlockEntityAccessor.java",
+        "src/main/resources/tfie.mixins.json",
+        "src/main/java/net/claustra01/tfie/gametest/ (heater, dynamo, crate, config tests)",
+        "tests/acceptance.json"
+      ]
+    },
+    {
+      "id": "M06",
+      "features": [
+        "F-022"
+      ],
+      "dependsOn": [
+        "M01"
+      ],
+      "approach": "**Fluid tags.** Add the 10 IE fluids from chapter 27 to tfc:usable_in_barrel, usable_in_wooden_bucket and usable_in_red_steel_bucket.\n\n**Container candidates.** Keep IngredientFluidStackMixin narrow: build display and matching candidates from #tfc:fluid_item_ingredient_empty_containers. A container is a candidate only if its fluid capability accepts the fluid and can hold at least the required amount. IE's own drain-and-return container logic stays unchanged.\n\nThe mixin must not touch fixed minecraft:bucket item ingredients, such as the IE Chemthrower and Jerrycan recipes.\n\n**Tests.** GameTests cover the tags, fill and drain, candidate filtering, a craft that returns a partially drained container, and fixed-bucket rejection. E2E covers the JEI candidate cycling.",
+      "scope": [
+        "src/data/java/net/claustra01/tfie/data/providers/BuiltinFluidTags.java",
+        "src/generated/resources/data/tfc/tags/fluid/",
+        "src/main/java/net/claustra01/tfie/mixin/IngredientFluidStackMixin.java",
+        "src/main/resources/tfie.mixins.json",
+        "src/main/java/net/claustra01/tfie/gametest/ (fluid tests)",
+        "tests/acceptance.json",
+        "tests/e2e/"
+      ]
+    },
+    {
+      "id": "M07",
+      "features": [
+        "F-023"
+      ],
+      "dependsOn": [
+        "M01"
+      ],
+      "approach": "HerbicideEffects registers an IE ChemthrowerEffect for #c:herbicide, with the block-hit branches from chapter 28:\n- **TFC grass and farmland** become dirt of the same variant. A crop above is converted to its dead form, using age ≥ 1 as mature, and broken with drops. Dead and wild crops above are broken with drops. Other bushes above, except SeasonalPlantBlock, are removed without drops.\n- **Clay grass** becomes clay. The crop-to-dead conversion branch is not used.\n- **Leaves** that are hit are removed without drops.\n- **Other SnowyDirtBlock / FarmBlock** become minecraft:dirt, and a bush above is removed without drops.\n\nAfter the block effect, remove ChemthrowerShotEntity instances inside the hit AABB inflated by 0.25. Add no LivingEntity effect.\n\nGameTests invoke the effect on staged blocks with TFC crops.",
+      "scope": [
+        "src/main/java/net/claustra01/tfie/util/HerbicideEffects.java",
+        "src/main/java/net/claustra01/tfie/gametest/ (herbicide tests)",
+        "tests/acceptance.json"
+      ]
+    },
+    {
+      "id": "M08",
+      "features": [
+        "F-009",
+        "F-010"
+      ],
+      "dependsOn": [
+        "M01",
+        "M02"
+      ],
+      "approach": "TFC anvil milestone.\n\n**F-009 Drill heads.** Complete the Drillhead class (IE IDrillHead) for the 7 TFIE heads using the chapter 13 values:\n- speed, attack, durability and tier\n- dig area 2×2/3×3/5×5; even widths shift by the hit position\n- extra-block eligibility: harvestable, IE-effective, and break progress ≥ 0.4× the main block\n\nIE iron and steel heads keep their IE classes. Datagen the 9 tfie:anvil/drillhead_M recipes: double sheet input, bend/draw/hit rules, tiers 3/4/5/6/6/3/5/6/7, apply_bonus=false. TFCM metals are gated through the M02 metal conditions. Remove crafting/drillhead_iron and crafting/drillhead_steel. Add an AnvilUpdateEvent repair handler for the 7 TFIE heads that matches IE's repair formula (Iron uses only #c:ingots/wrought_iron). Provide models and textures for the 4 new heads and the drill-attachment textures by recolouring existing ones.\n\n**F-010 Other anvil recipes.** Datagen the 9 non-drill tfc:anvil recipes from chapter 14 and remove their crafting IDs: faraday_* ×4, empty_casing, gunpart_barrel, toolupgrade_revolver_bayonet. Rework AnvilBlockEntityMixin so that a successful player completion of tfc:anvil/metal/ingot/high_carbon_steel gives 1 immersiveengineering:slag: inventory first, any remainder dropped at the anvil. Nothing is given on in-progress or failed work, on other recipes, or on remote/machine use.\n\n**Tests.** GameTests cover mining areas, anvil completion and failure (tier and temperature), forging quality at r-boundaries, repair amounts and XP/rename costs, and the HCS slag cases. E2E covers head rendering.",
+      "scope": [
+        "src/main/java/net/claustra01/tfie/common/items/Drillhead.java",
+        "src/main/java/net/claustra01/tfie/common/DrillheadRepair.java (AnvilUpdateEvent)",
+        "src/main/java/net/claustra01/tfie/mixin/AnvilBlockEntityMixin.java",
+        "src/data/java/net/claustra01/tfie/data/recipes/AnvilRecipes.java",
+        "src/generated/resources/data/tfie/recipe/anvil/",
+        "src/generated/resources/data/immersiveengineering/recipe/crafting/ (drillhead/faraday/casing/barrel/bayonet removals)",
+        "src/main/resources/assets/tfie/models/item/drillhead_*.json",
+        "src/main/resources/assets/tfie/textures/item/drill*_*.png",
+        "src/main/java/net/claustra01/tfie/gametest/ (drill, anvil tests)",
+        "tests/acceptance.json",
+        "tests/e2e/"
+      ]
+    },
+    {
+      "id": "M09",
+      "features": [
+        "F-015",
+        "F-024"
+      ],
+      "dependsOn": [
+        "M01",
+        "M03"
+      ],
+      "approach": "**F-015 Cloche recipes.** Datagen 29 tfie:cloche/<crop> recipes of type immersiveengineering:cloche:\n- input tfc:seeds/<crop> on the 8 tfc:dirt soils; time 128000; Water\n- outputs from the chapter 19 table, plus the seed at 25%\n\n**Cloche rendering.** ModClocheRenderFunctions registers tfie:doublecroptfc in common code. Age is min(maxAge, round(maxAge×g)), scale 0.6875, and the top part appears at age 4 for green bean, sugarcane and tomato and at age 3 for jute, maize and papyrus. Soil textures map to tfc:block/farmland/<soil>. Initialisation must not touch client-only classes on a dedicated server.\n\n**F-024 Farmland fertilizers.** Add the TFC fertilizer data tfie:dust_saltpeter, tfie:fertilizer and tfie:slag with the chapter 29 N/P/K values.\n\n**F-024 Cloche fertilizers.** Add 8 tfie:fertilizer/* recipes of type immersiveengineering:fertilizer with growth multipliers matched by item ID, so shellfish also counts when rotten.\n\n**Tests.** GameTests cover per-tick FE and growth, the 250 mB / 6000-tick supply, fertilizer multipliers, output-full waiting, reset on lost conditions, the render-function states (via a common API, without the renderer), farmland application with soil modifiers, and fertilizing hemp through its top part. E2E covers the inside of the Cloche.",
+      "scope": [
+        "src/data/java/net/claustra01/tfie/data/recipes/ClocheRecipes.java",
+        "src/data/java/net/claustra01/tfie/data/recipes/ClocheFertilizerRecipes.java",
+        "src/data/java/net/claustra01/tfie/data/providers/BuiltinFertilizers.java",
+        "src/main/java/net/claustra01/tfie/util/ModClocheRenderFunctions.java",
+        "src/generated/resources/data/tfie/recipe/cloche/",
+        "src/generated/resources/data/tfie/recipe/fertilizer/",
+        "src/generated/resources/data/tfie/tfc/fertilizer/",
+        "src/main/java/net/claustra01/tfie/gametest/ (cloche, fertilizer tests)",
+        "tests/acceptance.json",
+        "tests/e2e/"
+      ]
+    },
+    {
+      "id": "M10",
+      "features": [
+        "F-011"
+      ],
+      "dependsOn": [
+        "M01",
+        "M08"
+      ],
+      "approach": "Datagen the chapter 15 general crafting.\n\n**Wrought-iron overrides of IE crafting.** Override every listed IE recipe ID with its exact pattern, symbols, counts and tags: basic_engineering, coils, dynamo, windmill, transformers, conveyors, valve, hatch, posts, craftingtable, workbench, hammer, wirecutter, screwdriver, earmuffs, speedloader, tool upgrades, balloon, cushion, strip_curtain, rope and gunpowder_barrel. Use #c:ingots/rods/plates/wrought_iron.\n\n**Specific recipes.**\n- The craftingtable uses tfie:treated_wood_lumber; the workbench uses the treated slab.\n- Posts use #tfie:stone_bricks_no_variants, which contains the 22 items.\n- Keep IE's standard alloybrick, blastbrick, blastbrick_reinforced, blueprint_components, fluorescent_tube, chemthrower and jerrycan; do not ship tfie chemthrower_tfc, jerrycan_tfc or blueprint_special_bullet.\n- FirmaLife-gated tfie:crafting/ersatz_leather_firmalife.\n\n**Tags and removals.**\n- Add tfc:burlap_cloth to c:fabric_hemp and tfc:jute_fiber to c:fiber_hemp.\n- Empty overrides remove the chapter 33 crafting IDs: steel armor ×4, steel tools ×5, nugget ×8, ingot/storage ×16, plate hammering ×6, stick ×2.\n- The M08 anvil replacements stay as they are.\n\n**Tests.** GameTests craft each row using an independent expectation table, including shifted and mirrored placement, missing or swapped materials, the wrought vs iron vs cast iron swaps, and FirmaLife on/off. E2E covers the JEI layouts.",
+      "scope": [
+        "src/data/java/net/claustra01/tfie/data/recipes/CraftingRecipes.java",
+        "src/data/java/net/claustra01/tfie/data/recipes/IECraftingRecipes.java",
+        "src/data/java/net/claustra01/tfie/data/providers/BuiltinItemTags.java (fabric/fiber/stone_bricks tags)",
+        "src/generated/resources/data/immersiveengineering/recipe/crafting/",
+        "src/generated/resources/data/immersiveengineering/advancement/recipes/misc/crafting/",
+        "src/generated/resources/data/tfie/recipe/crafting/ersatz_leather_firmalife.json",
+        "src/generated/resources/data/tfie/tags/item/stone_bricks_no_variants.json",
+        "src/generated/resources/data/c/tags/item/fabric_hemp.json",
+        "src/generated/resources/data/c/tags/item/fiber_hemp.json",
+        "src/main/java/net/claustra01/tfie/gametest/ (crafting tests)",
+        "tests/acceptance.json",
+        "tests/e2e/"
+      ]
+    },
+    {
+      "id": "M11",
+      "features": [
+        "F-004",
+        "F-005",
+        "F-006",
+        "F-007",
+        "F-008"
+      ],
+      "dependsOn": [
+        "M01",
+        "M02",
+        "M10"
+      ],
+      "approach": "Furnace milestone. These features share the heated-output and full-output-commit implementation, so they are delivered together.\n\n**Shared output logic.** A common helper sets the TFC heat of metal outputs to the registered melting point × 0.9, unrounded; slag and insulating glass get none. Differently heated stacks never merge. In the Arc, Blast Furnace, Improved Blast Furnace and Alloy Kiln logic (narrow mixins), a process commits only when all of its outputs fit in their designated slots; otherwise it waits with no extra FE or material use, with no byproduct re-roll, and slag stays in slot 22.\n\n**Arc (F-005, F-006).**\n- Mixins on IE ArcFurnaceLogic/process handle the following:\n  - Blueprint selection: exactly one blueprint in a main input slot 0–11, never consumed or reserved.\n  - Automatic insertion of blueprints is rejected.\n  - Multiple blueprints or an out-of-range mode stops new processes with a displayed reason.\n- Per-main-slot matching against a fixed mode/main-input table; duplicates stop that slot instead of resolving by registration order.\n- Quantity reservation that deducts what started processes already hold.\n- Saved state per started process: recipe ID, recipe snapshot, reservations, progress and waiting. After a reload that changes or removes the recipe, the process waits until the definition is restored or the machine is dismantled.\n- The tfie:arc_furnace_blueprint item cycles 1→8→1 on main-hand use in air, server-side only, and block interactions take priority. It shows a tooltip and a short message. Datagen its shapeless crafting recipe.\n- Recipes: 33 tfie:arcfurnace/briquet/S (TFCM-gated; chromite needs FirmaLife), the 18 alloys plus tfie:arcfurnace/steel with fixed modes, and tfie:arcfurnace/insulating_glass. Store the mode in a recipe field via a TFIE recipe type/serializer extending IE ArcFurnaceRecipe. Remove the 78 static IE arc IDs.\n- A JEI plugin (optional, on a JEI-only class path) shows the blueprint as a non-consumed catalyst.\n\n**Blast furnaces (F-007).** 3 tfie:blastfurnace/briquet recipes producing raw_iron_bloom, 1200 ticks. Remove the steel, steel_block and block-fuel recipes; keep the coke and charcoal fuels.\n\n**Alloy Kiln (F-008).** 7 tfie:alloysmelter alloys plus insulating glass at 200 ticks; replace or remove the 8 IE alloysmelter IDs, with a cache-safe lookup.\n\n**Tests.** GameTests build formed machines (bricks from M10, Arc structure from M01) and check all 171 combinations against an independent table, waiting, save/reload, datapack reload, and the disabled-metal configuration. E2E covers blueprint, Arc, furnace and kiln screens and JEI.",
+      "scope": [
+        "src/main/java/net/claustra01/tfie/common/heat/ (furnace output heat helper)",
+        "src/main/java/net/claustra01/tfie/common/arc/ (blueprint selection, reservation, process state)",
+        "src/main/java/net/claustra01/tfie/common/items/ArcFurnaceBlueprintItem.java",
+        "src/main/java/net/claustra01/tfie/common/recipes/ (mode-aware arc recipe type/serializer)",
+        "src/main/java/net/claustra01/tfie/mixin/ (ArcFurnaceLogic, BlastFurnaceLogic, AlloySmelterLogic, process mixins)",
+        "src/main/java/net/claustra01/tfie/compat/jei/",
+        "src/main/resources/tfie.mixins.json",
+        "src/data/java/net/claustra01/tfie/data/recipes/ArcFurnaceRecipes.java",
+        "src/data/java/net/claustra01/tfie/data/recipes/BlastFurnaceRecipes.java",
+        "src/data/java/net/claustra01/tfie/data/recipes/AlloySmelterRecipes.java",
+        "src/generated/resources/data/tfie/recipe/{arcfurnace,blastfurnace,alloysmelter}/",
+        "src/generated/resources/data/tfie/recipe/crafting/arc_furnace_blueprint.json",
+        "src/generated/resources/data/immersiveengineering/recipe/{arcfurnace,blastfurnace,alloysmelter}/",
+        "src/main/resources/assets/tfie/ (blueprint model/texture, lang keys)",
+        "src/main/java/net/claustra01/tfie/gametest/ (furnace, arc, blast, kiln tests)",
+        "tests/acceptance.json",
+        "tests/e2e/"
+      ]
+    },
+    {
+      "id": "M12",
+      "features": [
+        "F-027"
+      ],
+      "dependsOn": [
+        "M01",
+        "M02",
+        "M04",
+        "M10",
+        "M11"
+      ],
+      "approach": "Complete and verify the chapter 33 removal ledger.\n\n**Arc recycling.** Disable the immersiveengineering:arc_recycling_list entry. Add a narrow hook in IE's GeneratedListRecipe/ArcRecyclingCalculator path so that no ArcRecyclingRecipe (specialRecipeType recycling) is visible to Arc lookup or JEI on first start or after a reload. The Mixer and Bottling potion generators must not be affected.\n\n**Ledger check.** Build an independent ledger table in the test code: 54 crusher, 78 arc, the blast furnace removals, 8 alloysmelter, 64 metal press, 8 plate/rod, 8 nugget, 16 storage, gunpowder, and the 3 old tfie IDs. A GameTest checks each listed ID against the recipe manager, machine lookup and actual processing, both after start and after /reload, and also under the disabled-TFCM-metal configuration, where removed upstream recipes must not come back.\n\n**Untouched recipes.** Control recipes that must survive: other-namespace recipes with the same path (from a test datapack), ingot crushing, gears, raw-ore storage and slabs, and non-Beneath sawmill recipes.\n\nE2E checks that JEI no longer shows removed recipes.",
+      "scope": [
+        "src/main/java/net/claustra01/tfie/mixin/ (arc recycling generator exclusion)",
+        "src/main/resources/tfie.mixins.json",
+        "src/generated/resources/data/immersiveengineering/recipe/arc_recycling_list.json",
+        "src/main/java/net/claustra01/tfie/gametest/ (ledger tests, test datapack)",
+        "tests/acceptance.json",
+        "tests/e2e/"
+      ]
+    },
+    {
+      "id": "M13",
+      "features": [
+        "F-028"
+      ],
+      "dependsOn": [
+        "M01",
+        "M02",
+        "M04",
+        "M11"
+      ],
+      "approach": "Verify chapter 34 data, persistence and server-authority guarantees, and fix any gaps in the existing implementations.\n\n**Datapack overrides.** A test datapack overrides an Arc recipe's FE/time and another machine recipe's quantity, and new processes must use the new values. There must be no double registration, and mode conditions must still apply.\n\n**Conditional skipping.** Check skip logging with the recipe ID and reason in the optional-absent, TFCM-disabled and missing-item configurations, using the M01 helper. Nothing is replaced by empty ingredients.\n\n**Arc state.** Run full Arc save/reload and server-restart round trips: inventory, mode, recipe ID, snapshot, reservations, progress, waiting state and heat. Also check that swapping the blueprint is distinct from a recipe redefinition.\n\n**New world.** No mold_block and no migration code.\n\n**Dedicated server.** A dedicated-server E2E covers blueprint switching, alloy/briquet processing and seeded byproducts with reconnect. Audit that no client-only classes are reached from common code.",
+      "scope": [
+        "src/main/java/net/claustra01/tfie/common/arc/ (fixes only)",
+        "src/main/java/net/claustra01/tfie/common/conditions/ (fixes only)",
+        "src/main/java/net/claustra01/tfie/gametest/ (data, persistence tests and override datapack)",
+        "tests/acceptance.json",
+        "tests/e2e/"
+      ]
+    },
+    {
+      "id": "M14",
+      "features": [
+        "F-026"
+      ],
+      "dependsOn": [
+        "M01",
+        "M02",
+        "M03",
+        "M04",
+        "M05",
+        "M07",
+        "M08",
+        "M10",
+        "M11",
+        "M12"
+      ],
+      "approach": "Rewrite the en_us guides to match the implemented behaviour.\n\n**IE Engineer's Manual.** Update the autoload category tfie:tfc_ie_changes (priority 4, weight 8) and the 10 tfie:tfc_ie_* entries.\n\n**TFC Field Guide.** Update the Patchouli category tfc:tfc_ie_changes (sortnum 10) and its 10 entries.\n\n**Content to cover:**\n- Arc blueprint: 8 modes, main-input placement, not consumed, and the mode table\n- briquet-only smelting\n- wrought iron → steel\n- 90% output temperature\n- the enabled blast furnaces and alloy kiln\n- the 4 Metal Press shapes\n- hemp: farming climate vs wild temperature and groundwater\n- each optional integration's state\n\nRemove the outdated statements that blast furnaces and the alloy kiln are forbidden. Drop the ru_ru guides that no longer match, or update them as well.\n\n**Config and recipe values.** ClientEvents manual value providers crucibleExternalHeaterFEPerTick and crucibleExternalHeaterTemperature return the synced server config values; unknown keys show no number. Dynamic recipe values are read from the loaded recipes.\n\n**JEI.** Check categories against real recipe types: Squeezer seeds, Fermenter amounts, removed recipes absent, blueprint catalysts. Check that the mod works without JEI and without the optional mods.\n\nE2E runs across the configurations, and a GameTest covers config value delivery.",
+      "scope": [
+        "src/main/resources/assets/tfie/manual/",
+        "src/main/resources/assets/immersiveengineering/manual/autoload.json",
+        "src/main/resources/assets/tfc/patchouli_books/field_guide/",
+        "src/main/java/net/claustra01/tfie/compat/patchouli/",
+        "src/main/java/net/claustra01/tfie/client/ClientEvents.java",
+        "src/main/java/net/claustra01/tfie/compat/jei/ (display fixes only)",
+        "src/main/resources/assets/tfie/lang/en_us.json",
+        "src/main/java/net/claustra01/tfie/gametest/ (guide value tests)",
+        "tests/acceptance.json",
+        "tests/e2e/"
+      ]
+    },
+    {
+      "id": "M15",
+      "features": [
+        "F-029"
+      ],
+      "dependsOn": [
+        "M01",
+        "M02",
+        "M03",
+        "M04",
+        "M05",
+        "M06",
+        "M07",
+        "M08",
+        "M09",
+        "M10",
+        "M11",
+        "M12",
+        "M13",
+        "M14"
+      ],
+      "approach": "Integration acceptance against chapters 2, 35 and 36.\n\n**Configurations.** Run the full suite in the 6 optional configurations (minimal, each optional mod alone, all) plus the TFCM-disabled configuration. Separate launch checks, one per missing required mod, record dependency-refusal logs as supporting evidence.\n\n**Full-set check.** An independent expected-set GameTest compares the enabled recipe IDs and actual processing for the following: 252 press, 33 briquet, 18+1 Arc, 3 blast furnace, 7+1 kiln, 9 heads, 29 cloche, 23 squeezer and 144 sawmill recipes.\n\n**Arc and legacy-difference checks.**\n- Arc integration: 171 combinations, ordering independence, waiting, heat, reload.\n- Coke oven with 60 coke in the output.\n- Seed squeezer.\n- HCS slag with a full inventory.\n- Treated-lumber crafting table.\n- Fixed-bucket and other non-addition rules.\n\nE2E runs client plus dedicated server on a new world with screenshots. Inspect artifact metadata (tfie 0.1.0, Java 21, no AFC/Overdims dependencies). Fix only defects that this pass finds.",
+      "scope": [
+        "src/main/java/net/claustra01/tfie/gametest/ (integration tests)",
+        "build.gradle (test run configurations only)",
+        "tests/acceptance.json",
+        "tests/e2e/"
+      ]
+    }
+  ]
+}

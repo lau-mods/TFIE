@@ -16,8 +16,8 @@
       "command": "opencode",
       "fast": false,
       "type": "opencode",
-      "model": "openai/gpt-6.2-sol",
-      "effort": "medium"
+      "model": "opencode-go/deepseek-v4.1-flash",
+      "effort": "high"
     },
     "codeReview": {
       "command": "claude",

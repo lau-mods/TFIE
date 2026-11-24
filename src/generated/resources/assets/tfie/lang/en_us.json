@@ -1,0 +1,16 @@
+{
+  "block.tfie.wild_crop.hemp": "Wild Hemp",
+  "item.tfie.arc_furnace_blueprint": "Arc Furnace Blueprint",
+  "item.tfie.drillhead_black_steel": "Black Steel Drill Head",
+  "item.tfie.drillhead_blue_steel": "Blue Steel Drill Head",
+  "item.tfie.drillhead_invar": "Invar Drill Head",
+  "item.tfie.drillhead_netherite": "Netherite Drill Head",
+  "item.tfie.drillhead_red_steel": "Red Steel Drill Head",
+  "item.tfie.drillhead_titanium": "Titanium Drill Head",
+  "item.tfie.drillhead_tungsten_steel": "Tungsten Steel Drill Head",
+  "item.tfie.mold_sheet": "Sheet Mold",
+  "item.tfie.tool_head.ie_hammer": "Engineer's Hammer Head",
+  "item.tfie.tool_head.wirecutter": "Wirecutter Head",
+  "item.tfie.treated_wood_lumber": "Treated Wood Lumber",
+  "tfie.creative_tab.main": "TFC x IE"
+}

@@ -1,35 +1,36 @@
 package net.claustra01.tfie.data.recipes;
 
-import blusunrize.immersiveengineering.common.register.IEFluids;
-import net.claustra01.tfie.common.items.Items;
-import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.common.Tags;
-
-import net.dries007.tfc.common.TFCTags;
+import net.claustra01.tfie.TFIE;
+import net.claustra01.tfie.common.ModItems;
 import net.dries007.tfc.common.recipes.BarrelRecipe;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.crafting.Recipe;
 
-public interface BarrelRecipes extends Recipes
+import java.util.concurrent.CompletableFuture;
+
+public final class BarrelRecipes extends RecipeProvider
 {
-    default void barrelRecipes()
+    public BarrelRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
     {
-        barrel()
-            .input(Tags.Items.DUSTS_REDSTONE)
-            .input(Fluids.WATER, 250)
-            .output(IEFluids.REDSTONE_ACID.getStill(), 250)
-            .instant();
-        barrel()
-            .input(TFCTags.Items.LUMBER)
-            .input(IEFluids.CREOSOTE.getStill(), 50)
-            .output(Items.TREATED_WOOD_LUMBER)
-            .sealed(hours(8));
+        super(output, registries);
     }
 
-    private BarrelRecipe.Builder barrel()
+    @Override
+    protected void buildRecipes(RecipeOutput output)
     {
-        return new BarrelRecipe.Builder(r -> {
-            if (!r.getResultItem().isEmpty()) add("barrel", nameOf(r.getResultItem().getItem()), r);
-            else if (!r.getOutputFluid().isEmpty()) add("barrel", nameOf(r.getOutputFluid().getFluid()), r);
-            else throw new IllegalStateException("Barrel recipe requires a custom name!");
-        });
+        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(TFIE.MOD_ID, "barrel/treated_wood_lumber");
+        BarrelRecipe.Builder builder = new BarrelRecipe.Builder(recipe ->
+                output.accept(id, (Recipe<?>)recipe, null));
+        builder.input(ItemTags.create(ResourceLocation.fromNamespaceAndPath("tfc", "lumber")))
+                .input(BuiltInRegistries.FLUID.get(ResourceLocation.fromNamespaceAndPath(
+                        "immersiveengineering", "creosote")), 50)
+                .output(ModItems.TREATED_WOOD_LUMBER.get())
+                .sealed(8000);
     }
 }

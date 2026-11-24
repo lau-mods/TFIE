@@ -2,8 +2,11 @@
   "required": true,
   "minVersion": "0.8",
   "package": "net.claustra01.tfie.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "TemplateMultiblockMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "mixins": ["AllowInCrateMixin", "AnvilBlockEntityMixin", "accessor.BlockEntityAccessor", "DynamoBlockEntityMixin", "IngredientFluidStackMixin", "accessor.CrucibleBlockEntityAccessor"]
+  }
 }

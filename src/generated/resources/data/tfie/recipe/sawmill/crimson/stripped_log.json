@@ -1,0 +1,47 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "tfcoverdims"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcoverdims:wood/stripped_log/crimson"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcoverdims:wood/stripped_wood/crimson"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcoverdims:wood/lumber/crimson"
+        }
+      ],
+      "reason": "tfcoverdims wood item is unavailable",
+      "recipe": "tfie:sawmill/crimson/stripped_log"
+    }
+  ],
+  "type": "immersiveengineering:sawmill",
+  "energy": 1600,
+  "input": [
+    {
+      "item": "tfcoverdims:wood/stripped_log/crimson"
+    },
+    {
+      "item": "tfcoverdims:wood/stripped_wood/crimson"
+    }
+  ],
+  "result": {
+    "count": 12,
+    "id": "tfcoverdims:wood/lumber/crimson"
+  },
+  "secondaryOutputs": [
+    {
+      "tag": "c:dusts/wood"
+    }
+  ],
+  "strippingSecondaries": []
+}

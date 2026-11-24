@@ -1,8 +1,27 @@
 {
   "neoforge:conditions": [
     {
-      "type": "neoforge:mod_loaded",
-      "modid": "afc"
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "afc"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "afc:wood/stripped_log/ipe"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "afc:wood/stripped_wood/ipe"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "afc:wood/lumber/ipe"
+        }
+      ],
+      "reason": "afc wood item is unavailable",
+      "recipe": "tfie:sawmill/ipe/stripped_log"
     }
   ],
   "type": "immersiveengineering:sawmill",

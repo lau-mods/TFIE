@@ -1,8 +1,27 @@
 {
   "neoforge:conditions": [
     {
-      "type": "neoforge:mod_loaded",
-      "modid": "afc"
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "afc"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "afc:wood/wood/hevea"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "afc:wood/stripped_wood/hevea"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "afc:wood/lumber/hevea"
+        }
+      ],
+      "reason": "afc wood item is unavailable",
+      "recipe": "tfie:sawmill/hevea/wood"
     }
   ],
   "type": "immersiveengineering:sawmill",

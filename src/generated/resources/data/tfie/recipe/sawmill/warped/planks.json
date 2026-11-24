@@ -1,0 +1,34 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "tfcoverdims"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcoverdims:wood/planks/warped"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcoverdims:wood/lumber/warped"
+        }
+      ],
+      "reason": "tfcoverdims wood item is unavailable",
+      "recipe": "tfie:sawmill/warped/planks"
+    }
+  ],
+  "type": "immersiveengineering:sawmill",
+  "energy": 1600,
+  "input": {
+    "item": "tfcoverdims:wood/planks/warped"
+  },
+  "result": {
+    "count": 4,
+    "id": "tfcoverdims:wood/lumber/warped"
+  },
+  "secondaryOutputs": [],
+  "strippingSecondaries": []
+}

@@ -23,11 +23,21 @@ sourceSets.main.resources {
 
     // Exclude common development only resources from finalized outputs
     exclude("**/*.bbmodel") // BlockBench project files
-    exclude("src/generated/**/.cache") // datagen cache files
+    exclude(".cache/**") // datagen cache files
+}
+
+sourceSets {
+    data {
+        java.srcDir('src/data/java')
+        compileClasspath += sourceSets.main.output + configurations.compileClasspath
+        runtimeClasspath += output + compileClasspath
+    }
 }
 
 repositories {
-    // Add here additional repositories if required by some of the dependencies below.
+    maven { url = 'https://www.cursemaven.com' }
+    maven { url = 'https://maven.blamejared.com' }
+    maven { url = 'https://api.modrinth.com/maven' }
 }
 
 base {
@@ -36,6 +46,15 @@ base {
 
 // Mojang ships Java 21 to end users in 1.21.1, so mods should target Java 21.
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+// localRuntime is available to clients without becoming a published dependency.
+def localRuntimeConfiguration = configurations.create('localRuntime')
+def firmalifeRuntimeConfiguration = configurations.create('firmalifeRuntime')
+def advancedTfcTechRuntimeConfiguration = configurations.create('advancedTfcTechRuntime')
+def afcRuntimeConfiguration = configurations.create('afcRuntime')
+def overdimsRuntimeConfiguration = configurations.create('overdimsRuntime')
+
+configurations.dataImplementation.extendsFrom(configurations.implementation)
 
 neoForge {
     // Specify the version of NeoForge to use.
@@ -54,6 +73,7 @@ neoForge {
     runs {
         client {
             client()
+            additionalRuntimeClasspathConfiguration.extendsFrom(localRuntimeConfiguration)
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
@@ -70,15 +90,65 @@ neoForge {
         gameTestServer {
             type = "gameTestServer"
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'tfie.gametest.report', project.file('build/test-results/gametest/TEST-tfie.xml').absolutePath
+        }
+
+        gameTestServerFirmalife {
+            type = "gameTestServer"
+            gameDirectory = project.file('run/firmalife')
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'tfie.gametest.expectedMod', 'firmalife'
+            systemProperty 'tfie.gametest.report', project.file('build/test-results/gametest/TEST-tfie-firmalife.xml').absolutePath
+        }
+
+        gameTestServerAdvancedTfcTech {
+            type = "gameTestServer"
+            gameDirectory = project.file('run/advancedtfctech')
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'tfie.gametest.expectedMod', 'advancedtfctech'
+            systemProperty 'tfie.gametest.report', project.file('build/test-results/gametest/TEST-tfie-advancedtfctech.xml').absolutePath
+        }
+
+        gameTestServerAfc {
+            type = "gameTestServer"
+            gameDirectory = project.file('run/afc')
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'tfie.gametest.expectedMod', 'afc'
+            systemProperty 'tfie.gametest.report', project.file('build/test-results/gametest/TEST-tfie-afc.xml').absolutePath
+        }
+
+        gameTestServerOverdims {
+            type = "gameTestServer"
+            gameDirectory = project.file('run/overdims')
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'tfie.gametest.expectedMod', 'tfcoverdims'
+            systemProperty 'tfie.gametest.report', project.file('build/test-results/gametest/TEST-tfie-overdims.xml').absolutePath
+        }
+
+        gameTestServerAll {
+            type = "gameTestServer"
+            gameDirectory = project.file('run/all')
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'tfie.gametest.expectedMod', 'all'
+            systemProperty 'tfie.gametest.report', project.file('build/test-results/gametest/TEST-tfie-all.xml').absolutePath
+        }
+
+        gameTestServerDisabledMaterials {
+            type = "gameTestServer"
+            gameDirectory = project.file('run/disabled-materials')
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'tfie.gametest.expectedMod', 'disabled-materials'
+            systemProperty 'tfie.gametest.report', project.file('build/test-results/gametest/TEST-tfie-disabled-materials.xml').absolutePath
         }
 
         data {
             data()
+            gameDirectory = project.file('run/data')
             // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
             // gameDirectory = project.file('run-data')
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath(), '--existing-mod', 'immersiveengineering', '--existing-mod', 'tfcm'
         }
 
         // applies to all the run configs above
@@ -103,40 +173,28 @@ neoForge {
         // multi mod projects should define one per mod
         "${mod_id}" {
             sourceSet(sourceSets.main)
+            sourceSet(sourceSets.data)
         }
     }
 }
 
-// Sets up a dependency configuration called 'localRuntime'.
-// This configuration should be used instead of 'runtimeOnly' to declare
-// a dependency that will be present for runtime testing but that is
-// "optional", meaning it will not be pulled by dependents of this mod.
-configurations {
-    runtimeClasspath.extendsFrom localRuntime
-}
-
 dependencies {
-    // Example optional mod dependency with JEI
-    // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
-    // compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"
-    // compileOnly "mezz.jei:jei-${mc_version}-neoforge-api:${jei_version}"
-    // We add the full version to localRuntime, not runtimeOnly, so that we do not publish a dependency on it
-    // localRuntime "mezz.jei:jei-${mc_version}-neoforge:${jei_version}"
+    implementation("curse.maven:terrafirmacraft-302973:9569280") { transitive = false }
+    implementation("blusunrize.immersiveengineering:ImmersiveEngineering:1.21.1-12.4.2-194")
+    implementation("blusunrize.immersiveengineering:ImmersiveEngineering:1.21.1-12.4.2-194:datagen")
+    implementation("curse.maven:tfc-metallum-overhaul-1460805:9712557") { transitive = false }
+    implementation("vazkii.patchouli:Patchouli:1.21.1-93-NEOFORGE")
 
-    // Example mod dependency using a mod jar from ./libs with a flat dir repository
-    // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
-    // The group id is ignored when searching -- in this case, it is "blank"
-    // implementation "blank:coolmod-${mc_version}:${coolmod_version}"
+    compileOnly("curse.maven:firmalife-453394:9399547") { transitive = false }
+    compileOnly("maven.modrinth:wEKs9gH0:xzXArmox") { transitive = false }
+    compileOnly "mezz.jei:jei-1.21.1-common-api:19.64.0.455"
+    compileOnly "mezz.jei:jei-1.21.1-neoforge-api:19.64.0.455"
+    localRuntime "mezz.jei:jei-1.21.1-neoforge:19.64.0.455"
 
-    // Example mod dependency using a file as dependency
-    // implementation files("libs/coolmod-${mc_version}-${coolmod_version}.jar")
-
-    // Example project dependency using a sister or child project:
-    // implementation project(":myproject")
-
-    // For more info:
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+    firmalifeRuntime("curse.maven:firmalife-453394:9399547") { transitive = false }
+    advancedTfcTechRuntime("maven.modrinth:wEKs9gH0:xzXArmox") { transitive = false }
+    afcRuntime files(fileTree('.tmp/afc') { include '*.jar' })
+    overdimsRuntime files(fileTree('.tmp/overdims') { include '*.jar' })
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
@@ -180,6 +238,60 @@ publishing {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
+
+['Firmalife': firmalifeRuntimeConfiguration, 'AdvancedTfcTech': advancedTfcTechRuntimeConfiguration,
+ 'Afc': afcRuntimeConfiguration, 'Overdims': overdimsRuntimeConfiguration].each { name, configuration ->
+    def directory = name == 'AdvancedTfcTech' ? 'advancedtfctech' : name.toLowerCase()
+    def copyMod = tasks.register("copyGameTest${name}Mod", Copy) {
+        from(configuration)
+        into("run/${directory}/mods")
+    }
+    tasks.named("runGameTestServer${name}") {
+        dependsOn(copyMod)
+    }
+}
+
+tasks.named('runGameTestServerAdvancedTfcTech') { mustRunAfter 'runGameTestServerFirmalife' }
+tasks.named('runGameTestServerAfc') { mustRunAfter 'runGameTestServerAdvancedTfcTech' }
+tasks.named('runGameTestServerOverdims') { mustRunAfter 'runGameTestServerAfc' }
+def copyAllGameTestMods = tasks.register('copyGameTestAllMods', Copy) {
+    from(firmalifeRuntimeConfiguration)
+    from(advancedTfcTechRuntimeConfiguration)
+    from(afcRuntimeConfiguration)
+    from(overdimsRuntimeConfiguration)
+    into('run/all/mods')
+}
+tasks.named('runGameTestServerAll') {
+    dependsOn(copyAllGameTestMods)
+    mustRunAfter 'runGameTestServerOverdims'
+}
+def writeDisabledMaterialsConfig = tasks.register('writeDisabledMaterialsConfig') {
+    def config = layout.projectDirectory.file('run/disabled-materials/config/tfcm-common.toml')
+    outputs.file(config)
+    outputs.upToDateWhen { false }
+    doLast {
+        config.asFile.parentFile.mkdirs()
+        config.asFile.text = '''enableCustomVeinGeneration = true
+disabledMetals = ["titanium"]
+disabledOres = ["hematite"]
+'''
+    }
+}
+tasks.named('runGameTestServerDisabledMaterials') {
+    dependsOn(writeDisabledMaterialsConfig)
+    mustRunAfter 'runGameTestServerAll'
+}
+tasks.named('runGameTestServer') {
+    dependsOn 'runGameTestServerFirmalife', 'runGameTestServerAdvancedTfcTech',
+            'runGameTestServerAfc', 'runGameTestServerOverdims', 'runGameTestServerAll',
+            'runGameTestServerDisabledMaterials'
+}
+
+def copyDataWoodMods = tasks.register('copyDataWoodMods', Copy) {
+    from(afcRuntimeConfiguration, overdimsRuntimeConfiguration)
+    into('run/data/mods')
+}
+tasks.named('runData') { dependsOn(copyDataWoodMods) }
 
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
 idea {

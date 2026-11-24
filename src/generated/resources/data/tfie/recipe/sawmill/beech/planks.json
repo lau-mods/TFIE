@@ -1,8 +1,23 @@
 {
   "neoforge:conditions": [
     {
-      "type": "neoforge:mod_loaded",
-      "modid": "afc"
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "afc"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "afc:wood/planks/beech"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "afc:wood/lumber/beech"
+        }
+      ],
+      "reason": "afc wood item is unavailable",
+      "recipe": "tfie:sawmill/beech/planks"
     }
   ],
   "type": "immersiveengineering:sawmill",

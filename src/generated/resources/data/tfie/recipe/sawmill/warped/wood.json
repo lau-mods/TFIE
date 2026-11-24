@@ -1,0 +1,49 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "tfcoverdims"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcoverdims:wood/wood/warped"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcoverdims:wood/stripped_wood/warped"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcoverdims:wood/lumber/warped"
+        }
+      ],
+      "reason": "tfcoverdims wood item is unavailable",
+      "recipe": "tfie:sawmill/warped/wood"
+    }
+  ],
+  "type": "immersiveengineering:sawmill",
+  "energy": 1600,
+  "input": {
+    "item": "tfcoverdims:wood/wood/warped"
+  },
+  "result": {
+    "count": 12,
+    "id": "tfcoverdims:wood/lumber/warped"
+  },
+  "secondaryOutputs": [
+    {
+      "tag": "c:dusts/wood"
+    }
+  ],
+  "stripped": {
+    "id": "tfcoverdims:wood/stripped_wood/warped"
+  },
+  "strippingSecondaries": [
+    {
+      "tag": "c:dusts/wood"
+    }
+  ]
+}

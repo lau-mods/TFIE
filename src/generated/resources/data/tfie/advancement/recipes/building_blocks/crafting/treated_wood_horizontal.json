@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tfie:crafting/treated_wood_horizontal"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_treated_lumber": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tfie:treated_wood_lumber"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_treated_lumber"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tfie:crafting/treated_wood_horizontal"
+    ]
+  }
+}

@@ -1,46 +1,60 @@
 package net.claustra01.tfie.data;
 
 import net.claustra01.tfie.TFIE;
-import net.claustra01.tfie.data.providers.BuiltinBlockTags;
-import net.claustra01.tfie.data.providers.BuiltinClimateRanges;
-import net.claustra01.tfie.data.providers.BuiltinFertilizers;
-import net.claustra01.tfie.data.providers.BuiltinFluidTags;
-import net.claustra01.tfie.data.providers.BuiltinFuels;
-import net.claustra01.tfie.data.providers.BuiltinItemTags;
-import net.claustra01.tfie.data.providers.BuiltinItemHeat;
-import net.claustra01.tfie.data.providers.BuiltinItemSizes;
-import net.claustra01.tfie.data.providers.BuiltinRecipes;
+import net.claustra01.tfie.data.recipes.BarrelRecipes;
+import net.claustra01.tfie.data.recipes.CraftingRecipes;
+import net.claustra01.tfie.data.recipes.RecipeOverrides;
+import net.claustra01.tfie.data.recipes.SawmillRecipes;
+import net.claustra01.tfie.data.tags.TreatedLumberFluidTags;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.PackOutput;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
-@EventBusSubscriber(modid = TFIE.MOD_ID)
-public class DataEntryPoint
+import java.util.concurrent.CompletableFuture;
+
+@EventBusSubscriber(modid = TFIE.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+public final class DataEntryPoint
 {
+    private DataEntryPoint()
+    {
+    }
+
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event)
     {
-        final PackOutput output = event.getGenerator().getPackOutput();
-        final var lookup = event.getLookupProvider();
-
-        add(event, new BuiltinItemHeat(output, lookup));
-        add(event, new BuiltinItemSizes(output, lookup));
-        add(event, new BuiltinRecipes(output, lookup));
-
-        final var blockTags = add(event, new BuiltinBlockTags(event, lookup)).contentsGetter();
-
-        add(event, new BuiltinItemTags(event, lookup, blockTags));
-        add(event, new BuiltinFluidTags(event, lookup));
-
-        add(event, new BuiltinFertilizers(output, lookup));
-        add(event, new BuiltinFuels(output, lookup));
-        add(event, new BuiltinClimateRanges(output, lookup));
+        event.createProvider(LangProvider::new);
+        event.createProvider(output -> new TFIEItemModelProvider(output, event.getExistingFileHelper()));
+        event.createProvider(output -> new TFIEBlockStateProvider(output, event.getExistingFileHelper()));
+        event.createProvider(GameTestStructureProvider::new);
+        event.createProvider(output -> named("TFIE sawmill recipes",
+                new SawmillRecipes(output, event.getLookupProvider())));
+        event.createProvider(output -> named("TFIE barrel recipes",
+                new BarrelRecipes(output, event.getLookupProvider())));
+        event.createProvider(output -> named("TFIE crafting recipes",
+                new CraftingRecipes(output, event.getLookupProvider())));
+        event.createProvider(output -> named("TFIE recipe overrides",
+                new RecipeOverrides(output, event.getLookupProvider())));
+        event.createProvider(output -> new TreatedLumberFluidTags(output, event.getLookupProvider(),
+                event.getExistingFileHelper()));
     }
 
-    private static <T extends DataProvider> T add(GatherDataEvent event, T provider)
+    private static DataProvider named(String name, DataProvider provider)
     {
-        return event.getGenerator().addProvider(true, provider);
+        return new DataProvider()
+        {
+            @Override
+            public CompletableFuture<?> run(CachedOutput output)
+            {
+                return provider.run(output);
+            }
+
+            @Override
+            public String getName()
+            {
+                return name;
+            }
+        };
     }
 }

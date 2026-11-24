@@ -1,8 +1,27 @@
 {
   "neoforge:conditions": [
     {
-      "type": "neoforge:mod_loaded",
-      "modid": "afc"
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "afc"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "afc:wood/wood/ginkgo"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "afc:wood/stripped_wood/ginkgo"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "afc:wood/lumber/ginkgo"
+        }
+      ],
+      "reason": "afc wood item is unavailable",
+      "recipe": "tfie:sawmill/ginkgo/wood"
     }
   ],
   "type": "immersiveengineering:sawmill",

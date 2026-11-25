@@ -13,10 +13,10 @@
       "type": "claude"
     },
     "implementation": {
-      "command": "opencode",
+      "command": "codex",
       "fast": false,
-      "type": "opencode",
-      "model": "opencode-go/deepseek-v4.1-flash",
+      "type": "codex",
+      "model": "gpt-6.2-sol",
       "effort": "high"
     },
     "codeReview": {

@@ -17,7 +17,7 @@
       "fast": false,
       "type": "codex",
       "model": "gpt-6.2-sol",
-      "effort": "high"
+      "effort": "medium"
     },
     "codeReview": {
       "command": "claude",

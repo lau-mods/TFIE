@@ -4,6 +4,10 @@
   "package": "net.claustra01.tfie.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "accessor.TickableInventoryBlockEntityAccessor",
+    "accessor.CrucibleBlockEntityAccessor",
+    "AllowInCrateMixin",
+    "DynamoBlockEntityMixin",
     "TemplateMultiblockMixin"
   ],
   "injectors": {

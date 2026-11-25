@@ -23,6 +23,8 @@ public final class BuiltinItemTags extends ItemTagsProvider
     private static final TagKey<Item> FORGE_FUEL = tag("tfc", "forge_fuel");
     private static final TagKey<Item> LEATHER_KNAPPING = tag("tfc", "leather_knapping");
     private static final TagKey<Item> MOLDS = tag("tfie", "molds");
+    private static final TagKey<Item> FORBIDDEN_IN_CRATES = tag(
+            "immersiveengineering", "forbidden_in_crates");
 
     public BuiltinItemTags(PackOutput output, CompletableFuture<HolderLookup.Provider> registries,
                            ExistingFileHelper existingFileHelper)
@@ -47,6 +49,7 @@ public final class BuiltinItemTags extends ItemTagsProvider
                 item("immersiveengineering:mold_packing_4"),
                 item("immersiveengineering:mold_packing_9"),
                 item("immersiveengineering:mold_unpacking"));
+        tag(FORBIDDEN_IN_CRATES).add(item("minecraft:white_shulker_box"));
     }
 
     private static TagKey<Item> tag(String namespace, String path)

@@ -7,11 +7,17 @@ import net.claustra01.tfie.common.ModCreativeTabs;
 import net.claustra01.tfie.common.ModDataComponents;
 import net.claustra01.tfie.common.ModItems;
 import net.claustra01.tfie.common.condition.TFIEConditions;
+import net.claustra01.tfie.config.TFIEConfig;
+import net.claustra01.tfie.util.CrucibleHeater;
+import net.dries007.tfc.common.blockentities.TFCBlockEntities;
 import net.minecraft.gametest.framework.GlobalTestReporter;
 import net.minecraft.gametest.framework.JUnitLikeTestReporter;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.config.ModConfig;
 import net.minecraft.core.registries.Registries;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.claustra01.tfie.util.EmptyRecipe;
 import org.slf4j.Logger;
@@ -25,8 +31,9 @@ public final class TFIE
     public static final String MOD_ID = "tfie";
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public TFIE(IEventBus modEventBus)
+    public TFIE(IEventBus modEventBus, ModContainer modContainer)
     {
+        modContainer.registerConfig(ModConfig.Type.SERVER, TFIEConfig.SPEC);
         ModDataComponents.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModItems.register(modEventBus);
@@ -34,6 +41,7 @@ public final class TFIE
         ModCreativeTabs.register(modEventBus);
         TFIEConditions.register(modEventBus);
         modEventBus.addListener(this::registerRecipes);
+        modEventBus.addListener(this::registerCapabilities);
         String reportPath = System.getProperty("tfie.gametest.report");
         if(reportPath != null)
         {
@@ -50,6 +58,13 @@ public final class TFIE
                 throw new IllegalStateException("Unable to create the GameTest report", exception);
             }
         }
+    }
+
+    private void registerCapabilities(RegisterCapabilitiesEvent event)
+    {
+        event.registerBlockEntity(
+                blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.CAPABILITY,
+                TFCBlockEntities.CRUCIBLE.get(), (crucible, side) -> new CrucibleHeater(crucible));
     }
 
     private void registerRecipes(RegisterEvent event)

@@ -1,7 +1,34 @@
 {
   "variants": {
-    "": {
-      "model": "tfie:crop/hemp"
+    "age=0,part=bottom": {
+      "model": "tfie:crop/hemp_age_0"
+    },
+    "age=0,part=top": {
+      "model": "minecraft:block/air"
+    },
+    "age=1,part=bottom": {
+      "model": "tfie:crop/hemp_age_1"
+    },
+    "age=1,part=top": {
+      "model": "minecraft:block/air"
+    },
+    "age=2,part=bottom": {
+      "model": "tfie:crop/hemp_age_2"
+    },
+    "age=2,part=top": {
+      "model": "minecraft:block/air"
+    },
+    "age=3,part=bottom": {
+      "model": "tfie:crop/hemp_age_3"
+    },
+    "age=3,part=top": {
+      "model": "minecraft:block/air"
+    },
+    "age=4,part=bottom": {
+      "model": "tfie:crop/hemp_age_4"
+    },
+    "age=4,part=top": {
+      "model": "tfie:crop/hemp_age_4_top"
     }
   }
 }

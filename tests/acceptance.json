@@ -34,6 +34,12 @@
     {"acId":"AC-F013-007","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"treated_wood_crafting_and_override"},
     {"acId":"AC-F013-008","report":"build/test-results/gametest/TEST-tfie-afc.xml","classname":"tfie:gametest/empty_platform","name":"afc_latex_paths_are_untouched"},
     {"acId":"AC-F013-008","report":"build/test-results/gametest/TEST-tfie-all.xml","classname":"tfie:gametest/empty_platform","name":"afc_latex_paths_are_untouched"},
+    {"acId":"AC-F014-001","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"hemp_registration_and_planting"},
+    {"acId":"AC-F014-002","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"hemp_climate_and_nutrients"},
+    {"acId":"AC-F014-002","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"hemp_growth_top_and_limit"},
+    {"acId":"AC-F014-003","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"hemp_loot_tables"},
+    {"acId":"AC-F014-004","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"hemp_worldgen_and_seasons"},
+    {"acId":"AC-F014-005","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"hemp_persistence_and_top_proxy"},
     {"acId":"AC-F002-001","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"metal_table_and_standard_outputs"},
     {"acId":"AC-F002-001","report":"build/test-results/gametest/TEST-tfie-firmalife.xml","classname":"tfie:gametest/empty_platform","name":"metal_table_and_standard_outputs"},
     {"acId":"AC-F002-001","report":"build/test-results/gametest/TEST-tfie-all.xml","classname":"tfie:gametest/empty_platform","name":"metal_table_and_standard_outputs"},
@@ -73,6 +79,7 @@
     {"acId":"AC-F001-004","scenario":"tests/e2e/creative-tab.mjs"},
     {"acId":"AC-F012-008","scenario":"tests/e2e/multiblock-structures.mjs"},
     {"acId":"AC-F013-009","scenario":"tests/e2e/wood-processing.mjs"},
+    {"acId":"AC-F014-006","scenario":"tests/e2e/hemp-rendering.mjs"},
     {"acId":"AC-F003-005","scenario":"tests/e2e/metal-press.mjs"}
   ]
 }

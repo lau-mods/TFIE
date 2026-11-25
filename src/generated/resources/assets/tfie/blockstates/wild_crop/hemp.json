@@ -1,7 +1,16 @@
 {
   "variants": {
-    "": {
-      "model": "tfie:wild_crop/hemp"
+    "mature=false,part=bottom": {
+      "model": "tfie:dead_crop/hemp_bottom"
+    },
+    "mature=false,part=top": {
+      "model": "tfie:dead_crop/hemp_top"
+    },
+    "mature=true,part=bottom": {
+      "model": "tfie:wild_crop/hemp_bottom"
+    },
+    "mature=true,part=top": {
+      "model": "tfie:wild_crop/hemp_top"
     }
   }
 }

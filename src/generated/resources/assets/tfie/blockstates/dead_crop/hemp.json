@@ -1,7 +1,13 @@
 {
   "variants": {
-    "": {
-      "model": "tfie:dead_crop/hemp"
+    "mature=false": {
+      "model": "tfie:dead_crop/hemp_young"
+    },
+    "mature=true,part=bottom": {
+      "model": "tfie:dead_crop/hemp_bottom"
+    },
+    "mature=true,part=top": {
+      "model": "tfie:dead_crop/hemp_top"
     }
   }
 }

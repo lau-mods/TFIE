@@ -9,11 +9,13 @@ import net.claustra01.tfie.common.ModItems;
 import net.claustra01.tfie.common.condition.TFIEConditions;
 import net.claustra01.tfie.config.TFIEConfig;
 import net.claustra01.tfie.util.CrucibleHeater;
+import net.claustra01.tfie.util.ModInteractionManager;
 import net.dries007.tfc.common.blockentities.TFCBlockEntities;
 import net.minecraft.gametest.framework.GlobalTestReporter;
 import net.minecraft.gametest.framework.JUnitLikeTestReporter;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.config.ModConfig;
 import net.minecraft.core.registries.Registries;
@@ -41,6 +43,7 @@ public final class TFIE
         ModCreativeTabs.register(modEventBus);
         TFIEConditions.register(modEventBus);
         modEventBus.addListener(this::registerRecipes);
+        modEventBus.addListener(this::setup);
         modEventBus.addListener(this::registerCapabilities);
         String reportPath = System.getProperty("tfie.gametest.report");
         if(reportPath != null)
@@ -58,6 +61,11 @@ public final class TFIE
                 throw new IllegalStateException("Unable to create the GameTest report", exception);
             }
         }
+    }
+
+    private void setup(FMLCommonSetupEvent event)
+    {
+        event.enqueueWork(ModInteractionManager::register);
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event)

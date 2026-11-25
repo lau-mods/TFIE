@@ -2,7 +2,7 @@
   "status": "running",
   "active": [
     {
-      "id": "M03",
+      "id": "M04",
       "phase": "gametest",
       "baseCommit": "6eaf92d3cf78f6263c82c6d1efb5063a6c67713a",
       "failures": {
@@ -15,314 +15,359 @@
         "kind": "code",
         "issues": [
           {
-            "target": "src/main/java/net/claustra01/tfie/gametest/hemp/HempGameTests.java:1-769",
-            "acId": null,
-            "problem": "The whole test class looks like decompiler output, not source code. It uses 3-space indentation and K&R braces where the rest of the project uses 4-space Allman style. It has synthetic labels and flags (`label211`, `label203`, `var10001`), redundant casts like `(Block)ModBlocks.HEMP_CROP.get()`, `(BlockState)((BlockState)...setValue(...))`, `(Integer)`, `(Boolean)`, `(ResourceKey)` and `(Named)`, and fully qualified `net.minecraft.world.level.block.Blocks` names because of an import clash with `TFCTags.Blocks`.",
-            "reason": "The code style asks for small, direct and readable code. The synthetic control flow and redundant casts hide what each assertion checks and do not match the project's formatting.",
-            "fix": "Rewrite the class in the project style: 4-space Allman formatting and no redundant casts. Replace the labelled blocks with direct `instanceof` pattern checks inside `helper.assertTrue`. Import `TFCTags` and refer to `TFCTags.Blocks.CAN_BE_SNOW_PILED` so that `net.minecraft.world.level.block.Blocks` can be imported normally.",
+            "target": "src/main/java/net/claustra01/tfie/gametest/nonmetal/NonMetalRecipeGameTests.java:144-162",
+            "acId": "AC-F018-002",
+            "problem": "coke_oven_batch_and_capacity never runs a Coke Oven and never reaches CokeOvenLogicMixin. The capacity cases are worked out with local arithmetic (`Math.min(16, Math.min(16, Math.min(remaining, 8000 / 500)))`, `Math.min(16, 499 / 500) == 0`) and a vanilla `ItemStack.isSameItemSameComponents` call. These assertions pass with or without the mixin. Nothing covers the in-progress insertion/extraction case or overflow at completion either.",
+            "reason": "The AC requires watching how many items a real oven processes when the output holds 0/1/60/64 Coke, when it holds a different item or different components, and when the Creosote tank has under 500 mB left. As written, the test only restates the formula, so the mixin goes unchecked. It is also unverified that redirecting the first `ItemStack.getCount()` call in `tickServer` (ordinal 0) changes the output-capacity term rather than some other count.",
+            "fix": "Build a formed IE Coke Oven in the GameTest, or create `CokeOvenLogic.State` and tick it through the multiblock context. Prefill the output slot and the Creosote tank for each case: Coke 0/1/60/64, named Coke, Charcoal, and a tank with less than 500 mB free. Insert 16 Bituminous Coal, tick it, then assert the input consumed, the Coke added and the Creosote added. For example, 60 Coke must take 4 inputs, and the 64-Coke, different-item, different-component and low-fluid cases must not start. Also move or extract output while a batch is running and assert nothing is lost or overfilled. If the ordinal-0 redirect does not hit the capacity term, retarget the mixin to the exact capacity expression.",
             "id": "CR-001",
             "status": "resolved",
             "history": [
               {
                 "status": "open",
                 "by": "codex",
-                "note": "fixed: Rewrote HempGameTests in 4-space Allman style, removed synthetic control flow and redundant casts, and used TFCTags.Blocks alongside the normal vanilla Blocks import.",
-                "at": "2026-11-25T06:16:30.909Z"
+                "note": "fixed: The GameTest now ticks a real CokeOvenLogic.State through its multiblock context and verifies empty/1/60/64 Coke, incompatible items/components, low fluid capacity, and output insertion or extraction during processing.",
+                "at": "2026-11-25T07:33:33.386Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "HempGameTests is now 4-space Allman with no synthetic labels or redundant casts. It imports TFCTags and the vanilla Blocks normally.",
-                "at": "2026-11-25T06:16:44.047Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The diff only changes tests/e2e/hemp-rendering.mjs, so HempGameTests is unchanged since the last review, when it was resolved.",
-                "at": "2026-11-25T06:25:29.991Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The diff only touches tests/e2e/hemp-rendering.mjs. HempGameTests is unchanged since it was last resolved.",
-                "at": "2026-11-25T06:50:01.719Z"
+                "note": "The GameTest now builds a real CokeOvenLogic.State and ticks it through a test multiblock context. It covers Coke 0/1/60/64, a renamed Coke, Charcoal, low fluid, and insertion or extraction mid-process. I haven't run it.",
+                "at": "2026-11-25T07:34:08.217Z"
               }
             ]
           },
           {
-            "target": "src/main/java/net/claustra01/tfie/gametest/hemp/HempGameTests.java:90-91",
-            "acId": null,
-            "problem": "The constants `TEMPLATE` and `GROWTH_STEP` are never used. Every `@GameTest` repeats the template literal, and `growOnce` hard-codes `24000L`.",
-            "reason": "The code style asks to remove code the current behavior does not use.",
-            "fix": "Delete both constants, or use them: `template = TEMPLATE` in the annotations and `GROWTH_STEP` in `growOnce`.",
+            "target": "src/main/java/net/claustra01/tfie/gametest/nonmetal/NonMetalRecipeGameTests.java:144-155",
+            "acId": "AC-F018-001",
+            "problem": "The AC-F018-001 part only reads recipe fields (input count 16, output 1, creosote 500, time 6000). No oven is loaded with 1, 16 or 17 coal and run to completion.",
+            "reason": "The AC's expected result is about what the machine does: 16 inputs give 16 Coke and 8,000 mB, 17 inputs leave 1, and a single input still takes 6,000 ticks. The recipe JSON says 'input count 16 → 1 Coke', and only the oven logic turns that into per-input output. Reading the recipe fields cannot show that.",
+            "fix": "Using the same real-oven setup as the AC-F018-002 test, insert 1, 16 and 17 Bituminous Coal or Lignite with ample output space. Run one process and assert the Coke, Creosote and leftover input (0/16/1 Coke, 500/8000/8000 mB, 1 left with 17), and that the process length is 6000 ticks.",
             "id": "CR-002",
             "status": "resolved",
             "history": [
               {
                 "status": "open",
                 "by": "codex",
-                "note": "fixed: All GameTest annotations now use TEMPLATE and growOnce uses GROWTH_STEP.",
-                "at": "2026-11-25T06:16:30.909Z"
+                "note": "fixed: The real Coke Oven test processes 1, 16, and 17 Bituminous Coal batches, asserting the 6,000-tick duration, Coke and Creosote outputs, and remaining input.",
+                "at": "2026-11-25T07:33:33.386Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "TEMPLATE is used in every @GameTest annotation, and growOnce uses GROWTH_STEP.",
-                "at": "2026-11-25T06:16:44.047Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The diff does not touch HempGameTests, so the earlier fix still applies.",
-                "at": "2026-11-25T06:25:29.991Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The diff does not touch HempGameTests, so the earlier fix still applies.",
-                "at": "2026-11-25T06:50:01.719Z"
+                "note": "The real-oven test runs 1, 16 and 17 Bituminous Coal. It asserts the 6000-tick duration, the Coke and Creosote amounts, and the leftover input.",
+                "at": "2026-11-25T07:34:08.217Z"
               }
             ]
           },
           {
-            "target": "src/main/java/net/claustra01/tfie/gametest/hemp/HempGameTests.java:530-560 (hemp_persistence_and_top_proxy)",
-            "acId": "AC-F014-005",
-            "problem": "The test only checks fertilizing from the top half. The AC's Action also requires reading farmland information from the top half and checking that it reflects the bottom half's farmland, and no test does that.",
-            "reason": "Each GameTest has to perform the Action and assert the Expected Result of its criterion. 'Information retrieval from the top half acts on the bottom farmland' is part of AC-F014-005 and is currently unverified.",
-            "fix": "Add a check that queries the farmland info from the top position through TFC's mechanism (for example the hoe overlay `addHoeOverlayInfo`, or `CropHelpers`/`IFarmland` lookup from the top state). Assert that it reports the nutrients and hydration of the farmland under the bottom half.",
+            "target": "src/main/java/net/claustra01/tfie/gametest/nonmetal/NonMetalRecipeGameTests.java:97-103",
+            "acId": "AC-F017-002",
+            "problem": "The grain test checks only the six TFC grains and the unthreshed crops. An item-list ingredient of exactly those six would pass, so the test does not show that items added to `#c:foods/grain` by another data pack are accepted.",
+            "reason": "The AC says the recipe must not be fixed to the six TFC items and must accept extra items added to the tag.",
+            "fix": "Assert that the `tfie:fermenter/grains` ingredient is the `#c:foods/grain` tag ingredient. Alternatively, test an item that belongs to the loaded tag but is not one of the six TFC grains, e.g. a test-only tag entry in the GameTest data, so the tag-based condition is actually exercised.",
             "id": "CR-003",
             "status": "resolved",
             "history": [
               {
                 "status": "open",
                 "by": "codex",
-                "note": "fixed: The persistence/proxy test now obtains hoe-overlay farmland information through both crop halves and asserts that the top reports the same hydration and nutrients as the bottom.",
-                "at": "2026-11-25T06:16:30.909Z"
+                "note": "fixed: The grain test independently asserts that the serialized ingredient is #c:foods/grain, in addition to checking grains and rejecting unthreshed crops.",
+                "at": "2026-11-25T07:33:33.386Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "The persistence test calls addHoeOverlayInfo on both the bottom and top positions. It asserts the top output equals the bottom output, and that the output has at least 5 entries. I did not run the test or check that addHoeOverlayInfo proxies to the bottom farmland.",
-                "at": "2026-11-25T06:16:44.047Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The diff does not touch the persistence/proxy test, so the earlier fix still applies.",
-                "at": "2026-11-25T06:25:29.991Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The diff does not touch the persistence/proxy test, so the earlier fix still applies.",
-                "at": "2026-11-25T06:50:01.719Z"
+                "note": "The test now asserts the serialized grain ingredient is the c:foods/grain tag, and the generated JSON uses that tag. I did not check that `serialize()` returns that shape at runtime.",
+                "at": "2026-11-25T07:34:08.217Z"
               }
             ]
           },
           {
-            "target": "src/main/java/net/claustra01/tfie/util/IECrop.java:13 / src/main/java/net/claustra01/tfie/common/blocks/HempCropBlock.java:14-21",
-            "acId": null,
-            "problem": "`IECrop.MAX_AGE` has a single use, in `HempCropBlock.getAgeProperty`. The same value is also passed as the literal `4` to the `DoubleCropBlock` constructor. The override looks the property up through `TFCBlockStateProperties.getAgeProperty(IECrop.MAX_AGE)`.",
-            "reason": "The code style says to inline values until a second use appears. The constant duplicates the literal and adds an indirection.",
-            "fix": "Remove `MAX_AGE` from `IECrop` and return `TFCBlockStateProperties.AGE_4` directly from `getAgeProperty()`.",
+            "target": "src/main/java/net/claustra01/tfie/gametest/nonmetal/NonMetalRecipeGameTests.java:345-357",
+            "acId": "AC-F018-006",
+            "problem": "assertMixer checks only how many item inputs there are, never which items. Herbicide (Sulfur plus one of native_copper/malachite/tetrahedrite powder), Limewater (Flux or Lime), Salt Water (Salt), and the FirmaLife Olive Paste/Blubber/Wood Ash inputs would all pass with the wrong item. The Copper Dust substitution the AC forbids would also pass.",
+            "reason": "The milestone requires GameTests against independent expectation tables. AC-F018-006 and AC-F018-007 define the exact item inputs, and AC-F018-006 says the copper source must not be replaced by 100 mB Copper Dust.",
+            "fix": "Pass the expected item(s) for each Mixer recipe into assertMixer and assert that each `itemInputs` entry accepts them (each of the three copper powders and Sulfur for Herbicide, Flux and Lime for Limewater, Salt, Olive Paste, Blubber, Wood Ash). Also assert that `tfcm:metal/dust/copper` does not match the Herbicide copper input.",
             "id": "CR-004",
             "status": "resolved",
             "history": [
               {
                 "status": "open",
                 "by": "codex",
-                "note": "fixed: Removed IECrop.MAX_AGE and made HempCropBlock return TFCBlockStateProperties.AGE_4 directly.",
-                "at": "2026-11-25T06:16:30.909Z"
+                "note": "fixed: Mixer tests now validate every specified solid input and alternative, including all copper powders, Sulfur, Flux/Lime, Salt, FirmaLife inputs, and rejection of Copper Dust.",
+                "at": "2026-11-25T07:33:33.386Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "IECrop.MAX_AGE is removed and has no remaining references. HempCropBlock returns TFCBlockStateProperties.AGE_4 directly.",
-                "at": "2026-11-25T06:16:44.047Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The diff does not touch IECrop or HempCropBlock, so the earlier fix still applies.",
-                "at": "2026-11-25T06:25:29.991Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The diff does not touch IECrop or HempCropBlock, so the earlier fix still applies.",
-                "at": "2026-11-25T06:50:01.719Z"
+                "note": "assertMixer now takes the expected items for each input and tests every alternative. This covers all three copper powders, Sulfur, Flux/Lime, Salt and the FirmaLife inputs. A separate check rejects Copper Dust for Herbicide. The new NonMetalItemTags provider puts tfc:powder/sulfur in c:dusts/sulfur.",
+                "at": "2026-11-25T07:34:08.217Z"
               }
             ]
           },
           {
-            "target": "src/data/java/net/claustra01/tfie/data/providers/HempLootTables.java:84-92",
-            "acId": "AC-F014-003",
-            "problem": "Every pool gets the same explicit name `loot_pool`, so `crop/hemp` and `wild_crop/hemp` each contain two pools with the same name (see the generated `loot_table/blocks/crop/hemp.json`).",
-            "reason": "NeoForge identifies pools by name (`LootTable.getPool` / `removePool` in `LootTableLoadEvent`), so duplicate names within one table make pool lookups ambiguous for other mods and data packs. The explicit name is also unnecessary, because NeoForge gives unnamed pools unique default names.",
-            "fix": "Remove `.name(\"loot_pool\")` from the `pool` helper and regenerate the loot tables with runData.",
+            "target": "src/main/java/net/claustra01/tfie/gametest/nonmetal/NonMetalRecipeGameTests.java:230-243",
+            "acId": "AC-F018-005",
+            "problem": "The chisel assertions call `slab.matches(state, slab.getMode())`, which passes whatever the mode is, and never check the placed result block state. A recipe with the wrong mode, or one that places the wrong block, passes.",
+            "reason": "The AC fixes Slab mode to place one slab plus one extra item, and Stair mode to place one stair only. Mode and placed block are part of each of the 8 rows.",
+            "fix": "Assert that `slab.getMode()` is `ChiselMode.SLAB` and `stair.getMode()` is `ChiselMode.STAIR`. Also assert that the recipe's block-state result is `immersiveengineering:slab_<material>` / `immersiveengineering:stairs_<material>`.",
             "id": "CR-005",
             "status": "resolved",
             "history": [
               {
                 "status": "open",
                 "by": "codex",
-                "note": "fixed: Removed the explicit loot_pool name and regenerated all hemp loot tables with unique default pool names.",
-                "at": "2026-11-25T06:16:30.909Z"
+                "note": "fixed: Chisel tests now assert exact SLAB/STAIR modes and the corresponding placed result blocks, as well as additional item output.",
+                "at": "2026-11-25T07:33:33.386Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "The .name(\"loot_pool\") call is removed. The generated hemp loot tables no longer contain any pool name entries.",
-                "at": "2026-11-25T06:16:44.047Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The diff does not touch HempLootTables or the generated loot tables, so the earlier fix still applies.",
-                "at": "2026-11-25T06:25:29.991Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The diff does not touch HempLootTables or the generated loot tables, so the earlier fix still applies.",
-                "at": "2026-11-25T06:50:01.719Z"
+                "note": "The chisel assertions now require ChiselMode.SLAB and ChiselMode.STAIR. They also check the placed result item (slab_ or stairs_ per material) and the extra output.",
+                "at": "2026-11-25T07:34:08.217Z"
               }
             ]
           },
           {
-            "target": "src/data/java/net/claustra01/tfie/data/providers/HempWorldgenProvider.java:1-151",
-            "acId": "AC-F014-004",
-            "problem": "The configured features, placed features and the `#tfc:feature/crops` tag are built as hand-assembled Gson objects in a custom `DataProvider`. Nothing passes through the vanilla codecs, which is why the `would_survive` predicate type is written without a namespace.",
-            "reason": "The code style says to use vanilla and NeoForge mechanisms before custom code. NeoForge's `DatapackBuiltinEntriesProvider` (with a `RegistrySetBuilder` for `CONFIGURED_FEATURE`/`PLACED_FEATURE`) and a `TagsProvider<PlacedFeature>` produce these files from typed objects and validate them through the registry codecs.",
-            "fix": "Replace `HempWorldgenProvider` with a `DatapackBuiltinEntriesProvider`. It should register `tfie:plant/wild_crop/hemp` (TFC tall_wild_crop with `BlockConfig` of the wild block) and `tfie:plant/wild_crop/hemp_patch` (`RandomPatchConfiguration(6, 5, 1, ...)`), plus the placed features with `HeightmapPlacement`/`BlockPredicateFilter` (TFC replaceable, `BlockPredicate.wouldSurvive`), `RarityFilter.onAverageOnceEvery(90)`, `InSquarePlacement` and TFC's climate placement. Add the patch to `tfc:feature/crops` with a `TagsProvider` for `Registries.PLACED_FEATURE`, then regenerate.",
+            "target": "tests/acceptance.json:55-56",
+            "acId": "AC-F018-008",
+            "problem": "AC-F018-008 is mapped only to the FirmaLife report (TEST-tfie-firmalife.xml). The base-configuration run, which checks that the FirmaLife Squeezer/Refinery recipes and the base Milk Vinegar do not load together and follow the load condition, is not registered for this criterion.",
+            "reason": "The AC's preconditions include a configuration without FirmaLife, and the conditional-loading check covers both configurations.",
+            "fix": "Add AC-F018-008 entries for `firmalife_fermentation_chain` and `firmalife_chemical_table` in build/test-results/gametest/TEST-tfie.xml.",
             "id": "CR-006",
             "status": "resolved",
             "history": [
               {
                 "status": "open",
                 "by": "codex",
-                "note": "fixed: Replaced hand-built Gson worldgen with DatapackBuiltinEntriesProvider, typed configured/placed features, codec-backed predicates and climate placement, plus a TagsProvider for #tfc:feature/crops.",
-                "at": "2026-11-25T06:16:30.909Z"
+                "note": "fixed: AC-F018-008 now includes both base-report conditional-loading tests and the FirmaLife-report tests.",
+                "at": "2026-11-25T07:33:33.386Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "HempWorldgenProvider now extends DatapackBuiltinEntriesProvider with a RegistrySetBuilder and typed features. HempPlacedFeatureTags is a TagsProvider that writes the tfc feature/crops tag. The generated placed feature uses the namespaced minecraft:would_survive type.",
-                "at": "2026-11-25T06:16:44.047Z"
+                "note": "tests/acceptance.json now registers AC-F018-008 for firmalife_fermentation_chain and firmalife_chemical_table in the base TEST-tfie.xml. Both tests check the load condition in each configuration.",
+                "at": "2026-11-25T07:34:08.217Z"
+              }
+            ]
+          },
+          {
+            "target": "tests/e2e/non-metal-recipes.mjs:4-57",
+            "acId": "AC-F017-005",
+            "problem": "The scenario runs once, in a single configuration that includes FirmaLife (it puts FirmaLife items in the chest). Nothing captures the Fermenter category without FirmaLife, so 'Raw Honey only when FirmaLife is installed' is not shown. There is also no dedicated grain-tag screenshot or seed-usage screen showing that no Plant Oil Fermenter recipe exists.",
+            "reason": "AC-F017-005 requires opening the Fermenter category in both the FirmaLife and non-FirmaLife configurations and capturing the normal food, grain tag and Raw Honey views. AC-F016-004 requires the target seed's usage screen with both the Squeezer and Fermenter categories.",
+            "fix": "Run the scenario, or a second one, in the base configuration without FirmaLife and capture the Ethanol recipe view with no Raw Honey entry. Add a seed usage ('u') screenshot showing only the Squeezer category, plus a grain ('u' on a TFC grain) Fermenter screenshot. Register both configurations in tests/acceptance.json.",
+            "id": "CR-007",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Base and FirmaLife E2E scenarios are registered separately and include seed usage, grain-tag Fermenter, base Ethanol, and Raw Honey Fermenter captures.",
+                "at": "2026-11-25T07:33:33.386Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "The diff does not touch the worldgen provider, so the earlier fix still applies.",
-                "at": "2026-11-25T06:25:29.991Z"
+                "note": "There are now two E2E scenarios, base and FirmaLife, both registered. The base one captures seed usage, grain-tag Fermenter usage and Ethanol without Raw Honey. The FirmaLife one captures Raw Honey. I did not confirm how the harness runs each scenario in its own configuration.",
+                "at": "2026-11-25T07:34:08.217Z"
+              }
+            ]
+          },
+          {
+            "target": "tests/e2e/non-metal-recipes.mjs:47-56",
+            "acId": "AC-F018-010",
+            "problem": "There is no base-configuration capture, so 'the 6 FirmaLife recipes are displayed only in the FirmaLife configuration' is never shown. The view showing that the wool Crusher recipe is absent is missing, and so are Mixer captures of the base recipes (Herbicide/Limewater/Salt Water), the Refinery Brine, and the Slag Glass heating temperature.",
+            "reason": "AC-F018-010 requires both the base and FirmaLife configurations, the adopted recipes of every listed machine with their quantities/fluids/temperatures, and that the wool Crusher, duplicate Milk Vinegar and AFC IE substitute routes are absent.",
+            "fix": "Capture the base configuration as well, including Milk Vinegar showing the single base Refinery recipe. Add a wool usage ('u') view showing no Crusher category, and capture the base Mixer, Brine Refinery and Slag Glass Heating screens.",
+            "id": "CR-008",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The E2E coverage now includes base and FirmaLife recipe sets, wool usage without Crusher, base Mixers, Brine, both conditional Milk Vinegar paths, and Slag Glass heating.",
+                "at": "2026-11-25T07:33:33.386Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "The diff does not touch the worldgen provider, so the earlier fix still applies.",
-                "at": "2026-11-25T06:50:01.719Z"
+                "note": "The base scenario captures Mixer (Herbicide, Limewater, Salt Water), Brine, Slag Glass heating, Milk Vinegar and wool usage. The FirmaLife scenario captures the FirmaLife recipes and the single FirmaLife Milk Vinegar.",
+                "at": "2026-11-25T07:34:08.217Z"
+              }
+            ]
+          },
+          {
+            "target": "src/data/java/net/claustra01/tfie/data/recipes/MixerRecipes.java:62-91",
+            "acId": null,
+            "problem": "The `firmalife(...)` helper takes `amount` and `energy` parameters, but all three call sites pass 200 and 800. The helper also hardcodes the 200 mB water input, so `amount` is only half-parameterised.",
+            "reason": "Code style: no parameters or abstraction beyond the current call sites; keep values inline until they vary.",
+            "fix": "Drop the `amount` and `energy` parameters and use 200 mB output and 800 FE directly inside the helper, next to the 200 mB water input.",
+            "id": "CR-009",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Removed invariant amount and energy parameters from the FirmaLife Mixer helper and kept 200 mB and 800 FE directly in the implementation.",
+                "at": "2026-11-25T07:33:33.386Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The firmalife() helper in MixerRecipes no longer takes amount or energy. It uses 200 mB and 800 FE inline.",
+                "at": "2026-11-25T07:34:08.217Z"
               }
             ]
           },
           {
             "target": ".codex/rules/harness-gradle.rules:1",
             "acId": null,
-            "problem": "The commit adds a personal Codex agent permission rule file (`prefix_rule(pattern = [\"./gradlew\"], decision = \"allow\")`). It is not part of the mod sources, and no Acceptance Criterion or GameTest/E2E setup needs it.",
-            "reason": "Files outside the mod sources may change only where a target AC or the test setup requires it. Local agent permission settings are environment-specific configuration.",
-            "fix": "Remove `.codex/rules/harness-gradle.rules` from the change.",
-            "id": "CR-007",
+            "problem": "A personal agent-tool permission file (`.codex/rules`) is added to the repository. It is not part of the mod sources and no Acceptance Criterion or the GameTest/E2E setup needs it.",
+            "reason": "The review rules exclude environment-specific files and changes outside the mod sources that no criterion needs.",
+            "fix": "Remove `.codex/rules/harness-gradle.rules` from the change, and ignore it locally if it is needed.",
+            "id": "CR-010",
             "status": "accepted",
             "history": [
               {
                 "status": "accepted",
                 "by": "codex",
-                "note": "accepted: The governing task instructions explicitly say .codex/rules/harness-gradle.rules must not be edited. The harness also exposes .codex and the Git index as read-only, so removal is outside the permitted change set.",
-                "at": "2026-11-25T06:16:30.909Z"
+                "note": "accepted: The governing workspace instruction explicitly forbids editing .codex/rules/harness-gradle.rules. It is harness-managed, was left untouched, and is not referenced by product or test code.",
+                "at": "2026-11-25T07:33:33.386Z"
               }
             ]
           }
         ]
       },
-      "codeReviewTree": "39c2d2a8589fb6554c8c1318424fdf4980e57642",
-      "e2eReview": {
-        "kind": "e2e",
-        "issues": [
-          {
-            "target": ".harness-state/runs/2026-11-25T06-43-14-663Z-008-M03-e2e/scenarios/tests-e2e-hemp-rendering.mjs/screenshots/AC-F014-006-all-cultivated-dead-and-wild-stages.png",
-            "acId": "AC-F014-006",
-            "problem": "The screenshot shows none of the cultivated Hemp stages (age 0–4) or the dead and wild plants sitting on soil. Every soil spot is an empty one-block hole in the quartz platform. Dropped seed items float next to most holes, so the planted bottoms broke. The only plants visible are a few separate green and yellow tops floating above the back row with no lower half under them. You can't check the per-age models, the missing top at age 0–3, or how the mature top and bottom line up.",
-            "reason": "tests/e2e/hemp-rendering.mjs:17 and :30 use `tfc:farmland/entisol` and `tfc:dirt/entisol`. TFC 4.2.16 has no `entisol` soil type (its soils are loam, silt, sandy_loam and silty_loam). Both setblock commands fail and leave air under the crops, and the crop bottoms drop as items when their neighbours update. The setup never builds the scene the Expected Result needs. The floating tops without bottoms are also a side effect of this broken setup, not a valid mature two-block plant.",
-            "fix": "Use real TFC soil blocks, for example `tfc:farmland/loam` for the cultivated row and `tfc:dirt/loam` (or `tfc:grass/loam`) for the dead and wild row. Place the soil before each bottom and its top, and check that every setblock succeeds (for example with `execute if block`) before taking the screenshot. Then the screenshot can show age 0–4, immature and mature dead plants, and immature and mature wild plants on their soil.",
-            "id": "ER-001",
-            "status": "open",
-            "history": [
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: Replaced nonexistent entisol blocks with tfc:farmland/loam and tfc:dirt/loam, placed support before every crop half, removed stale dropped items, and added MC Pilot read-back checks for every fixture block before screenshots.",
-                "at": "2026-11-25T06:49:52.952Z"
-              }
-            ]
-          },
-          {
-            "target": ".harness-state/runs/2026-11-25T06-43-14-663Z-008-M03-e2e/scenarios/tests-e2e-hemp-rendering.mjs/screenshots/AC-F014-006-mature-halves-and-cutout-leaves.png",
-            "acId": "AC-F014-006",
-            "problem": "This close-up angle should show the mature top and bottom halves and the cutout leaves. It shows the same broken scene: empty holes where the soil should be, seed items floating next to them, and four Hemp tops standing alone at the far edge with no bottoms. No mature plant is complete, so you can't judge whether the halves line up, whether faces overlap, or whether the transparent parts of the leaves render correctly.",
-            "reason": "This screenshot comes from the same setup, which uses soil IDs that don't exist (`tfc:farmland/entisol` and `tfc:dirt/entisol`), so every bottom half lost its support and dropped. Also, the camera at (-12, 103.5, -6) looking at yaw -42 points past the plants. Even with valid soil, the mature plants at x=8 (cultivated age 4 and the mature wild plant) and x=-2 (mature dead plant) would sit far away at the platform's back edge, not close up.",
-            "fix": "After fixing the soil IDs, move the camera close to the mature plants, for example about 3 blocks in front of x=8 at roughly y=102 and pitched slightly down. Frame the cultivated age-4 plant (z=1) and the mature wild and dead plants (z=5) so both halves and the leaf cutouts fill a large part of the frame.",
-            "id": "ER-002",
-            "status": "open",
-            "history": [
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: Moved mature cultivated, dead, and wild plants into the same close-up area and repositioned the existing camera to x=6, y=102.8, z=-2 so complete upper and lower halves and cutout leaves are framed together.",
-                "at": "2026-11-25T06:49:52.952Z"
-              }
-            ]
-          }
-        ]
-      },
-      "failure": {
-        "phase": "e2e",
-        "summary": "1 E2E scenario(s) failed",
-        "details": "tests/e2e/hemp-rendering.mjs: Error: spawnSync .harness-state/runtime/pilot/node_modules/.bin/mct ENOENT\n    at Object.spawnSync (node:internal/child_process:1175:20)\n    at spawnSync (node:child_process:929:24)\n    at execFileSync (node:child_process:972:15)\n    at mct (file://.harness/e2e/lib.mjs:14:18)\n    at command (file://.harness/e2e/lib.mjs:27:10)\n    at file://.harness-state/runtime/worktrees/M03/tests/e2e/hemp-rendering.mjs:5:3\n    at scenario (file://.harness/e2e/lib.mjs:59:11)\n    at file://.harness-state/runtime/worktrees/M03/tests/e2e/hemp-rendering.mjs:3:7\nAC-F014-006 Expected Result: 3種をcutoutで表示し、段階に対応するモデル・テクスチャが欠落しない。age 0〜3に不要な上段を表示せず、成熟時の上下段に位置ずれ、重複面、透過不良を生じない。詳細仕様第18章の表示条件も合否対象とする。検証方式はE2Eとする。",
-        "logs": [
-          ".harness-state/runs/2026-11-25T06-21-09-865Z-058-M03-e2e/runtime/server.log",
-          ".harness-state/runs/2026-11-25T06-21-09-865Z-058-M03-e2e/runtime/client-tfie-a.log",
-          ".harness-state/runs/2026-11-25T06-21-09-865Z-058-M03-e2e/scenarios/tests-e2e-hemp-rendering.mjs/stdout.log",
-          ".harness-state/runs/2026-11-25T06-21-09-865Z-058-M03-e2e/scenarios/tests-e2e-hemp-rendering.mjs/stderr.log"
-        ],
-        "screenshots": []
-      },
+      "codeReviewTree": "3fb2a7113010d6ced31f45f386433fa8664ef7ae",
+      "e2eReview": null,
+      "failure": null,
       "conflicts": [],
       "reviewConflicts": [],
-      "session": "01a21130-a91c-7002-93ac-ef40f8fa8f5e"
+      "session": "01a21169-f791-79f1-872c-149ecdb72bda"
     },
     {
-      "id": "M04",
+      "id": "M06",
       "phase": "implementation",
-      "baseCommit": "6eaf92d3cf78f6263c82c6d1efb5063a6c67713a",
+      "baseCommit": "11d39fdc9b7fa46c00529a0bf24d09e81c0a9782",
       "failures": {
         "build": 0,
         "gametest": 0,
         "e2e": 0
       },
-      "recoveries": 1,
-      "codeReview": null,
-      "codeReviewTree": null,
+      "recoveries": 0,
+      "codeReview": {
+        "kind": "code",
+        "issues": [
+          {
+            "target": "src/main/java/net/claustra01/tfie/mixin/IngredientFluidStackMixin.java:41-55",
+            "acId": "AC-F022-002",
+            "problem": "The `test` injection adds a new matching rule. It empties a copy of the stack and returns false unless the empty container is in `#tfc:fluid_item_ingredient_empty_containers`. IE fluid recipes therefore stop accepting fluid containers like the IE Jerrycan, even when they hold the right fluid in the required amount.",
+            "reason": "Chapter 27 says the ingredient must be judged by fluid type and held amount, not by the container item, and that TFIE keeps IE's matching and drain rules while changing only the display candidates to TFC containers. The milestone approach also says IE's own logic stays unchanged. Checking tag membership of the emptied item is an item-identity check that IE does not have.",
+            "fix": "Remove the `tfie$requireTFCFluidContainer` injection and its now-unused imports, so IE's own `test` decides matches by fluid and amount. Keep only the `getItems` candidate injection. In `fluid_ingredient_returns_partial_container`, remove the assertion that a filled Jerrycan must not match.",
+            "id": "CR-001",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: IngredientFluidStack.testへの注入を削除しました。TFIEは表示候補だけをTFC空容器タグから生成し、照合はIE本来の流体種類・保持量判定を維持します。",
+                "at": "2026-11-25T07:28:17.159Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The `test` injection is gone. The mixin now only overrides `getItems`, so IE's own matching by fluid and amount applies. The imports left in the file are used or harmless.",
+                "at": "2026-11-25T07:28:38.891Z"
+              }
+            ]
+          },
+          {
+            "target": "src/main/java/net/claustra01/tfie/gametest/fluid/FluidGameTests.java:154-157",
+            "acId": "AC-F022-002",
+            "problem": "`fluid_ingredient_returns_partial_container` asserts that a filled `immersiveengineering:jerrycan` is rejected by the fluid ingredient. This locks in the extra item-based restriction.",
+            "reason": "AC-F022-002 and chapter 27 require matching by fluid type and amount using IE's rule. The test should not require rejecting a capable container that holds enough of the right fluid.",
+            "fix": "Delete the untagged-Jerrycan assertion. The test then covers the match, the partial drain and the returned container with 750 mB left.",
+            "id": "CR-002",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Jerrycan拒否の誤った検証を、十分なCreosoteを保持するJerrycanがIEの判定で成立する検証へ修正しました。",
+                "at": "2026-11-25T07:28:17.159Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The test no longer requires the Jerrycan to be rejected. It now asserts that a Jerrycan holding enough creosote is accepted, which matches IE's rule.",
+                "at": "2026-11-25T07:28:38.891Z"
+              }
+            ]
+          },
+          {
+            "target": "tests/e2e/fluid-containers.mjs:9-28",
+            "acId": "AC-F022-004",
+            "problem": "The scenario opens only one IE fluid-ingredient recipe (the drill lube upgrade) and screenshots its candidate cycling. AC-F022-004 requires recipes that need different fluid amounts, so the screenshots never show the candidate set changing with the required amount.",
+            "reason": "The criterion's precondition is \"必要流体量の異なるIE流体Ingredientレシピを開く\" (open IE fluid-ingredient recipes with different required amounts). The display must show only containers that meet the fluid and amount, and with a single recipe the amount filtering is never shown.",
+            "fix": "Add a second IE recipe whose fluid ingredient needs a different amount (e.g. a sub-1000 mB IngredientFluidStack recipe such as Treated Wood's creosote ingredient, if it is still shipped). Open it in JEI and capture its candidate cycling the same way, so the screenshots show the candidates for each required amount.",
+            "id": "CR-003",
+            "status": "open",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: E2Eへ実際に出荷するCreosote 50 mBのTreated Lumber樽レシピを追加し、1000 mBのDrill Lube候補切替と必要量差を撮影します。固定版IEのIngredientFluidStackレシピは全て1000 mBで、標準Treated WoodレシピもF-013により無効なため、架空の製品レシピは追加していません。",
+                "at": "2026-11-25T07:28:17.159Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The added scenario opens Treated Lumber's TFC barrel recipe, which uses a TFC fluid ingredient and not an IE IngredientFluidStack. It never goes through the mixin's candidate list, and it shows no container cycling. The E2E still captures candidate cycling for only one IE amount (the 1000 mB drill lube recipe). AC-F022-004 asks for IE fluid-ingredient recipes with different required amounts, so the screenshots do not show candidates changing with the required amount.",
+                "at": "2026-11-25T07:28:38.891Z"
+              }
+            ]
+          },
+          {
+            "target": "src/main/java/net/claustra01/tfie/gametest/fluid/FluidGameTests.java:181-183",
+            "acId": "AC-F022-003",
+            "problem": "The test asserts that the invented recipe IDs `tfie:crafting/chemthrower_tfc` and `tfie:crafting/jerrycan_tfc` do not exist. Nothing in the mod or spec defines these IDs, so the check cannot fail and proves nothing.",
+            "reason": "Negative checks belong only where truly needed. A TFC-bucket replacement path would show up as a recipe matching the grid with the bucket swapped, and the loop above already rejects that grid against the fixed recipes. The hard-coded absent IDs are dead test code.",
+            "fix": "Remove the loop over the absent `tfie:` recipe IDs. If a check for any added replacement path is wanted, assert that the RecipeManager finds no crafting recipe matching the grid with the TFC bucket swapped in (e.g. `getRecipeFor(RecipeType.CRAFTING, replacedInput, level).isEmpty()`).",
+            "id": "CR-004",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: 架空のtfieレシピID不在検査を削除しました。代わりにTFC Bucketへ置換した各入力についてRecipeManager全体で一致するクラフトレシピがないことを検証します。",
+                "at": "2026-11-25T07:28:17.159Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The loop over invented `tfie:` recipe IDs is removed. In its place, the test checks that `RecipeManager.getRecipeFor(RecipeType.CRAFTING, ...)` finds no recipe for the grid with the TFC bucket swapped in.",
+                "at": "2026-11-25T07:28:38.891Z"
+              }
+            ]
+          }
+        ]
+      },
+      "codeReviewTree": "fa8bd3a609a699f04daa8e482e8a11bef91dc65a",
       "e2eReview": null,
       "failure": null,
       "conflicts": [],
       "reviewConflicts": [],
-      "session": null
+      "session": "01a21178-5828-7051-90fd-c2679c0211db"
     }
   ],
   "completed": [
     "M01",
     "M02",
-    "M05"
+    "M05",
+    "M03"
   ],
-  "lastCheckpoint": "20edfe5bf55196f08935dfd414fa7f913fe318dd",
+  "lastCheckpoint": "11d39fdc9b7fa46c00529a0bf24d09e81c0a9782",
   "fatal": null
 }

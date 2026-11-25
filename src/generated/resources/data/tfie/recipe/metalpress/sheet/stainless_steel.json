@@ -1,0 +1,35 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "firmalife"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "firmalife:metal/ingot/stainless_steel"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "firmalife:metal/sheet/stainless_steel"
+        }
+      ],
+      "reason": "sheet shape for stainless_steel is unavailable",
+      "recipe": "tfie:metalpress/sheet/stainless_steel"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "basePredicate": {
+      "tag": "c:ingots/stainless_steel"
+    },
+    "count": 2
+  },
+  "mold": "tfie:mold_sheet",
+  "result": {
+    "id": "firmalife:metal/sheet/stainless_steel"
+  }
+}

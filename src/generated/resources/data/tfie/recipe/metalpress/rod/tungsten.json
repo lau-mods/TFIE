@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/tungsten"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/rod/tungsten"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "tungsten"
+        }
+      ],
+      "reason": "rod shape for tungsten is unavailable",
+      "recipe": "tfie:metalpress/rod/tungsten"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/tungsten"
+  },
+  "mold": "immersiveengineering:mold_rod",
+  "result": {
+    "count": 2,
+    "id": "tfcm:metal/rod/tungsten"
+  }
+}

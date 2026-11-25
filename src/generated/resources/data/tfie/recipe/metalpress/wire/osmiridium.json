@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/osmiridium"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/wire/osmiridium"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "osmiridium"
+        }
+      ],
+      "reason": "wire shape for osmiridium is unavailable",
+      "recipe": "tfie:metalpress/wire/osmiridium"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/osmiridium"
+  },
+  "mold": "immersiveengineering:mold_wire",
+  "result": {
+    "count": 4,
+    "id": "tfcm:metal/wire/osmiridium"
+  }
+}

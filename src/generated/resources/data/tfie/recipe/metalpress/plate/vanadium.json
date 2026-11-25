@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/vanadium"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/plate/vanadium"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "vanadium"
+        }
+      ],
+      "reason": "plate shape for vanadium is unavailable",
+      "recipe": "tfie:metalpress/plate/vanadium"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/vanadium"
+  },
+  "mold": "immersiveengineering:mold_plate",
+  "result": {
+    "id": "tfcm:metal/plate/vanadium"
+  }
+}

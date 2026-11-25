@@ -1,0 +1,31 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/wrought_iron"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/sheet/wrought_iron"
+        }
+      ],
+      "reason": "sheet shape for wrought_iron is unavailable",
+      "recipe": "tfie:metalpress/sheet/wrought_iron"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "basePredicate": {
+      "tag": "c:ingots/wrought_iron"
+    },
+    "count": 2
+  },
+  "mold": "tfie:mold_sheet",
+  "result": {
+    "id": "tfc:metal/sheet/wrought_iron"
+  }
+}

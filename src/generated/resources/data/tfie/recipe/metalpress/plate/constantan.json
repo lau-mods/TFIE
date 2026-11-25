@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/constantan"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/plate/constantan"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "constantan"
+        }
+      ],
+      "reason": "plate shape for constantan is unavailable",
+      "recipe": "tfie:metalpress/plate/constantan"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/constantan"
+  },
+  "mold": "immersiveengineering:mold_plate",
+  "result": {
+    "id": "tfcm:metal/plate/constantan"
+  }
+}

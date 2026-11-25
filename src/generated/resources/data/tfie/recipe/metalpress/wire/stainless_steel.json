@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "firmalife"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "firmalife:metal/ingot/stainless_steel"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/wire/stainless_steel"
+        }
+      ],
+      "reason": "wire shape for stainless_steel is unavailable",
+      "recipe": "tfie:metalpress/wire/stainless_steel"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/stainless_steel"
+  },
+  "mold": "immersiveengineering:mold_wire",
+  "result": {
+    "count": 4,
+    "id": "tfcm:metal/wire/stainless_steel"
+  }
+}

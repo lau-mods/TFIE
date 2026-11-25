@@ -1,0 +1,31 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/black_steel"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/sheet/black_steel"
+        }
+      ],
+      "reason": "sheet shape for black_steel is unavailable",
+      "recipe": "tfie:metalpress/sheet/black_steel"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "basePredicate": {
+      "tag": "c:ingots/black_steel"
+    },
+    "count": 2
+  },
+  "mold": "tfie:mold_sheet",
+  "result": {
+    "id": "tfc:metal/sheet/black_steel"
+  }
+}

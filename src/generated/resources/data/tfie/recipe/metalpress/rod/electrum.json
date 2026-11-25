@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/electrum"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/rod/electrum"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "electrum"
+        }
+      ],
+      "reason": "rod shape for electrum is unavailable",
+      "recipe": "tfie:metalpress/rod/electrum"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/electrum"
+  },
+  "mold": "immersiveengineering:mold_rod",
+  "result": {
+    "count": 2,
+    "id": "tfcm:metal/rod/electrum"
+  }
+}

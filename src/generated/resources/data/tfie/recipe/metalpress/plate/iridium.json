@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/iridium"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/plate/iridium"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "iridium"
+        }
+      ],
+      "reason": "plate shape for iridium is unavailable",
+      "recipe": "tfie:metalpress/plate/iridium"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/iridium"
+  },
+  "mold": "immersiveengineering:mold_plate",
+  "result": {
+    "id": "tfcm:metal/plate/iridium"
+  }
+}

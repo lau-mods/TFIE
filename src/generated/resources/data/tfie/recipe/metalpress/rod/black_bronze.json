@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/black_bronze"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/rod/black_bronze"
+        }
+      ],
+      "reason": "rod shape for black_bronze is unavailable",
+      "recipe": "tfie:metalpress/rod/black_bronze"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/black_bronze"
+  },
+  "mold": "immersiveengineering:mold_rod",
+  "result": {
+    "count": 2,
+    "id": "tfc:metal/rod/black_bronze"
+  }
+}

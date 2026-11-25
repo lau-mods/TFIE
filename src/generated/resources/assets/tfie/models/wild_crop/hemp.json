@@ -1,7 +1,3 @@
 {
-  "parent": "minecraft:block/cross",
-  "render_type": "minecraft:cutout",
-  "textures": {
-    "cross": "tfie:block/crop/hemp_dead_top"
-  }
+  "parent": "tfie:wild_crop/hemp"
 }

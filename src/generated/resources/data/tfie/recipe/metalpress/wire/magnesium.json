@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/magnesium"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/wire/magnesium"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "magnesium"
+        }
+      ],
+      "reason": "wire shape for magnesium is unavailable",
+      "recipe": "tfie:metalpress/wire/magnesium"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/magnesium"
+  },
+  "mold": "immersiveengineering:mold_wire",
+  "result": {
+    "count": 4,
+    "id": "tfcm:metal/wire/magnesium"
+  }
+}

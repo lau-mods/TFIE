@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/beryllium"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/plate/beryllium"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "beryllium"
+        }
+      ],
+      "reason": "plate shape for beryllium is unavailable",
+      "recipe": "tfie:metalpress/plate/beryllium"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/beryllium"
+  },
+  "mold": "immersiveengineering:mold_plate",
+  "result": {
+    "id": "tfcm:metal/plate/beryllium"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/awakened_draconium"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/rod/awakened_draconium"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "awakened_draconium"
+        }
+      ],
+      "reason": "rod shape for awakened_draconium is unavailable",
+      "recipe": "tfie:metalpress/rod/awakened_draconium"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/awakened_draconium"
+  },
+  "mold": "immersiveengineering:mold_rod",
+  "result": {
+    "count": 2,
+    "id": "tfcm:metal/rod/awakened_draconium"
+  }
+}

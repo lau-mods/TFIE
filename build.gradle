@@ -287,11 +287,11 @@ tasks.named('runGameTestServer') {
             'runGameTestServerDisabledMaterials'
 }
 
-def copyDataWoodMods = tasks.register('copyDataWoodMods', Copy) {
-    from(afcRuntimeConfiguration, overdimsRuntimeConfiguration)
+def copyDataCompatMods = tasks.register('copyDataCompatMods', Copy) {
+    from(afcRuntimeConfiguration, overdimsRuntimeConfiguration, firmalifeRuntimeConfiguration)
     into('run/data/mods')
 }
-tasks.named('runData') { dependsOn(copyDataWoodMods) }
+tasks.named('runData') { dependsOn(copyDataCompatMods) }
 
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
 idea {

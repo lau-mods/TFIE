@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/osmium"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/plate/osmium"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "osmium"
+        }
+      ],
+      "reason": "plate shape for osmium is unavailable",
+      "recipe": "tfie:metalpress/plate/osmium"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/osmium"
+  },
+  "mold": "immersiveengineering:mold_plate",
+  "result": {
+    "id": "tfcm:metal/plate/osmium"
+  }
+}

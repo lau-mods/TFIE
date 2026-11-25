@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/steel"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/rod/steel"
+        }
+      ],
+      "reason": "rod shape for steel is unavailable",
+      "recipe": "tfie:metalpress/rod/steel"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/steel"
+  },
+  "mold": "immersiveengineering:mold_rod",
+  "result": {
+    "count": 2,
+    "id": "tfc:metal/rod/steel"
+  }
+}

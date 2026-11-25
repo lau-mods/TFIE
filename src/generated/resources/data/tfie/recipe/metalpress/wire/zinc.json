@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/zinc"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/wire/zinc"
+        }
+      ],
+      "reason": "wire shape for zinc is unavailable",
+      "recipe": "tfie:metalpress/wire/zinc"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/zinc"
+  },
+  "mold": "immersiveengineering:mold_wire",
+  "result": {
+    "count": 4,
+    "id": "tfcm:metal/wire/zinc"
+  }
+}

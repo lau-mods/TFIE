@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/thorium"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/wire/thorium"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "thorium"
+        }
+      ],
+      "reason": "wire shape for thorium is unavailable",
+      "recipe": "tfie:metalpress/wire/thorium"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/thorium"
+  },
+  "mold": "immersiveengineering:mold_wire",
+  "result": {
+    "count": 4,
+    "id": "tfcm:metal/wire/thorium"
+  }
+}

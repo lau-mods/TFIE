@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/lead"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/plate/lead"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "lead"
+        }
+      ],
+      "reason": "plate shape for lead is unavailable",
+      "recipe": "tfie:metalpress/plate/lead"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/lead"
+  },
+  "mold": "immersiveengineering:mold_plate",
+  "result": {
+    "id": "tfcm:metal/plate/lead"
+  }
+}

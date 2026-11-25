@@ -1,0 +1,28 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/copper"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/plate/copper"
+        }
+      ],
+      "reason": "plate shape for copper is unavailable",
+      "recipe": "tfie:metalpress/plate/copper"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/copper"
+  },
+  "mold": "immersiveengineering:mold_plate",
+  "result": {
+    "id": "tfcm:metal/plate/copper"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/silver"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/rod/silver"
+        }
+      ],
+      "reason": "rod shape for silver is unavailable",
+      "recipe": "tfie:metalpress/rod/silver"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/silver"
+  },
+  "mold": "immersiveengineering:mold_rod",
+  "result": {
+    "count": 2,
+    "id": "tfc:metal/rod/silver"
+  }
+}

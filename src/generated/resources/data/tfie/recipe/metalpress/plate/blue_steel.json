@@ -1,0 +1,28 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/blue_steel"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/plate/blue_steel"
+        }
+      ],
+      "reason": "plate shape for blue_steel is unavailable",
+      "recipe": "tfie:metalpress/plate/blue_steel"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/blue_steel"
+  },
+  "mold": "immersiveengineering:mold_plate",
+  "result": {
+    "id": "tfcm:metal/plate/blue_steel"
+  }
+}

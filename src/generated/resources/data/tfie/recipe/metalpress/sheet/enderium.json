@@ -1,0 +1,35 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/enderium"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/sheet/enderium"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "enderium"
+        }
+      ],
+      "reason": "sheet shape for enderium is unavailable",
+      "recipe": "tfie:metalpress/sheet/enderium"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "basePredicate": {
+      "tag": "c:ingots/enderium"
+    },
+    "count": 2
+  },
+  "mold": "tfie:mold_sheet",
+  "result": {
+    "id": "tfcm:metal/sheet/enderium"
+  }
+}

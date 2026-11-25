@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/titanium"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/rod/titanium"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "titanium"
+        }
+      ],
+      "reason": "rod shape for titanium is unavailable",
+      "recipe": "tfie:metalpress/rod/titanium"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/titanium"
+  },
+  "mold": "immersiveengineering:mold_rod",
+  "result": {
+    "count": 2,
+    "id": "tfcm:metal/rod/titanium"
+  }
+}

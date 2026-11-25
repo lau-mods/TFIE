@@ -1,0 +1,35 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/mithril"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/sheet/mithril"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "mithril"
+        }
+      ],
+      "reason": "sheet shape for mithril is unavailable",
+      "recipe": "tfie:metalpress/sheet/mithril"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "basePredicate": {
+      "tag": "c:ingots/mithril"
+    },
+    "count": 2
+  },
+  "mold": "tfie:mold_sheet",
+  "result": {
+    "id": "tfcm:metal/sheet/mithril"
+  }
+}

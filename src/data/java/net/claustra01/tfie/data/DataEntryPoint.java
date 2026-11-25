@@ -2,10 +2,16 @@ package net.claustra01.tfie.data;
 
 import net.claustra01.tfie.TFIE;
 import net.claustra01.tfie.data.recipes.BarrelRecipes;
+import net.claustra01.tfie.data.recipes.BlueprintRecipes;
 import net.claustra01.tfie.data.recipes.CraftingRecipes;
+import net.claustra01.tfie.data.recipes.MetalPressRecipes;
 import net.claustra01.tfie.data.recipes.RecipeOverrides;
 import net.claustra01.tfie.data.recipes.SawmillRecipes;
 import net.claustra01.tfie.data.tags.TreatedLumberFluidTags;
+import net.claustra01.tfie.data.providers.BuiltinFuels;
+import net.claustra01.tfie.data.providers.BuiltinItemHeat;
+import net.claustra01.tfie.data.providers.BuiltinItemSizes;
+import net.claustra01.tfie.data.providers.BuiltinItemTags;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -36,6 +42,15 @@ public final class DataEntryPoint
                 new CraftingRecipes(output, event.getLookupProvider())));
         event.createProvider(output -> named("TFIE recipe overrides",
                 new RecipeOverrides(output, event.getLookupProvider())));
+        event.createProvider(output -> named("TFIE metal press recipes",
+                new MetalPressRecipes(output, event.getLookupProvider())));
+        event.createProvider(output -> named("TFIE blueprint recipes",
+                new BlueprintRecipes(output, event.getLookupProvider())));
+        event.createProvider(output -> new BuiltinItemTags(output, event.getLookupProvider(),
+                event.getExistingFileHelper()));
+        event.createProvider(BuiltinFuels::new);
+        event.createProvider(BuiltinItemHeat::new);
+        event.createProvider(BuiltinItemSizes::new);
         event.createProvider(output -> new TreatedLumberFluidTags(output, event.getLookupProvider(),
                 event.getExistingFileHelper()));
     }

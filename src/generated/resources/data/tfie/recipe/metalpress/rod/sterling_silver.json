@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/sterling_silver"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/rod/sterling_silver"
+        }
+      ],
+      "reason": "rod shape for sterling_silver is unavailable",
+      "recipe": "tfie:metalpress/rod/sterling_silver"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/sterling_silver"
+  },
+  "mold": "immersiveengineering:mold_rod",
+  "result": {
+    "count": 2,
+    "id": "tfc:metal/rod/sterling_silver"
+  }
+}

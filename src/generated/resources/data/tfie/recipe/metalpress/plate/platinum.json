@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/platinum"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/plate/platinum"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "platinum"
+        }
+      ],
+      "reason": "plate shape for platinum is unavailable",
+      "recipe": "tfie:metalpress/plate/platinum"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/platinum"
+  },
+  "mold": "immersiveengineering:mold_plate",
+  "result": {
+    "id": "tfcm:metal/plate/platinum"
+  }
+}

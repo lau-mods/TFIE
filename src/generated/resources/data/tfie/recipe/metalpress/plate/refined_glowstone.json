@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/refined_glowstone"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/plate/refined_glowstone"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "refined_glowstone"
+        }
+      ],
+      "reason": "plate shape for refined_glowstone is unavailable",
+      "recipe": "tfie:metalpress/plate/refined_glowstone"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/refined_glowstone"
+  },
+  "mold": "immersiveengineering:mold_plate",
+  "result": {
+    "id": "tfcm:metal/plate/refined_glowstone"
+  }
+}

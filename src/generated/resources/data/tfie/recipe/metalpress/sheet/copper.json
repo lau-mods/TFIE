@@ -1,0 +1,31 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/copper"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/sheet/copper"
+        }
+      ],
+      "reason": "sheet shape for copper is unavailable",
+      "recipe": "tfie:metalpress/sheet/copper"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "basePredicate": {
+      "tag": "c:ingots/copper"
+    },
+    "count": 2
+  },
+  "mold": "tfie:mold_sheet",
+  "result": {
+    "id": "tfc:metal/sheet/copper"
+  }
+}

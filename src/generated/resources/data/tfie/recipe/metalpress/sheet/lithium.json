@@ -1,0 +1,35 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/lithium"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/sheet/lithium"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "lithium"
+        }
+      ],
+      "reason": "sheet shape for lithium is unavailable",
+      "recipe": "tfie:metalpress/sheet/lithium"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "basePredicate": {
+      "tag": "c:ingots/lithium"
+    },
+    "count": 2
+  },
+  "mold": "tfie:mold_sheet",
+  "result": {
+    "id": "tfcm:metal/sheet/lithium"
+  }
+}

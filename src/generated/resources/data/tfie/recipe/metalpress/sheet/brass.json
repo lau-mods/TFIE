@@ -1,0 +1,31 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/brass"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/sheet/brass"
+        }
+      ],
+      "reason": "sheet shape for brass is unavailable",
+      "recipe": "tfie:metalpress/sheet/brass"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "basePredicate": {
+      "tag": "c:ingots/brass"
+    },
+    "count": 2
+  },
+  "mold": "tfie:mold_sheet",
+  "result": {
+    "id": "tfc:metal/sheet/brass"
+  }
+}

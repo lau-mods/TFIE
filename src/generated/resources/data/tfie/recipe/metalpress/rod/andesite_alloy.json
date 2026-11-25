@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/andesite_alloy"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/rod/andesite_alloy"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "andesite_alloy"
+        }
+      ],
+      "reason": "rod shape for andesite_alloy is unavailable",
+      "recipe": "tfie:metalpress/rod/andesite_alloy"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/andesite_alloy"
+  },
+  "mold": "immersiveengineering:mold_rod",
+  "result": {
+    "count": 2,
+    "id": "tfcm:metal/rod/andesite_alloy"
+  }
+}

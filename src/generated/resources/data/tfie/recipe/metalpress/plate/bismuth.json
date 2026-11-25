@@ -1,0 +1,28 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/bismuth"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/plate/bismuth"
+        }
+      ],
+      "reason": "plate shape for bismuth is unavailable",
+      "recipe": "tfie:metalpress/plate/bismuth"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/bismuth"
+  },
+  "mold": "immersiveengineering:mold_plate",
+  "result": {
+    "id": "tfcm:metal/plate/bismuth"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/cobalt"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/sheet/cobalt"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "cobalt"
+        }
+      ],
+      "reason": "sheet shape for cobalt is unavailable",
+      "recipe": "tfie:metalpress/sheet/cobalt"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "basePredicate": {
+      "tag": "c:ingots/cobalt"
+    },
+    "count": 2
+  },
+  "mold": "tfie:mold_sheet",
+  "result": {
+    "id": "tfcm:metal/sheet/cobalt"
+  }
+}

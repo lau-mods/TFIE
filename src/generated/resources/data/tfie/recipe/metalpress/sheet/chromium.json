@@ -1,0 +1,35 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "firmalife"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "firmalife:metal/ingot/chromium"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "firmalife:metal/sheet/chromium"
+        }
+      ],
+      "reason": "sheet shape for chromium is unavailable",
+      "recipe": "tfie:metalpress/sheet/chromium"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "basePredicate": {
+      "tag": "c:ingots/chromium"
+    },
+    "count": 2
+  },
+  "mold": "tfie:mold_sheet",
+  "result": {
+    "id": "firmalife:metal/sheet/chromium"
+  }
+}

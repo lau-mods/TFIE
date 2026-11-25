@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/compressed_iron"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/plate/compressed_iron"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "compressed_iron"
+        }
+      ],
+      "reason": "plate shape for compressed_iron is unavailable",
+      "recipe": "tfie:metalpress/plate/compressed_iron"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/compressed_iron"
+  },
+  "mold": "immersiveengineering:mold_plate",
+  "result": {
+    "id": "tfcm:metal/plate/compressed_iron"
+  }
+}

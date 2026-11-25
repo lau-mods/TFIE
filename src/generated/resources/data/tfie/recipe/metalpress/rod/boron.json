@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/boron"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/rod/boron"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "boron"
+        }
+      ],
+      "reason": "rod shape for boron is unavailable",
+      "recipe": "tfie:metalpress/rod/boron"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/boron"
+  },
+  "mold": "immersiveengineering:mold_rod",
+  "result": {
+    "count": 2,
+    "id": "tfcm:metal/rod/boron"
+  }
+}

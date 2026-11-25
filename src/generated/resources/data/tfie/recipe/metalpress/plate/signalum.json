@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/signalum"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/plate/signalum"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "signalum"
+        }
+      ],
+      "reason": "plate shape for signalum is unavailable",
+      "recipe": "tfie:metalpress/plate/signalum"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/signalum"
+  },
+  "mold": "immersiveengineering:mold_plate",
+  "result": {
+    "id": "tfcm:metal/plate/signalum"
+  }
+}

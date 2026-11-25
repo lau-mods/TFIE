@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/red_steel"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/rod/red_steel"
+        }
+      ],
+      "reason": "rod shape for red_steel is unavailable",
+      "recipe": "tfie:metalpress/rod/red_steel"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/red_steel"
+  },
+  "mold": "immersiveengineering:mold_rod",
+  "result": {
+    "count": 2,
+    "id": "tfc:metal/rod/red_steel"
+  }
+}

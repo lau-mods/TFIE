@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/arcane"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/rod/arcane"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "arcane"
+        }
+      ],
+      "reason": "rod shape for arcane is unavailable",
+      "recipe": "tfie:metalpress/rod/arcane"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/arcane"
+  },
+  "mold": "immersiveengineering:mold_rod",
+  "result": {
+    "count": 2,
+    "id": "tfcm:metal/rod/arcane"
+  }
+}

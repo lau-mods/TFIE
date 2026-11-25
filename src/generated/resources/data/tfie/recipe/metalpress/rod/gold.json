@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/gold"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/rod/gold"
+        }
+      ],
+      "reason": "rod shape for gold is unavailable",
+      "recipe": "tfie:metalpress/rod/gold"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/gold"
+  },
+  "mold": "immersiveengineering:mold_rod",
+  "result": {
+    "count": 2,
+    "id": "tfc:metal/rod/gold"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/neodymium"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/sheet/neodymium"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "neodymium"
+        }
+      ],
+      "reason": "sheet shape for neodymium is unavailable",
+      "recipe": "tfie:metalpress/sheet/neodymium"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "basePredicate": {
+      "tag": "c:ingots/neodymium"
+    },
+    "count": 2
+  },
+  "mold": "tfie:mold_sheet",
+  "result": {
+    "id": "tfcm:metal/sheet/neodymium"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/tungsten_steel"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/wire/tungsten_steel"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "tungsten_steel"
+        }
+      ],
+      "reason": "wire shape for tungsten_steel is unavailable",
+      "recipe": "tfie:metalpress/wire/tungsten_steel"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/tungsten_steel"
+  },
+  "mold": "immersiveengineering:mold_wire",
+  "result": {
+    "count": 4,
+    "id": "tfcm:metal/wire/tungsten_steel"
+  }
+}

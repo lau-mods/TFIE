@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/antimony"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/wire/antimony"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "antimony"
+        }
+      ],
+      "reason": "wire shape for antimony is unavailable",
+      "recipe": "tfie:metalpress/wire/antimony"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/antimony"
+  },
+  "mold": "immersiveengineering:mold_wire",
+  "result": {
+    "count": 4,
+    "id": "tfcm:metal/wire/antimony"
+  }
+}

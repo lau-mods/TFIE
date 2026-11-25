@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/high_speed_steel"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/rod/high_speed_steel"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "high_speed_steel"
+        }
+      ],
+      "reason": "rod shape for high_speed_steel is unavailable",
+      "recipe": "tfie:metalpress/rod/high_speed_steel"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/high_speed_steel"
+  },
+  "mold": "immersiveengineering:mold_rod",
+  "result": {
+    "count": 2,
+    "id": "tfcm:metal/rod/high_speed_steel"
+  }
+}

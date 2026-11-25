@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/invar"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/plate/invar"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "invar"
+        }
+      ],
+      "reason": "plate shape for invar is unavailable",
+      "recipe": "tfie:metalpress/plate/invar"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/invar"
+  },
+  "mold": "immersiveengineering:mold_plate",
+  "result": {
+    "id": "tfcm:metal/plate/invar"
+  }
+}

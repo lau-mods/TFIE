@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/dawnstone"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/wire/dawnstone"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "dawnstone"
+        }
+      ],
+      "reason": "wire shape for dawnstone is unavailable",
+      "recipe": "tfie:metalpress/wire/dawnstone"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/dawnstone"
+  },
+  "mold": "immersiveengineering:mold_wire",
+  "result": {
+    "count": 4,
+    "id": "tfcm:metal/wire/dawnstone"
+  }
+}

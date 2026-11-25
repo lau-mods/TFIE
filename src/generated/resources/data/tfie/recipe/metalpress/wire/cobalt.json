@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/cobalt"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/wire/cobalt"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "cobalt"
+        }
+      ],
+      "reason": "wire shape for cobalt is unavailable",
+      "recipe": "tfie:metalpress/wire/cobalt"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/cobalt"
+  },
+  "mold": "immersiveengineering:mold_wire",
+  "result": {
+    "count": 4,
+    "id": "tfcm:metal/wire/cobalt"
+  }
+}

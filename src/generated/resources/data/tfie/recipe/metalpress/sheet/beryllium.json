@@ -1,0 +1,35 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/beryllium"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/sheet/beryllium"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "beryllium"
+        }
+      ],
+      "reason": "sheet shape for beryllium is unavailable",
+      "recipe": "tfie:metalpress/sheet/beryllium"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "basePredicate": {
+      "tag": "c:ingots/beryllium"
+    },
+    "count": 2
+  },
+  "mold": "tfie:mold_sheet",
+  "result": {
+    "id": "tfcm:metal/sheet/beryllium"
+  }
+}

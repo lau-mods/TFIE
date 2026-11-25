@@ -33,11 +33,24 @@
     {"acId":"AC-F013-006","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"treated_lumber_barrel"},
     {"acId":"AC-F013-007","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"treated_wood_crafting_and_override"},
     {"acId":"AC-F013-008","report":"build/test-results/gametest/TEST-tfie-afc.xml","classname":"tfie:gametest/empty_platform","name":"afc_latex_paths_are_untouched"},
-    {"acId":"AC-F013-008","report":"build/test-results/gametest/TEST-tfie-all.xml","classname":"tfie:gametest/empty_platform","name":"afc_latex_paths_are_untouched"}
+    {"acId":"AC-F013-008","report":"build/test-results/gametest/TEST-tfie-all.xml","classname":"tfie:gametest/empty_platform","name":"afc_latex_paths_are_untouched"},
+    {"acId":"AC-F002-001","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"metal_table_and_standard_outputs"},
+    {"acId":"AC-F002-001","report":"build/test-results/gametest/TEST-tfie-firmalife.xml","classname":"tfie:gametest/empty_platform","name":"metal_table_and_standard_outputs"},
+    {"acId":"AC-F002-001","report":"build/test-results/gametest/TEST-tfie-all.xml","classname":"tfie:gametest/empty_platform","name":"metal_table_and_standard_outputs"},
+    {"acId":"AC-F002-002","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"metal_amounts_and_compression_exception"},
+    {"acId":"AC-F002-003","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"disabled_metal_and_ore_conditions"},
+    {"acId":"AC-F002-003","report":"build/test-results/gametest/TEST-tfie-disabled-materials.xml","classname":"tfie:gametest/empty_platform","name":"disabled_metal_and_ore_conditions"},
+    {"acId":"AC-F002-004","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"common_material_tags_and_heat"},
+    {"acId":"AC-F003-001","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"metal_press_recipe_table"},
+    {"acId":"AC-F003-001","report":"build/test-results/gametest/TEST-tfie-all.xml","classname":"tfie:gametest/empty_platform","name":"metal_press_recipe_table"},
+    {"acId":"AC-F003-002","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"metal_press_replacement"},
+    {"acId":"AC-F003-003","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"molds_blueprint_and_sheet_mold"},
+    {"acId":"AC-F003-004","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"mold_tag_size_and_selection"}
   ],
   "e2e": [
     {"acId":"AC-F001-004","scenario":"tests/e2e/creative-tab.mjs"},
     {"acId":"AC-F012-008","scenario":"tests/e2e/multiblock-structures.mjs"},
-    {"acId":"AC-F013-009","scenario":"tests/e2e/wood-processing.mjs"}
+    {"acId":"AC-F013-009","scenario":"tests/e2e/wood-processing.mjs"},
+    {"acId":"AC-F003-005","scenario":"tests/e2e/metal-press.mjs"}
   ]
 }

@@ -1,0 +1,35 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/hastelloy"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/sheet/hastelloy"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "hastelloy"
+        }
+      ],
+      "reason": "sheet shape for hastelloy is unavailable",
+      "recipe": "tfie:metalpress/sheet/hastelloy"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "basePredicate": {
+      "tag": "c:ingots/hastelloy"
+    },
+    "count": 2
+  },
+  "mold": "tfie:mold_sheet",
+  "result": {
+    "id": "tfcm:metal/sheet/hastelloy"
+  }
+}

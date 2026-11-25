@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/zirconium"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/plate/zirconium"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "zirconium"
+        }
+      ],
+      "reason": "plate shape for zirconium is unavailable",
+      "recipe": "tfie:metalpress/plate/zirconium"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/zirconium"
+  },
+  "mold": "immersiveengineering:mold_plate",
+  "result": {
+    "id": "tfcm:metal/plate/zirconium"
+  }
+}

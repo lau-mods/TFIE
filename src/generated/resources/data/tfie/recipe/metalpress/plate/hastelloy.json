@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/hastelloy"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/plate/hastelloy"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "hastelloy"
+        }
+      ],
+      "reason": "plate shape for hastelloy is unavailable",
+      "recipe": "tfie:metalpress/plate/hastelloy"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/hastelloy"
+  },
+  "mold": "immersiveengineering:mold_plate",
+  "result": {
+    "id": "tfcm:metal/plate/hastelloy"
+  }
+}

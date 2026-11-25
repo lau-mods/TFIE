@@ -1,0 +1,35 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/high_speed_steel"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/sheet/high_speed_steel"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "high_speed_steel"
+        }
+      ],
+      "reason": "sheet shape for high_speed_steel is unavailable",
+      "recipe": "tfie:metalpress/sheet/high_speed_steel"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "basePredicate": {
+      "tag": "c:ingots/high_speed_steel"
+    },
+    "count": 2
+  },
+  "mold": "tfie:mold_sheet",
+  "result": {
+    "id": "tfcm:metal/sheet/high_speed_steel"
+  }
+}

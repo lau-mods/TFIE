@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/aluminum"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/rod/aluminum"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "aluminum"
+        }
+      ],
+      "reason": "rod shape for aluminum is unavailable",
+      "recipe": "tfie:metalpress/rod/aluminum"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/aluminum"
+  },
+  "mold": "immersiveengineering:mold_rod",
+  "result": {
+    "count": 2,
+    "id": "tfcm:metal/rod/aluminum"
+  }
+}

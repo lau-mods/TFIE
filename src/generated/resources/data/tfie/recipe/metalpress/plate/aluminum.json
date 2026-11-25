@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/aluminum"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/plate/aluminum"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "aluminum"
+        }
+      ],
+      "reason": "plate shape for aluminum is unavailable",
+      "recipe": "tfie:metalpress/plate/aluminum"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/aluminum"
+  },
+  "mold": "immersiveengineering:mold_plate",
+  "result": {
+    "id": "tfcm:metal/plate/aluminum"
+  }
+}

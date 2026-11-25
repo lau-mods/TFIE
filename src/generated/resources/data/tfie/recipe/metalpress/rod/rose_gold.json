@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/rose_gold"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/rod/rose_gold"
+        }
+      ],
+      "reason": "rod shape for rose_gold is unavailable",
+      "recipe": "tfie:metalpress/rod/rose_gold"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/rose_gold"
+  },
+  "mold": "immersiveengineering:mold_rod",
+  "result": {
+    "count": 2,
+    "id": "tfc:metal/rod/rose_gold"
+  }
+}

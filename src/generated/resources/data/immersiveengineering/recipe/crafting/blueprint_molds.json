@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": {
+      "tag": "c:plates/wrought_iron"
+    },
+    "d": {
+      "tag": "c:dyes/blue"
+    },
+    "p": {
+      "tag": "c:paper"
+    }
+  },
+  "pattern": [
+    " P ",
+    "ddd",
+    "ppp"
+  ],
+  "result": {
+    "components": {
+      "immersiveengineering:blueprint": "molds"
+    },
+    "count": 1,
+    "id": "immersiveengineering:blueprint"
+  }
+}

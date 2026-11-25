@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/refined_obsidian"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/wire/refined_obsidian"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "refined_obsidian"
+        }
+      ],
+      "reason": "wire shape for refined_obsidian is unavailable",
+      "recipe": "tfie:metalpress/wire/refined_obsidian"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/refined_obsidian"
+  },
+  "mold": "immersiveengineering:mold_wire",
+  "result": {
+    "count": 4,
+    "id": "tfcm:metal/wire/refined_obsidian"
+  }
+}

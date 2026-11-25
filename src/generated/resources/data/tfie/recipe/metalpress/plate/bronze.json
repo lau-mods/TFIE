@@ -1,0 +1,28 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/bronze"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/plate/bronze"
+        }
+      ],
+      "reason": "plate shape for bronze is unavailable",
+      "recipe": "tfie:metalpress/plate/bronze"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/bronze"
+  },
+  "mold": "immersiveengineering:mold_plate",
+  "result": {
+    "id": "tfcm:metal/plate/bronze"
+  }
+}

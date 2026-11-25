@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/rose_gold"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/wire/rose_gold"
+        }
+      ],
+      "reason": "wire shape for rose_gold is unavailable",
+      "recipe": "tfie:metalpress/wire/rose_gold"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/rose_gold"
+  },
+  "mold": "immersiveengineering:mold_wire",
+  "result": {
+    "count": 4,
+    "id": "tfcm:metal/wire/rose_gold"
+  }
+}

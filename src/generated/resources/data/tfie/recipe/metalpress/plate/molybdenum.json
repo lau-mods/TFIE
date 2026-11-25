@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/molybdenum"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/plate/molybdenum"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "molybdenum"
+        }
+      ],
+      "reason": "plate shape for molybdenum is unavailable",
+      "recipe": "tfie:metalpress/plate/molybdenum"
+    }
+  ],
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "c:ingots/molybdenum"
+  },
+  "mold": "immersiveengineering:mold_plate",
+  "result": {
+    "id": "tfcm:metal/plate/molybdenum"
+  }
+}

@@ -60,39 +60,44 @@ public final class HerbicideGameTests
         List<BlockPos> droppedCrops = new ArrayList<>();
 
         assertCultivatedCropTreatment(helper, new BlockPos(2, 2, 2), SoilBlockType.GRASS,
-                SoilBlockType.DIRT, crop, 0.99F, 1);
+                SoilBlockType.DIRT, crop, 0.99F);
         assertCultivatedCropTreatment(helper, new BlockPos(6, 2, 2), SoilBlockType.GRASS,
-                SoilBlockType.DIRT, crop, 1.0F, 3);
+                SoilBlockType.DIRT, crop, 1.0F);
         assertDroppedCropTreatment(helper, new BlockPos(10, 2, 2), SoilBlockType.GRASS,
                 SoilBlockType.DIRT, dead.defaultBlockState().setValue(DeadCropBlock.MATURE, false), droppedCrops);
         assertDroppedCropTreatment(helper, new BlockPos(14, 2, 2), SoilBlockType.GRASS,
                 SoilBlockType.DIRT, wild.defaultBlockState().setValue(WildCropBlock.MATURE, false), droppedCrops);
 
         assertCultivatedCropTreatment(helper, new BlockPos(2, 2, 7), SoilBlockType.FARMLAND,
-                SoilBlockType.DIRT, crop, 0.99F, 1);
+                SoilBlockType.DIRT, crop, 0.99F);
         assertCultivatedCropTreatment(helper, new BlockPos(6, 2, 7), SoilBlockType.FARMLAND,
-                SoilBlockType.DIRT, crop, 1.0F, 3);
+                SoilBlockType.DIRT, crop, 1.0F);
         assertDroppedCropTreatment(helper, new BlockPos(10, 2, 7), SoilBlockType.FARMLAND,
                 SoilBlockType.DIRT, dead.defaultBlockState().setValue(DeadCropBlock.MATURE, true), droppedCrops);
         assertDroppedCropTreatment(helper, new BlockPos(14, 2, 7), SoilBlockType.FARMLAND,
                 SoilBlockType.DIRT, wild.defaultBlockState().setValue(WildCropBlock.MATURE, true), droppedCrops);
 
         assertCultivatedCropTreatment(helper, new BlockPos(2, 2, 12), SoilBlockType.CLAY_GRASS,
-                SoilBlockType.CLAY, crop, 0.99F, 0);
+                SoilBlockType.CLAY, crop, 0.99F);
         assertCultivatedCropTreatment(helper, new BlockPos(6, 2, 12), SoilBlockType.CLAY_GRASS,
-                SoilBlockType.CLAY, crop, 1.0F, 0);
+                SoilBlockType.CLAY, crop, 1.0F);
         assertDroppedCropTreatment(helper, new BlockPos(10, 2, 12), SoilBlockType.CLAY_GRASS,
                 SoilBlockType.CLAY, dead.defaultBlockState().setValue(DeadCropBlock.MATURE, false), droppedCrops);
         assertDroppedCropTreatment(helper, new BlockPos(14, 2, 12), SoilBlockType.CLAY_GRASS,
                 SoilBlockType.CLAY, wild.defaultBlockState().setValue(WildCropBlock.MATURE, false), droppedCrops);
-        helper.runAfterDelay(1, () ->
+        helper.succeedWhen(() ->
         {
+            assertCropDropCount(helper, new BlockPos(2, 2, 2), 1, 0.99F, SoilBlockType.GRASS);
+            assertCropDropCount(helper, new BlockPos(6, 2, 2), 3, 1.0F, SoilBlockType.GRASS);
+            assertCropDropCount(helper, new BlockPos(2, 2, 7), 1, 0.99F, SoilBlockType.FARMLAND);
+            assertCropDropCount(helper, new BlockPos(6, 2, 7), 3, 1.0F, SoilBlockType.FARMLAND);
+            assertCropDropCount(helper, new BlockPos(2, 2, 12), 0, 0.99F, SoilBlockType.CLAY_GRASS);
+            assertCropDropCount(helper, new BlockPos(6, 2, 12), 0, 1.0F, SoilBlockType.CLAY_GRASS);
             for (BlockPos surface : droppedCrops)
             {
                 helper.assertTrue(dropCount(helper, surface) > 0,
                         "Dead and wild crops must be broken with drops at " + surface);
             }
-            helper.succeed();
         });
     }
 
@@ -234,7 +239,7 @@ public final class HerbicideGameTests
     private static void assertCultivatedCropTreatment(GameTestHelper helper, BlockPos relativeSurface,
                                                        SoilBlockType surfaceType,
                                                        SoilBlockType resultType, CropBlock crop,
-                                                       float growth, long expectedDrops)
+                                                       float growth)
     {
         BlockPos surface = helper.absolutePos(relativeSurface);
         placeCultivatedCrop(helper, surface, SoilBlockType.Variant.ENTISOL,
@@ -247,9 +252,16 @@ public final class HerbicideGameTests
                 "Herbicide must preserve the Entisol variant for " + surfaceType);
         helper.assertTrue(helper.getLevel().getBlockState(surface.above()).isAir(),
                 "The cultivated crop must be broken after surface treatment");
-        helper.assertTrue(dropCount(helper, surface) == expectedDrops,
+    }
+
+    private static void assertCropDropCount(GameTestHelper helper, BlockPos relativeSurface,
+                                            long expectedDrops, float growth, SoilBlockType surfaceType)
+    {
+        long actualDrops = dropCount(helper, helper.absolutePos(relativeSurface));
+        helper.assertTrue(actualDrops == expectedDrops,
                 "Cultivated crop drops must reflect MATURE=" + (growth >= 1.0F)
-                        + " for growth " + growth + " over " + surfaceType);
+                        + " for growth " + growth + " over " + surfaceType
+                        + ": expected " + expectedDrops + ", found " + actualDrops);
     }
 
     private static void assertDroppedCropTreatment(GameTestHelper helper, BlockPos relativeSurface,

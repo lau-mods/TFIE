@@ -122,7 +122,16 @@
     {"acId":"AC-F011-008","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"furnace_materials_and_manual_recipe_removals"},
     {"acId":"AC-F022-001","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"fluid_tags_and_container_io"},
     {"acId":"AC-F022-002","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"fluid_ingredient_candidates_and_partial_return"},
-    {"acId":"AC-F022-003","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"fixed_bucket_recipes_reject_tfc_containers"}
+    {"acId":"AC-F022-003","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"fixed_bucket_recipes_reject_tfc_containers"},
+    {"acId":"AC-F015-001","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"cloche_recipe_set_and_harvests"},
+    {"acId":"AC-F015-002","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"cloche_tick_energy_growth_and_capacity"},
+    {"acId":"AC-F015-003","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"cloche_water_and_fertilizer_supply"},
+    {"acId":"AC-F015-004","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"cloche_resets_and_waits_for_output"},
+    {"acId":"AC-F015-005","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"double_crop_render_states"},
+    {"acId":"AC-F024-001","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"farmland_fertilizer_values"},
+    {"acId":"AC-F024-002","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"farmland_modifiers_shift_and_consumption"},
+    {"acId":"AC-F024-003","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"cloche_fertilizer_modifiers"},
+    {"acId":"AC-F024-004","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"shellfish_rot_and_hemp_top_fertilizing"}
   ],
   "e2e": [
     {"acId":"AC-F001-004","scenario":"tests/e2e/creative-tab.mjs"},
@@ -135,6 +144,7 @@
     {"acId":"AC-F003-005","scenario":"tests/e2e/metal-press.mjs"},
     {"acId":"AC-F009-005","scenario":"tests/e2e/drillheads.mjs"},
     {"acId":"AC-F011-009","scenario":"tests/e2e/general-crafting.mjs"},
-    {"acId":"AC-F022-004","scenario":"tests/e2e/fluid-containers.mjs"}
+    {"acId":"AC-F022-004","scenario":"tests/e2e/fluid-containers.mjs"},
+    {"acId":"AC-F015-006","scenario":"tests/e2e/cloche-rendering.mjs"}
   ]
 }

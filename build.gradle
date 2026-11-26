@@ -182,6 +182,7 @@ dependencies {
     implementation("curse.maven:terrafirmacraft-302973:9569280") { transitive = false }
     implementation("blusunrize.immersiveengineering:ImmersiveEngineering:1.21.1-12.4.2-194")
     implementation("blusunrize.immersiveengineering:ImmersiveEngineering:1.21.1-12.4.2-194:datagen")
+    compileOnly("malte0811:DualCodecs:0.1.2")
     implementation("curse.maven:tfc-metallum-overhaul-1460805:9712557") { transitive = false }
     implementation("vazkii.patchouli:Patchouli:1.21.1-93-NEOFORGE")
 
@@ -252,6 +253,7 @@ tasks.withType(JavaCompile).configureEach {
     }
 }
 
+tasks.named('runGameTestServerFirmalife') { mustRunAfter 'runGameTestServer' }
 tasks.named('runGameTestServerAdvancedTfcTech') { mustRunAfter 'runGameTestServerFirmalife' }
 tasks.named('runGameTestServerAfc') { mustRunAfter 'runGameTestServerAdvancedTfcTech' }
 tasks.named('runGameTestServerOverdims') { mustRunAfter 'runGameTestServerAfc' }
@@ -284,7 +286,7 @@ tasks.named('runGameTestServerDisabledMaterials') {
     mustRunAfter 'runGameTestServerAll'
 }
 tasks.named('runGameTestServer') {
-    dependsOn 'runGameTestServerFirmalife', 'runGameTestServerAdvancedTfcTech',
+    finalizedBy 'runGameTestServerFirmalife', 'runGameTestServerAdvancedTfcTech',
             'runGameTestServerAfc', 'runGameTestServerOverdims', 'runGameTestServerAll',
             'runGameTestServerDisabledMaterials'
 }

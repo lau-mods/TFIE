@@ -136,13 +136,15 @@ public final class HeaterGameTests
 
         capability.doHeatTick(32_000, false);
         float targetBeforeCallsStop = heat.tfie$getTargetTemperature();
-        helper.runAfterDelay(10, () ->
+        helper.assertTrue(targetBeforeCallsStop > 0
+                        && heat.tfie$getTargetTemperatureStabilityTicks() == 5,
+                "A successful heater call must establish a target with five stable ticks");
+        helper.succeedWhen(() ->
         {
             helper.assertTrue(heat.tfie$getTargetTemperatureStabilityTicks() == 0,
                     "TFC must expire the five-tick target stability after heater calls stop");
             helper.assertTrue(heat.tfie$getTargetTemperature() < targetBeforeCallsStop,
                     "TFC must decay the configured target after heater calls stop");
-            helper.succeed();
         });
     }
 

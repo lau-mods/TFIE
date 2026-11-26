@@ -187,12 +187,14 @@ public final class AnvilGameTests
         BlockPos fullAnvil = new BlockPos(10, 2, 10);
         completePlayerHighCarbonSteel(helper, fullAnvil, full);
         BlockPos anvilPos = helper.absolutePos(fullAnvil);
-        long dropped = helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(anvilPos).inflate(2))
-                .stream().filter(entity -> entity.getItem().is(IEItems.Ingredients.SLAG.get())).count();
-        helper.assertTrue(dropped == 1, "A full inventory must drop exactly one slag at the anvil");
-        open.getInventory().clearContent();
-        full.getInventory().clearContent();
-        helper.succeed();
+        helper.succeedWhen(() ->
+        {
+            long dropped = helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(anvilPos).inflate(2))
+                    .stream().filter(entity -> entity.getItem().is(IEItems.Ingredients.SLAG.get())).count();
+            helper.assertTrue(dropped == 1, "A full inventory must drop exactly one slag at the anvil");
+            open.getInventory().clearContent();
+            full.getInventory().clearContent();
+        });
     }
 
     private static void completePlayerHighCarbonSteel(GameTestHelper helper, BlockPos relative,

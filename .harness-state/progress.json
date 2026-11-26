@@ -2,286 +2,22 @@
   "status": "running",
   "active": [
     {
-      "id": "M09",
-      "phase": "e2e",
-      "baseCommit": "a76c080298b6d12a75493aea174c6fe4fc280b96",
+      "id": "M11",
+      "phase": "implementation",
+      "baseCommit": "191580e967ad1e7e967b12b1c7cc26d11ab6d4ce",
       "failures": {
         "build": 0,
         "gametest": 0,
         "e2e": 0
       },
       "recoveries": 0,
-      "codeReview": {
-        "kind": "code",
-        "issues": [
-          {
-            "target": "tests/e2e/cloche-rendering.mjs:23-31",
-            "acId": "AC-F015-006",
-            "problem": "The E2E places `immersiveengineering:cloche` as if it were a three-block multiblock and includes a `multiblockslave` blockstate property and a `dummy` NBT tag. The Garden Cloche is IE's single-block metal device (`IEBlocks.MetalDevices.CLOCHE`), not a multiblock; the blockstate property does not exist, so the `/setblock` commands fail or create extra cloches. The fixture is therefore not a valid Cloche and the screenshots cannot show the crop/soil inside the intended Cloche.",
-            "reason": "AC-F015-006 requires observing the inside of the Cloche, but an invalid blockstate property prevents the test fixture from loading; the subsequent `waitFor` check cannot verify a real cloche block entity. The unused `dummy` merge and the Y+1/Y+2 block placements are leftovers unrelated to the Cloche.",
-            "fix": "Remove the three-block loop, the `multiblockslave` property, and the `dummy` merge. Place one `immersiveengineering:cloche` at the fixture position using only valid blockstate properties (keep `facing=south` only if the Cloche block actually exposes it), then apply `container.0`, `container.1`, and the tank/energy/fertilizer/growth NBT to that single block entity.",
-            "id": "CR-001",
-            "status": "accepted",
-            "history": [
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: The scenario now places one `immersiveengineering:cloche` and applies inventory and NBT to that block entity. The invalid `multiblockslave` property, extra blocks, and dummy NBT were removed.",
-                "at": "2026-11-26T13:11:33.414Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "`tests/e2e/cloche-rendering.mjs:24` now places a single `immersiveengineering:cloche` at Y=100 with no blockstate properties, and applies container.0/container.1 plus the tank/energy/fertilizer/growth NBT to that one block entity. The three-block loop, `multiblockslave`, and `dummy` merge are gone, and the waitFor still confirms each fixture is an `immersiveengineering:cloche`.",
-                "at": "2026-11-26T13:14:38.706Z"
-              },
-              {
-                "status": "open",
-                "by": "claude",
-                "note": "`tests/e2e/cloche-rendering.mjs:24-30` again places three Cloche blocks in a Y+0/Y+1/Y+2 loop, uses the nonexistent `multiblockslave` blockstate property (`multiblockslave=false` and `multiblockslave=true`), and applies `dummy:1`/`dummy:2` NBT via `data merge block`. The single-block placement from the fix was replaced by the invalid multiblock fixture, so the issue has regressed through this diff.",
-                "at": "2026-11-26T13:40:39.324Z"
-              },
-              {
-                "status": "accepted",
-                "by": "codex",
-                "note": "accepted: The issue’s premise conflicts with IE 12.4.2-194. ClocheBlock exposes the multiblockslave property, and ClocheBlockEntity.placeDummies creates blocks at Y+1/Y+2 with dummy values 1 and 2 for its split model. Because /setblock bypasses that placement callback, the deterministic E2E fixture must reproduce those blocks explicitly.",
-                "at": "2026-11-26T13:42:29.248Z"
-              }
-            ]
-          },
-          {
-            "target": "src/main/java/net/claustra01/tfie/gametest/fertilizer/FertilizerGameTests.java:260-268",
-            "acId": "AC-F024-001",
-            "problem": "`assertFertilizer` verifies only the Nitrogen/Phosphorus/Potassium values returned for the item. It never verifies that the TFC Fertilizer data IDs are exactly `tfie:dust_saltpeter`, `tfie:fertilizer`, and `tfie:slag`.",
-            "reason": "AC-F024-001 explicitly requires those three data IDs. A data file with a wrong ID but the expected item/value mapping would still pass this GameTest, so the criterion's ID requirement is not tested.",
-            "fix": "Assert each expected `tfie:*` Fertilizer data ID in addition to the N/P/K values, for example by looking up the TFC Fertilizer data manager/registry entry by ID and comparing the item and values.",
-            "id": "CR-002",
-            "status": "resolved",
-            "history": [
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: The GameTest now retrieves `tfie:dust_saltpeter`, `tfie:fertilizer`, and `tfie:slag` directly from `Fertilizer.MANAGER`, then verifies each ingredient and N/P/K values.",
-                "at": "2026-11-26T13:11:33.414Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "`assertFertilizer` now takes the TFC data ID and resolves it via `Fertilizer.MANAGER.get(id(dataId))`, asserting the entry exists, its ingredient accepts the expected IE item, and its N/P/K values match. The test passes `tfie:dust_saltpeter`, `tfie:fertilizer`, and `tfie:slag`, so the three required data IDs are explicitly checked.",
-                "at": "2026-11-26T13:14:38.706Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "`FertilizerGameTests.assertFertilizer` (lines 263-273) now accepts the TFC data ID, resolves it with `Fertilizer.MANAGER.get(id(dataId))`, asserts the entry exists, and checks its ingredient against the expected IE item plus all three N/P/K values. The test calls it with `tfie:dust_saltpeter`, `tfie:fertilizer`, and `tfie:slag`, so the required data IDs are explicitly verified.",
-                "at": "2026-11-26T13:40:39.324Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "`assertFertilizer` (lines 263-273) now accepts a TFC data ID, resolves it via `Fertilizer.MANAGER.get(id(dataId))`, asserts the entry is non-null, and checks its ingredient against the expected IE item plus N/P/K values. Calls at lines 53-58 pass exactly `tfie:dust_saltpeter`, `tfie:fertilizer`, and `tfie:slag`, so the required IDs are actually tested.",
-                "at": "2026-11-26T13:42:49.635Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "`assertFertilizer` (lines 263-273) still takes a TFC data ID and resolves it via `Fertilizer.MANAGER.get(id(dataId))`, asserting the entry is non-null and that its ingredient matches the expected IE item with the expected N/P/K values. Calls at lines 53-58 pass exactly `tfie:dust_saltpeter`, `tfie:fertilizer`, and `tfie:slag`, so the three required data IDs are explicitly verified. The only diff (build.gradle task ordering) does not touch this file or behavior.",
-                "at": "2026-11-26T13:55:01.645Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "`assertFertilizer` (lines 263-273) accepts a TFC data ID, resolves it via `Fertilizer.MANAGER.get(id(dataId))`, asserts non-null, and checks the ingredient against the expected item plus all N/P/K values. Lines 53-58 call it with exactly `tfie:dust_saltpeter`, `tfie:fertilizer`, and `tfie:slag`, so the three required data IDs are explicitly tested. The diff does not touch this file.",
-                "at": "2026-11-26T14:19:00.090Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "`assertFertilizer` (lines 263-273) accepts the TFC data ID, resolves it with `Fertilizer.MANAGER.get(id(dataId))`, asserts non-null, and then checks the ingredient matches the expected IE item plus N/P/K values. Calls at lines 53-58 pass exactly `tfie:dust_saltpeter`, `tfie:fertilizer`, and `tfie:slag`, so the three required data IDs are explicitly verified. The `id(...)` helper exists at line 290 and the diff does not touch this file.",
-                "at": "2026-11-26T14:38:37.459Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "`FertilizerGameTests.assertFertilizer` (lines 263-273) takes a TFC data ID, resolves it via `Fertilizer.MANAGER.get(id(dataId))`, asserts non-null, and checks its ingredient against the expected IE item plus all N/P/K values. Lines 53-58 call it with exactly `tfie:dust_saltpeter`, `tfie:fertilizer`, and `tfie:slag`, so the three required IDs are explicitly verified. The diff (AnvilGameTests) does not touch this file.",
-                "at": "2026-11-26T14:59:22.915Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "`FertilizerGameTests.assertFertilizer` (lines 263-273) still takes a TFC data ID, resolves it with `Fertilizer.MANAGER.get(id(dataId))`, asserts the entry is non-null, and checks its ingredient against the expected IE item plus all three N/P/K values. Lines 53-58 call it with exactly `tfie:dust_saltpeter`, `tfie:fertilizer`, and `tfie:slag`, so the three required data IDs are explicitly verified. The diff only touches HerbicideGameTests.",
-                "at": "2026-11-26T15:13:47.553Z"
-              }
-            ]
-          },
-          {
-            "target": "src/data/java/net/claustra01/tfie/data/recipes/ClocheRecipes.java:19",
-            "acId": null,
-            "problem": "The import `net.minecraft.world.item.ItemStack` is unused.",
-            "reason": "It is not referenced anywhere in `ClocheRecipes`, leaving dead code in the data generator.",
-            "fix": "Remove the unused `ItemStack` import.",
-            "id": "CR-003",
-            "status": "resolved",
-            "history": [
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: Removed the unused `ItemStack` import from `ClocheRecipes`.",
-                "at": "2026-11-26T13:11:33.414Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The `net.minecraft.world.item.ItemStack` import was removed from `ClocheRecipes.java`, and no `ItemStack` reference remains in that file.",
-                "at": "2026-11-26T13:14:38.706Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "`src/data/java/net/claustra01/tfie/data/recipes/ClocheRecipes.java` no longer imports or references `net.minecraft.world.item.ItemStack`; the import block and file body contain no `ItemStack` usage.",
-                "at": "2026-11-26T13:40:39.324Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "`ClocheRecipes.java` imports no `net.minecraft.world.item.ItemStack` and contains no `ItemStack` reference; the import block (lines 3-24) and body are clean.",
-                "at": "2026-11-26T13:42:49.635Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "`ClocheRecipes.java` contains no `net.minecraft.world.item.ItemStack` import and no `ItemStack` reference anywhere in its import block (lines 3-24) or body. The build.gradle-only diff does not affect this file.",
-                "at": "2026-11-26T13:55:01.645Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "`ClocheRecipes.java` has no `net.minecraft.world.item.ItemStack` import (imports at lines 3-24) and no `ItemStack` reference anywhere in the file; the diff does not modify this file.",
-                "at": "2026-11-26T14:19:00.090Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "`src/data/java/net/claustra01/tfie/data/recipes/ClocheRecipes.java` has no `net.minecraft.world.item.ItemStack` import (import block lines 3-24) and grep finds no `ItemStack` reference anywhere in the file. The diff does not modify this file.",
-                "at": "2026-11-26T14:38:37.459Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "`src/data/java/net/claustra01/tfie/data/recipes/ClocheRecipes.java` imports no `net.minecraft.world.item.ItemStack` (imports lines 3-21) and grep finds no `ItemStack` reference anywhere in the file. The diff does not modify this file.",
-                "at": "2026-11-26T14:59:22.915Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "`src/data/java/net/claustra01/tfie/data/recipes/ClocheRecipes.java` no longer imports `net.minecraft.world.item.ItemStack` (imports lines 3-21) and grep finds no `ItemStack` reference anywhere in the file. The diff does not modify this file.",
-                "at": "2026-11-26T15:13:47.553Z"
-              }
-            ]
-          }
-        ]
-      },
-      "codeReviewTree": "86c07af4cdf09680f3744fc201752049fe9a3320",
-      "e2eReview": {
-        "kind": "e2e",
-        "issues": [
-          {
-            "target": ".harness-state/runs/2026-11-26T13-18-59-514Z-038-M09-e2e/scenarios/tests-e2e-cloche-rendering.mjs/screenshots/AC-F015-006-all-29-crops-and-eight-dirt-soils.png",
-            "acId": "AC-F015-006",
-            "problem": "Every one of the 29 cloches renders with an empty interior: no crop model is visible and the eight different farmland surfaces cannot be seen. Only the wooden base and the clear glass are drawn, with identical-looking interiors for every crop and soil.",
-            "reason": "The fixtures hold TFC seeds and tfc:dirt inputs at growth 124000, so near-mature crop models and the matching tfc:block/farmland/<soil> surfaces should be displayed. The screenshot shows neither crops nor distinguishable soil textures anywhere, so the cloche contents or their render data are not reaching the rendering path.",
-            "fix": "Ensure the fixture data used for display (seed, dirt, water/energy, growth) is present on the client and that a client block-entity update is sent; verify the cloche recipe/render function resolves for every seed and that the registered farmland texture is applied for each of the eight tfc:dirt/<soil> inputs, then recapture the view.",
-            "id": "ER-001",
-            "status": "resolved",
-            "history": [
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: Fixtures now place soil and seeds through the Cloche’s saved `Items` NBT, construct both dummy blocks, and wait for server tick synchronization before photographing the 29-crop scene.",
-                "at": "2026-11-26T13:40:20.611Z"
-              },
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: The fixture now writes soil and seed stacks directly to the Cloche block entity’s Items NBT, supplies its tank/energy/growth state, constructs all three split-model blocks, and waits for client synchronization before capture. This restores crop and soil rendering for all 29 fixtures.",
-                "at": "2026-11-26T13:42:29.248Z"
-              },
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: The E2E fixtures now construct all three Cloche blocks, populate soil and seed inventory NBT, supply water, energy and growth, and wait for server/client synchronization before capturing all 29 crops and eight soils.",
-                "at": "2026-11-26T13:54:04.202Z"
-              },
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: The scenario now constructs all three Cloche blocks before merging the master inventory, water, energy, fertilizer-period and growth NBT, then waits for block loading and client synchronization. All eight dirt inputs have registered farmland surface textures.",
-                "at": "2026-11-26T14:18:27.382Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The new all-29-crops screenshot shows populated cloches with distinct crop models and visible soil surfaces at the bases; the interiors are no longer empty.",
-                "at": "2026-11-26T14:28:22.258Z"
-              }
-            ]
-          },
-          {
-            "target": ".harness-state/runs/2026-11-26T13-18-59-514Z-038-M09-e2e/scenarios/tests-e2e-cloche-rendering.mjs/screenshots/AC-F015-006-six-double-crops-before-at-and-after-boundary.png",
-            "acId": "AC-F015-006",
-            "problem": "For all six double crops the before-boundary, at-boundary, and mature cloches look identical: no plant is displayed and no upper half appears at the age 3/4 boundary. The required height change between the three growth stages is absent.",
-            "reason": "Green Bean/Sugarcane/Tomato must add the TOP half at age 4 and Jute/Maize/Papyrus at age 3, and the mature fixtures should show both halves filling the cloche at 0.6875 scale. The close-up shows 18 same-height empty cloches, so the boundary transition and the mature double-crop model are not rendered.",
-            "fix": "After restoring the cloche crop rendering, verify tfie:doublecroptfc returns the bottom plus TOP states at the doubling age with the +1 block offset and that the three fixture growth values map to ages 3/4/7 on the client; confirm the top half is visible inside the glass at the at-boundary and mature positions.",
-            "id": "ER-002",
-            "status": "resolved",
-            "history": [
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: All double-crop fixtures now have complete Cloche structures and synchronized recipe data, allowing the before-boundary, boundary, and mature growth values to render their distinct lower and upper crop states.",
-                "at": "2026-11-26T13:40:20.611Z"
-              },
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: The six double-crop fixtures now have synchronized recipe state and complete Cloche split models. Their growth values cover immediately before the boundary, the exact age-3/4 boundary, and maturity, allowing the lower and TOP states to render distinctly.",
-                "at": "2026-11-26T13:42:29.248Z"
-              },
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: The six double-crop fixtures now use complete synchronized Cloches and growth values immediately before, exactly at, and after each age-3/4 boundary, allowing lower and TOP states to render distinctly.",
-                "at": "2026-11-26T13:54:04.202Z"
-              },
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: The six double-crop fixtures now use synchronized Cloche state at immediately-before, exact-boundary and mature growth values. tfie:doublecroptfc returns matching-age bottom/TOP states with the TOP translated one block upward and scale 0.6875.",
-                "at": "2026-11-26T14:18:27.382Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The six double crops now render at all three stages, with shorter before-boundary plants and visibly taller at-boundary and mature plants showing the upper half.",
-                "at": "2026-11-26T14:28:22.258Z"
-              }
-            ]
-          }
-        ]
-      },
-      "failure": {
-        "phase": "gametest",
-        "summary": "GameTest task failed",
-        "details": "GameTest task output:\nrecipes of type tfc:landslide\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 521 recipes of type tfc:chisel\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 2229 recipes of type tfc:heating\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 135 recipes of type tfc:quern\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 214 recipes of type tfc:pot\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 7 recipes of type tfc:scraping\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 104 recipes of type tfc:knapping\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 17 recipes of type tfc:alloy\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 205 recipes of type tfc:casting\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 5 recipes of type tfc:loom\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 311 recipes of type tfc:barrel_sealed\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 21 recipes of type tfc:barrel_instant\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 2 recipes of type tfc:barrel_instant_fluid\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 1 recipes of type tfc:bloomery\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 1018 recipes of type tfc:anvil\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 270 recipes of type tfc:welding\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 1 recipes of type tfc:blast_furnace\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 60 recipes of type tfc:glassworking\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 25 recipes of type tfc:sewing\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 0 recipes of type tfie:empty\n[00:05:00] [Server thread/INFO] [immersiveengineering/]: Couldn't fully analyze 1 immersiveengineering:jerrycan, missing knowledge for {1 minecraft:bucket=4.0}\n[00:05:00] [Server thread/INFO] [immersiveengineering/]: Finished recipe profiler for Arc Recycling, took 59 milliseconds\n[00:05:01] [Server thread/INFO] [minecraft/GameTestRunner]: Running test batch 'defaultBatch:1' (18 tests)...\n[00:05:02] [Server thread/INFO] [minecraft/GameTestServer]: [++++++++++++++++++++++++++++++++++++++++++++++++++++++                      ]\n[00:05:02] [Server thread/INFO] [minecraft/GameTestServer]: [++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++            ]\n[00:05:02] [Server thread/INFO] [minecraft/GameTestRunner]: Running test batch 'tfie_hemp_climate:0' (1 tests)...\n[00:05:02] [Server thread/INFO] [minecraft/GameTestServer]: [++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++    ]\n[00:05:02] [Server thread/INFO] [minecraft/GameTestRunner]: Running test batch 'tfie_dynamo_config:0' (1 tests)...\n[00:05:02] [Server thread/INFO] [minecraft/GameTestServer]: [+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   ]\n[00:05:02] [Server thread/INFO] [minecraft/GameTestRunner]: Running test batch 'tfie_hemp_persistence:0' (1 tests)...\n[00:05:02] [Server thread/INFO] [minecraft/GameTestServer]: [++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  ]\n[00:05:02] [Server thread/INFO] [minecraft/GameTestRunner]: Running test batch 'tfie_cloche_config:0' (1 tests)...\n[00:05:02] [Server thread/INFO] [minecraft/GameTestServer]: [+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ]\n[00:05:02] [Server thread/INFO] [minecraft/GameTestServer]: [++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++]\n[00:05:02] [Server thread/INFO] [minecraft/GameTestServer]: ========= 76 GAME TESTS COMPLETE IN 8.921 s ======================\n[00:05:02] [Server thread/INFO] [minecraft/GameTestServer]: All 76 required tests passed :)\n[00:05:02] [Server thread/INFO] [minecraft/GameTestServer]: ====================================================\n[00:05:03] [Server thread/INFO] [minecraft/MinecraftServer]: Stopping server\n[00:05:03] [Server thread/INFO] [minecraft/MinecraftServer]: Saving players\n[00:05:03] [Server thread/INFO] [minecraft/MinecraftServer]: Saving worlds\n[00:05:03] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[Test Level]'/minecraft:overworld\n[00:05:03] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[Test Level]'/minecraft:the_end\n[00:05:03] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[Test Level]'/minecraft:the_nether\n[00:05:03] [Server thread/DEBUG] [ne.ne.ne.co.CommonHooks/WP]: Gathered mod list to write to world save Test Level\n[00:05:03] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (world): All chunks are saved\n[00:05:03] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved\n[00:05:03] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved\n[00:05:03] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved\n[00:05:03] [Server thread/DEBUG] [ne.ne.fm.co.ConfigTracker/CONFIG]: Unloading configs type SERVER\n[00:05:03] [Server thread/INFO] [minecraft/GameTestServer]: Game test server shutting down\n33 actionable tasks: 8 executed, 25 up-to-date\nConfiguration cache entry reused.\n\n\nFAILURE: Build failed with an exception.\n\n* What went wrong:\nExecution failed for task ':runGameTestServerOverdims'.\n> Process 'command '/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java'' finished with non-zero exit value 1\n\n* Try:\n> Run with --stacktrace option to get the stack trace.\n> Run with --info or --debug option to get more log output.\n> Run with --scan to generate a Build Scan (powered by Develocity).\n> Get more help at https://help.gradle.org.\n\nBUILD FAILED in 5m 40s\n",
-        "logs": [
-          ".harness-state/runs/2026-11-26T14-59-22-918Z-099-M09-gametest/stdout.log",
-          ".harness-state/runs/2026-11-26T14-59-22-918Z-099-M09-gametest/stderr.log"
-        ],
-        "screenshots": []
-      },
+      "codeReview": null,
+      "codeReviewTree": null,
+      "e2eReview": null,
+      "failure": null,
       "conflicts": [],
       "reviewConflicts": [],
-      "session": "01a2179c-d117-7f10-a8a2-f0cc57ccb3d5"
+      "session": null
     }
   ],
   "completed": [
@@ -293,8 +29,9 @@
     "M06",
     "M08",
     "M04",
-    "M10"
+    "M10",
+    "M09"
   ],
-  "lastCheckpoint": "a76c080298b6d12a75493aea174c6fe4fc280b96",
+  "lastCheckpoint": "191580e967ad1e7e967b12b1c7cc26d11ab6d4ce",
   "fatal": null
 }

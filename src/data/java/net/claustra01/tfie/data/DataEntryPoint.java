@@ -7,6 +7,8 @@ import net.claustra01.tfie.data.recipes.BlueprintRecipes;
 import net.claustra01.tfie.data.recipes.ChiselRecipes;
 import net.claustra01.tfie.data.recipes.CokeOvenRecipes;
 import net.claustra01.tfie.data.recipes.CraftingRecipes;
+import net.claustra01.tfie.data.recipes.ClocheFertilizerRecipes;
+import net.claustra01.tfie.data.recipes.ClocheRecipes;
 import net.claustra01.tfie.data.recipes.CrusherRecipes;
 import net.claustra01.tfie.data.recipes.FermenterRecipes;
 import net.claustra01.tfie.data.recipes.HeatRecipes;
@@ -20,6 +22,7 @@ import net.claustra01.tfie.data.recipes.SqueezerRecipes;
 import net.claustra01.tfie.data.providers.BuiltinBlockTags;
 import net.claustra01.tfie.data.providers.BuiltinClimateRanges;
 import net.claustra01.tfie.data.providers.BuiltinFuels;
+import net.claustra01.tfie.data.providers.BuiltinFertilizers;
 import net.claustra01.tfie.data.providers.BuiltinFluidTags;
 import net.claustra01.tfie.data.providers.BuiltinItemHeat;
 import net.claustra01.tfie.data.providers.BuiltinItemSizes;
@@ -93,9 +96,14 @@ public final class DataEntryPoint
                 new MetalPressRecipes(output, event.getLookupProvider())));
         event.createProvider(output -> named("TFIE blueprint recipes",
                 new BlueprintRecipes(output, event.getLookupProvider())));
+        event.createProvider(output -> named("TFIE cloche recipes",
+                new ClocheRecipes(output, event.getLookupProvider())));
+        event.createProvider(output -> named("TFIE cloche fertilizer recipes",
+                new ClocheFertilizerRecipes(output, event.getLookupProvider())));
         event.createProvider(output -> new BuiltinItemTags(output, event.getLookupProvider(),
                 event.getExistingFileHelper()));
         event.createProvider(BuiltinFuels::new);
+        event.createProvider(BuiltinFertilizers::new);
         event.createProvider(BuiltinItemHeat::new);
         event.createProvider(BuiltinItemSizes::new);
         event.createProvider(output -> new BuiltinFluidTags(output, event.getLookupProvider(),

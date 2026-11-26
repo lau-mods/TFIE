@@ -12,6 +12,7 @@ import net.claustra01.tfie.config.TFIEConfig;
 import net.claustra01.tfie.util.CrucibleHeater;
 import net.claustra01.tfie.util.HerbicideEffects;
 import net.claustra01.tfie.util.ModInteractionManager;
+import net.claustra01.tfie.util.ModClocheRenderFunctions;
 import net.dries007.tfc.common.blockentities.TFCBlockEntities;
 import net.minecraft.gametest.framework.GlobalTestReporter;
 import net.minecraft.gametest.framework.JUnitLikeTestReporter;
@@ -46,6 +47,7 @@ public final class TFIE
         ModBlockEntities.register(modEventBus);
         ModCreativeTabs.register(modEventBus);
         TFIEConditions.register(modEventBus);
+        ModClocheRenderFunctions.register();
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, DrillheadRepair::onAnvilUpdate);
         modEventBus.addListener(this::registerRecipes);
         modEventBus.addListener(this::setup);
@@ -73,6 +75,7 @@ public final class TFIE
         event.enqueueWork(() ->
         {
             ModInteractionManager.register();
+            ModClocheRenderFunctions.initializeSoils();
             HerbicideEffects.register();
         });
     }

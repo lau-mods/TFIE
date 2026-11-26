@@ -10,6 +10,7 @@ import net.claustra01.tfie.data.recipes.CraftingRecipes;
 import net.claustra01.tfie.data.recipes.CrusherRecipes;
 import net.claustra01.tfie.data.recipes.FermenterRecipes;
 import net.claustra01.tfie.data.recipes.HeatRecipes;
+import net.claustra01.tfie.data.recipes.IECraftingRecipes;
 import net.claustra01.tfie.data.recipes.MetalPressRecipes;
 import net.claustra01.tfie.data.recipes.MixerRecipes;
 import net.claustra01.tfie.data.recipes.RecipeOverrides;
@@ -84,6 +85,8 @@ public final class DataEntryPoint
                 new AnvilRecipes(output, event.getLookupProvider())));
         event.createProvider(output -> named("TFIE crafting recipes",
                 new CraftingRecipes(output, event.getLookupProvider())));
+        event.createProvider(output -> named("TFIE IE crafting recipes",
+                new IECraftingRecipes(output, event.getLookupProvider())));
         event.createProvider(output -> named("TFIE recipe overrides",
                 new RecipeOverrides(output, event.getLookupProvider())));
         event.createProvider(output -> named("TFIE metal press recipes",

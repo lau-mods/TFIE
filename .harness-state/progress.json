@@ -3,8 +3,8 @@
   "active": [
     {
       "id": "M09",
-      "phase": "code_review",
-      "baseCommit": "03f172f6dcee59400ada6dcc65a877dc58f4f67b",
+      "phase": "e2e",
+      "baseCommit": "a76c080298b6d12a75493aea174c6fe4fc280b96",
       "failures": {
         "build": 0,
         "gametest": 0,
@@ -75,6 +75,42 @@
                 "by": "claude",
                 "note": "`FertilizerGameTests.assertFertilizer` (lines 263-273) now accepts the TFC data ID, resolves it with `Fertilizer.MANAGER.get(id(dataId))`, asserts the entry exists, and checks its ingredient against the expected IE item plus all three N/P/K values. The test calls it with `tfie:dust_saltpeter`, `tfie:fertilizer`, and `tfie:slag`, so the required data IDs are explicitly verified.",
                 "at": "2026-11-26T13:40:39.324Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "`assertFertilizer` (lines 263-273) now accepts a TFC data ID, resolves it via `Fertilizer.MANAGER.get(id(dataId))`, asserts the entry is non-null, and checks its ingredient against the expected IE item plus N/P/K values. Calls at lines 53-58 pass exactly `tfie:dust_saltpeter`, `tfie:fertilizer`, and `tfie:slag`, so the required IDs are actually tested.",
+                "at": "2026-11-26T13:42:49.635Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "`assertFertilizer` (lines 263-273) still takes a TFC data ID and resolves it via `Fertilizer.MANAGER.get(id(dataId))`, asserting the entry is non-null and that its ingredient matches the expected IE item with the expected N/P/K values. Calls at lines 53-58 pass exactly `tfie:dust_saltpeter`, `tfie:fertilizer`, and `tfie:slag`, so the three required data IDs are explicitly verified. The only diff (build.gradle task ordering) does not touch this file or behavior.",
+                "at": "2026-11-26T13:55:01.645Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "`assertFertilizer` (lines 263-273) accepts a TFC data ID, resolves it via `Fertilizer.MANAGER.get(id(dataId))`, asserts non-null, and checks the ingredient against the expected item plus all N/P/K values. Lines 53-58 call it with exactly `tfie:dust_saltpeter`, `tfie:fertilizer`, and `tfie:slag`, so the three required data IDs are explicitly tested. The diff does not touch this file.",
+                "at": "2026-11-26T14:19:00.090Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "`assertFertilizer` (lines 263-273) accepts the TFC data ID, resolves it with `Fertilizer.MANAGER.get(id(dataId))`, asserts non-null, and then checks the ingredient matches the expected IE item plus N/P/K values. Calls at lines 53-58 pass exactly `tfie:dust_saltpeter`, `tfie:fertilizer`, and `tfie:slag`, so the three required data IDs are explicitly verified. The `id(...)` helper exists at line 290 and the diff does not touch this file.",
+                "at": "2026-11-26T14:38:37.459Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "`FertilizerGameTests.assertFertilizer` (lines 263-273) takes a TFC data ID, resolves it via `Fertilizer.MANAGER.get(id(dataId))`, asserts non-null, and checks its ingredient against the expected IE item plus all N/P/K values. Lines 53-58 call it with exactly `tfie:dust_saltpeter`, `tfie:fertilizer`, and `tfie:slag`, so the three required IDs are explicitly verified. The diff (AnvilGameTests) does not touch this file.",
+                "at": "2026-11-26T14:59:22.915Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "`FertilizerGameTests.assertFertilizer` (lines 263-273) still takes a TFC data ID, resolves it with `Fertilizer.MANAGER.get(id(dataId))`, asserts the entry is non-null, and checks its ingredient against the expected IE item plus all three N/P/K values. Lines 53-58 call it with exactly `tfie:dust_saltpeter`, `tfie:fertilizer`, and `tfie:slag`, so the three required data IDs are explicitly verified. The diff only touches HerbicideGameTests.",
+                "at": "2026-11-26T15:13:47.553Z"
               }
             ]
           },
@@ -104,12 +140,48 @@
                 "by": "claude",
                 "note": "`src/data/java/net/claustra01/tfie/data/recipes/ClocheRecipes.java` no longer imports or references `net.minecraft.world.item.ItemStack`; the import block and file body contain no `ItemStack` usage.",
                 "at": "2026-11-26T13:40:39.324Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "`ClocheRecipes.java` imports no `net.minecraft.world.item.ItemStack` and contains no `ItemStack` reference; the import block (lines 3-24) and body are clean.",
+                "at": "2026-11-26T13:42:49.635Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "`ClocheRecipes.java` contains no `net.minecraft.world.item.ItemStack` import and no `ItemStack` reference anywhere in its import block (lines 3-24) or body. The build.gradle-only diff does not affect this file.",
+                "at": "2026-11-26T13:55:01.645Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "`ClocheRecipes.java` has no `net.minecraft.world.item.ItemStack` import (imports at lines 3-24) and no `ItemStack` reference anywhere in the file; the diff does not modify this file.",
+                "at": "2026-11-26T14:19:00.090Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "`src/data/java/net/claustra01/tfie/data/recipes/ClocheRecipes.java` has no `net.minecraft.world.item.ItemStack` import (import block lines 3-24) and grep finds no `ItemStack` reference anywhere in the file. The diff does not modify this file.",
+                "at": "2026-11-26T14:38:37.459Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "`src/data/java/net/claustra01/tfie/data/recipes/ClocheRecipes.java` imports no `net.minecraft.world.item.ItemStack` (imports lines 3-21) and grep finds no `ItemStack` reference anywhere in the file. The diff does not modify this file.",
+                "at": "2026-11-26T14:59:22.915Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "`src/data/java/net/claustra01/tfie/data/recipes/ClocheRecipes.java` no longer imports `net.minecraft.world.item.ItemStack` (imports lines 3-21) and grep finds no `ItemStack` reference anywhere in the file. The diff does not modify this file.",
+                "at": "2026-11-26T15:13:47.553Z"
               }
             ]
           }
         ]
       },
-      "codeReviewTree": "ee7d400fcea3198a37168b85f1d51be79c91d573",
+      "codeReviewTree": "86c07af4cdf09680f3744fc201752049fe9a3320",
       "e2eReview": {
         "kind": "e2e",
         "issues": [
@@ -120,7 +192,7 @@
             "reason": "The fixtures hold TFC seeds and tfc:dirt inputs at growth 124000, so near-mature crop models and the matching tfc:block/farmland/<soil> surfaces should be displayed. The screenshot shows neither crops nor distinguishable soil textures anywhere, so the cloche contents or their render data are not reaching the rendering path.",
             "fix": "Ensure the fixture data used for display (seed, dirt, water/energy, growth) is present on the client and that a client block-entity update is sent; verify the cloche recipe/render function resolves for every seed and that the registered farmland texture is applied for each of the eight tfc:dirt/<soil> inputs, then recapture the view.",
             "id": "ER-001",
-            "status": "open",
+            "status": "resolved",
             "history": [
               {
                 "status": "open",
@@ -133,6 +205,24 @@
                 "by": "codex",
                 "note": "fixed: The fixture now writes soil and seed stacks directly to the Cloche block entity’s Items NBT, supplies its tank/energy/growth state, constructs all three split-model blocks, and waits for client synchronization before capture. This restores crop and soil rendering for all 29 fixtures.",
                 "at": "2026-11-26T13:42:29.248Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The E2E fixtures now construct all three Cloche blocks, populate soil and seed inventory NBT, supply water, energy and growth, and wait for server/client synchronization before capturing all 29 crops and eight soils.",
+                "at": "2026-11-26T13:54:04.202Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The scenario now constructs all three Cloche blocks before merging the master inventory, water, energy, fertilizer-period and growth NBT, then waits for block loading and client synchronization. All eight dirt inputs have registered farmland surface textures.",
+                "at": "2026-11-26T14:18:27.382Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new all-29-crops screenshot shows populated cloches with distinct crop models and visible soil surfaces at the bases; the interiors are no longer empty.",
+                "at": "2026-11-26T14:28:22.258Z"
               }
             ]
           },
@@ -143,7 +233,7 @@
             "reason": "Green Bean/Sugarcane/Tomato must add the TOP half at age 4 and Jute/Maize/Papyrus at age 3, and the mature fixtures should show both halves filling the cloche at 0.6875 scale. The close-up shows 18 same-height empty cloches, so the boundary transition and the mature double-crop model are not rendered.",
             "fix": "After restoring the cloche crop rendering, verify tfie:doublecroptfc returns the bottom plus TOP states at the doubling age with the +1 block offset and that the three fixture growth values map to ages 3/4/7 on the client; confirm the top half is visible inside the glass at the at-boundary and mature positions.",
             "id": "ER-002",
-            "status": "open",
+            "status": "resolved",
             "history": [
               {
                 "status": "open",
@@ -156,87 +246,42 @@
                 "by": "codex",
                 "note": "fixed: The six double-crop fixtures now have synchronized recipe state and complete Cloche split models. Their growth values cover immediately before the boundary, the exact age-3/4 boundary, and maturity, allowing the lower and TOP states to render distinctly.",
                 "at": "2026-11-26T13:42:29.248Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The six double-crop fixtures now use complete synchronized Cloches and growth values immediately before, exactly at, and after each age-3/4 boundary, allowing lower and TOP states to render distinctly.",
+                "at": "2026-11-26T13:54:04.202Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The six double-crop fixtures now use synchronized Cloche state at immediately-before, exact-boundary and mature growth values. tfie:doublecroptfc returns matching-age bottom/TOP states with the TOP translated one block upward and scale 0.6875.",
+                "at": "2026-11-26T14:18:27.382Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The six double crops now render at all three stages, with shorter before-boundary plants and visibly taller at-boundary and mature plants showing the upper half.",
+                "at": "2026-11-26T14:28:22.258Z"
               }
             ]
           }
         ]
       },
-      "failure": null,
+      "failure": {
+        "phase": "gametest",
+        "summary": "GameTest task failed",
+        "details": "GameTest task output:\nrecipes of type tfc:landslide\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 521 recipes of type tfc:chisel\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 2229 recipes of type tfc:heating\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 135 recipes of type tfc:quern\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 214 recipes of type tfc:pot\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 7 recipes of type tfc:scraping\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 104 recipes of type tfc:knapping\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 17 recipes of type tfc:alloy\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 205 recipes of type tfc:casting\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 5 recipes of type tfc:loom\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 311 recipes of type tfc:barrel_sealed\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 21 recipes of type tfc:barrel_instant\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 2 recipes of type tfc:barrel_instant_fluid\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 1 recipes of type tfc:bloomery\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 1018 recipes of type tfc:anvil\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 270 recipes of type tfc:welding\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 1 recipes of type tfc:blast_furnace\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 60 recipes of type tfc:glassworking\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 25 recipes of type tfc:sewing\n[00:05:00] [Server thread/DEBUG] [ne.dr.tf.ut.Helpers/]: Loaded 0 recipes of type tfie:empty\n[00:05:00] [Server thread/INFO] [immersiveengineering/]: Couldn't fully analyze 1 immersiveengineering:jerrycan, missing knowledge for {1 minecraft:bucket=4.0}\n[00:05:00] [Server thread/INFO] [immersiveengineering/]: Finished recipe profiler for Arc Recycling, took 59 milliseconds\n[00:05:01] [Server thread/INFO] [minecraft/GameTestRunner]: Running test batch 'defaultBatch:1' (18 tests)...\n[00:05:02] [Server thread/INFO] [minecraft/GameTestServer]: [++++++++++++++++++++++++++++++++++++++++++++++++++++++                      ]\n[00:05:02] [Server thread/INFO] [minecraft/GameTestServer]: [++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++            ]\n[00:05:02] [Server thread/INFO] [minecraft/GameTestRunner]: Running test batch 'tfie_hemp_climate:0' (1 tests)...\n[00:05:02] [Server thread/INFO] [minecraft/GameTestServer]: [++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++    ]\n[00:05:02] [Server thread/INFO] [minecraft/GameTestRunner]: Running test batch 'tfie_dynamo_config:0' (1 tests)...\n[00:05:02] [Server thread/INFO] [minecraft/GameTestServer]: [+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   ]\n[00:05:02] [Server thread/INFO] [minecraft/GameTestRunner]: Running test batch 'tfie_hemp_persistence:0' (1 tests)...\n[00:05:02] [Server thread/INFO] [minecraft/GameTestServer]: [++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  ]\n[00:05:02] [Server thread/INFO] [minecraft/GameTestRunner]: Running test batch 'tfie_cloche_config:0' (1 tests)...\n[00:05:02] [Server thread/INFO] [minecraft/GameTestServer]: [+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ]\n[00:05:02] [Server thread/INFO] [minecraft/GameTestServer]: [++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++]\n[00:05:02] [Server thread/INFO] [minecraft/GameTestServer]: ========= 76 GAME TESTS COMPLETE IN 8.921 s ======================\n[00:05:02] [Server thread/INFO] [minecraft/GameTestServer]: All 76 required tests passed :)\n[00:05:02] [Server thread/INFO] [minecraft/GameTestServer]: ====================================================\n[00:05:03] [Server thread/INFO] [minecraft/MinecraftServer]: Stopping server\n[00:05:03] [Server thread/INFO] [minecraft/MinecraftServer]: Saving players\n[00:05:03] [Server thread/INFO] [minecraft/MinecraftServer]: Saving worlds\n[00:05:03] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[Test Level]'/minecraft:overworld\n[00:05:03] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[Test Level]'/minecraft:the_end\n[00:05:03] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[Test Level]'/minecraft:the_nether\n[00:05:03] [Server thread/DEBUG] [ne.ne.ne.co.CommonHooks/WP]: Gathered mod list to write to world save Test Level\n[00:05:03] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (world): All chunks are saved\n[00:05:03] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved\n[00:05:03] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved\n[00:05:03] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved\n[00:05:03] [Server thread/DEBUG] [ne.ne.fm.co.ConfigTracker/CONFIG]: Unloading configs type SERVER\n[00:05:03] [Server thread/INFO] [minecraft/GameTestServer]: Game test server shutting down\n33 actionable tasks: 8 executed, 25 up-to-date\nConfiguration cache entry reused.\n\n\nFAILURE: Build failed with an exception.\n\n* What went wrong:\nExecution failed for task ':runGameTestServerOverdims'.\n> Process 'command '/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java'' finished with non-zero exit value 1\n\n* Try:\n> Run with --stacktrace option to get the stack trace.\n> Run with --info or --debug option to get more log output.\n> Run with --scan to generate a Build Scan (powered by Develocity).\n> Get more help at https://help.gradle.org.\n\nBUILD FAILED in 5m 40s\n",
+        "logs": [
+          ".harness-state/runs/2026-11-26T14-59-22-918Z-099-M09-gametest/stdout.log",
+          ".harness-state/runs/2026-11-26T14-59-22-918Z-099-M09-gametest/stderr.log"
+        ],
+        "screenshots": []
+      },
       "conflicts": [],
       "reviewConflicts": [],
       "session": "01a2179c-d117-7f10-a8a2-f0cc57ccb3d5"
-    },
-    {
-      "id": "M10",
-      "phase": "implementation",
-      "baseCommit": "a6056b588d369a042effbab3a95df112b2317e9f",
-      "failures": {
-        "build": 0,
-        "gametest": 0,
-        "e2e": 0
-      },
-      "recoveries": 0,
-      "codeReview": {
-        "kind": "code",
-        "issues": [
-          {
-            "target": "tests/e2e/general-crafting.mjs:20-44, tests/acceptance.json:111",
-            "acId": "AC-F011-009",
-            "problem": "The E2E recipe list omits Ersatz Leather entirely. It opens only the crafting table, workbench, components blueprint, fluorescent tube, chemthrower, jerrycan and three posts, so the required `tfie:crafting/ersatz_leather_firmalife` JEI view is never captured.",
-            "reason": "AC-F011-009's Action explicitly requires displaying the Ersatz Leather recipe, and E2E is the prescribed verification method for JEI display. A GameTest cannot replace this check.",
-            "fix": "Add `immersiveengineering:ersatz_leather` to the recipe views in the FirmaLife configuration and take a screenshot showing its raw-honey centre, eight fabric inputs and eight-item output.",
-            "id": "CR-001",
-            "status": "open",
-            "history": []
-          },
-          {
-            "target": "tests/e2e/general-crafting.mjs:1-47, tests/acceptance.json:111",
-            "acId": "AC-F011-009",
-            "problem": "The scenario runs only once, in the base configuration. There is no FirmaLife-enabled E2E run, and no negative run showing that the Ersatz Leather recipe is absent without FirmaLife.",
-            "reason": "AC-F011-009's Preconditions require both FirmaLife present and absent configurations, and its Expected Result distinguishes the two. The E2E harness server is configured without FirmaLife, so the FirmaLife-only path is never exercised.",
-            "fix": "Add a second E2E scenario/configuration that loads FirmaLife and captures the Ersatz Leather JEI view, keep a base scenario that confirms the recipe is not displayed, and register both scenarios for AC-F011-009 in `tests/acceptance.json`.",
-            "id": "CR-002",
-            "status": "open",
-            "history": []
-          },
-          {
-            "target": "src/main/java/net/claustra01/tfie/gametest/crafting/CraftingGameTests.java:264-292",
-            "acId": "AC-F011-005",
-            "problem": "`hemp_tags_and_firmalife_ersatz_leather` only checks that IE and TFC items are members of the two tags. It never runs `balloon`, `cushion`, `strip_curtain`, `toolupgrade_buzzsaw_spareblades`, `wirecoil_structure_rope` or `gunpowder_barrel` with `tfc:burlap_cloth`/`tfc:jute_fiber`, and it checks only the Ersatz Leather result count, not its result item. A recipe hard-coded to IE materials or producing the wrong item would pass.",
-            "reason": "AC-F011-005 requires each chapter 15 fabric/fiber recipe to be executed with both IE and TFC materials, requires Ersatz Leather to produce `immersiveengineering:ersatz_leather` eight times, and requires no material-conversion recipes. Tag membership alone does not prove those recipe behaviours.",
-            "fix": "For every fabric/fiber recipe, build the expected pattern with TFC fabric/fiber and assert it matches, in addition to the IE case. Assert the Ersatz result item ID and count, and check that no IE/TFC fabric or fiber conversion recipes were added.",
-            "id": "CR-003",
-            "status": "open",
-            "history": []
-          },
-          {
-            "target": "src/main/java/net/claustra01/tfie/gametest/crafting/CraftingGameTests.java:362-410",
-            "acId": "AC-F011-008",
-            "problem": "`furnace_materials_and_manual_recipe_removals` checks only the result count of Reinforced Blast Brick; it never checks that the recipe consumes Blast Brick plus a Steel Plate, rejects other plates, or produces the correct result item. `assertRecipe` also checks only counts for Alloy Brick and Blast Brick, not the result item.",
-            "reason": "AC-F011-008 specifies the exact input and output of all three furnace-building recipes. A recipe with a wrong input or a different item of the same count would still pass the current assertions.",
-            "fix": "Look up the Reinforced Blast Brick recipe, assert its ingredients accept `immersiveengineering:blastbrick` and a member of `#c:plates/steel`, reject a non-steel plate, and assert the result is `immersiveengineering:blastbrick_reinforced` with count 1. Extend `assertRecipe` to assert the exact result item for Alloy Brick and Blast Brick.",
-            "id": "CR-004",
-            "status": "open",
-            "history": []
-          },
-          {
-            "target": "src/main/java/net/claustra01/tfie/gametest/crafting/CraftingGameTests.java:35-117,128-204,344-352",
-            "acId": "AC-F011-001",
-            "problem": "Tag-based ingredients are represented by one sample item and the tests never assert that the ingredient is the required tag. For example, a recipe using fixed `minecraft:leather` instead of `#c:leathers`, fixed `minecraft:stick` instead of `#c:rods/wooden`, or fixed `immersiveengineering:plate_iron` instead of `#c:plates/iron` in Jerrycan would still pass. AC-F011-002's tag check is likewise limited to rejecting wrought iron from the normal iron tag.",
-            "reason": "AC-F011-001 requires fixed IDs and tags not to be confused, AC-F011-002 requires the three wrought-iron tags, and AC-F011-007 requires Jerrycan's `#c:plates/iron` tag. Testing only one tag member cannot distinguish a tag from a fixed item.",
-            "fix": "Record whether each expected key is a tag or a fixed item and assert the serialized `Ingredient` uses the expected tag, or test multiple tag members and a non-member rejection for each tag. Add an explicit `#c:plates/iron` check for Jerrycan.",
-            "id": "CR-005",
-            "status": "open",
-            "history": []
-          }
-        ]
-      },
-      "codeReviewTree": "c0d9ac443229881b4ddecab8cc5d266a89f2dbac",
-      "e2eReview": null,
-      "failure": null,
-      "conflicts": [],
-      "reviewConflicts": [],
-      "session": "01a217f1-f07e-75b0-8ea1-978cc918f711"
     }
   ],
   "completed": [
@@ -247,8 +292,9 @@
     "M07",
     "M06",
     "M08",
-    "M04"
+    "M04",
+    "M10"
   ],
-  "lastCheckpoint": "a6056b588d369a042effbab3a95df112b2317e9f",
+  "lastCheckpoint": "a76c080298b6d12a75493aea174c6fe4fc280b96",
   "fatal": null
 }

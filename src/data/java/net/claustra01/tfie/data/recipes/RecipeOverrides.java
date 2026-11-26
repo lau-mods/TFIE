@@ -51,6 +51,28 @@ public final class RecipeOverrides extends RecipeProvider
                 "armor_faraday_leggings", "drillhead_iron", "drillhead_steel", "empty_casing",
                 "gunpart_barrel", "toolupgrade_revolver_bayonet"))
             disable(output, "crafting/" + recipe);
+
+        for(String armor : List.of("boots", "chestplate", "helmet", "leggings"))
+            disable(output, "crafting/armor_steel_" + armor);
+        for(String tool : List.of("axe", "hoe", "pickaxe", "shovel", "sword"))
+            disable(output, "crafting/" + tool + "_steel");
+
+        for(String recipe : List.of(
+                "copper_ingot_to_nugget_copper", "nugget_copper_to_copper_ingot",
+                "ingot_nickel_to_nugget_nickel", "nugget_nickel_to_ingot_nickel",
+                "ingot_silver_to_nugget_silver", "nugget_silver_to_ingot_silver",
+                "ingot_steel_to_nugget_steel", "nugget_steel_to_ingot_steel"))
+            disable(output, "crafting/" + recipe);
+        for(String metal : List.of(
+                "aluminum", "constantan", "electrum", "lead", "nickel", "silver", "steel", "uranium"))
+        {
+            disable(output, "crafting/ingot_" + metal + "_to_storage_" + metal);
+            disable(output, "crafting/storage_" + metal + "_to_ingot_" + metal);
+        }
+        for(String metal : List.of("copper", "gold", "iron", "nickel", "silver", "steel"))
+            disable(output, "crafting/plate_" + metal + "_hammering");
+        for(String metal : List.of("iron", "steel"))
+            disable(output, "crafting/stick_" + metal);
     }
 
     private static void disable(RecipeOutput output, String path)

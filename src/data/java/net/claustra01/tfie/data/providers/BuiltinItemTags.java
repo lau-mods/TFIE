@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.List;
 
 public final class BuiltinItemTags extends ItemTagsProvider
 {
@@ -25,6 +26,13 @@ public final class BuiltinItemTags extends ItemTagsProvider
     private static final TagKey<Item> MOLDS = tag("tfie", "molds");
     private static final TagKey<Item> FORBIDDEN_IN_CRATES = tag(
             "immersiveengineering", "forbidden_in_crates");
+    private static final TagKey<Item> HEMP_FABRIC = tag("c", "fabric_hemp");
+    private static final TagKey<Item> HEMP_FIBER = tag("c", "fiber_hemp");
+    private static final TagKey<Item> STONE_BRICKS = tag("tfie", "stone_bricks_no_variants");
+    private static final List<String> ROCKS = List.of(
+            "granite", "diorite", "gabbro", "shale", "claystone", "limestone", "conglomerate",
+            "dolomite", "chert", "chalk", "tuff", "rhyolite", "basalt", "andesite", "dacite",
+            "quartzite", "slate", "phyllite", "schist", "gneiss", "marble");
 
     public BuiltinItemTags(PackOutput output, CompletableFuture<HolderLookup.Provider> registries,
                            ExistingFileHelper existingFileHelper)
@@ -50,6 +58,11 @@ public final class BuiltinItemTags extends ItemTagsProvider
                 item("immersiveengineering:mold_packing_9"),
                 item("immersiveengineering:mold_unpacking"));
         tag(FORBIDDEN_IN_CRATES).add(item("minecraft:white_shulker_box"));
+        tag(HEMP_FABRIC).add(item("tfc:burlap_cloth"));
+        tag(HEMP_FIBER).add(item("tfc:jute_fiber"));
+        var stoneBricks = tag(STONE_BRICKS);
+        ROCKS.forEach(rock -> stoneBricks.add(item("tfc:rock/bricks/" + rock)));
+        stoneBricks.add(item("minecraft:stone_bricks"));
     }
 
     private static TagKey<Item> tag(String namespace, String path)

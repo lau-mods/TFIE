@@ -24,13 +24,23 @@ public final class BarrelRecipes extends RecipeProvider
     @Override
     protected void buildRecipes(RecipeOutput output)
     {
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(TFIE.MOD_ID, "barrel/treated_wood_lumber");
+        ResourceLocation treatedLumberId = ResourceLocation.fromNamespaceAndPath(
+                TFIE.MOD_ID, "barrel/treated_wood_lumber");
         BarrelRecipe.Builder builder = new BarrelRecipe.Builder(recipe ->
-                output.accept(id, (Recipe<?>)recipe, null));
+                output.accept(treatedLumberId, (Recipe<?>)recipe, null));
         builder.input(ItemTags.create(ResourceLocation.fromNamespaceAndPath("tfc", "lumber")))
                 .input(BuiltInRegistries.FLUID.get(ResourceLocation.fromNamespaceAndPath(
                         "immersiveengineering", "creosote")), 50)
                 .output(ModItems.TREATED_WOOD_LUMBER.get())
                 .sealed(8000);
+
+        ResourceLocation redstoneAcidId = ResourceLocation.fromNamespaceAndPath(
+                TFIE.MOD_ID, "barrel/redstone_acid");
+        builder = new BarrelRecipe.Builder(recipe -> output.accept(redstoneAcidId, (Recipe<?>)recipe, null));
+        builder.input(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "dusts/redstone")))
+                .input(BuiltInRegistries.FLUID.get(ResourceLocation.fromNamespaceAndPath("minecraft", "water")), 250)
+                .output(BuiltInRegistries.FLUID.get(ResourceLocation.fromNamespaceAndPath(
+                        "immersiveengineering", "redstone_acid")), 250)
+                .instant();
     }
 }

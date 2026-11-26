@@ -4,10 +4,18 @@ import net.claustra01.tfie.TFIE;
 import net.claustra01.tfie.data.recipes.AnvilRecipes;
 import net.claustra01.tfie.data.recipes.BarrelRecipes;
 import net.claustra01.tfie.data.recipes.BlueprintRecipes;
+import net.claustra01.tfie.data.recipes.ChiselRecipes;
+import net.claustra01.tfie.data.recipes.CokeOvenRecipes;
 import net.claustra01.tfie.data.recipes.CraftingRecipes;
+import net.claustra01.tfie.data.recipes.CrusherRecipes;
+import net.claustra01.tfie.data.recipes.FermenterRecipes;
+import net.claustra01.tfie.data.recipes.HeatRecipes;
 import net.claustra01.tfie.data.recipes.MetalPressRecipes;
+import net.claustra01.tfie.data.recipes.MixerRecipes;
 import net.claustra01.tfie.data.recipes.RecipeOverrides;
+import net.claustra01.tfie.data.recipes.RefineryRecipes;
 import net.claustra01.tfie.data.recipes.SawmillRecipes;
+import net.claustra01.tfie.data.recipes.SqueezerRecipes;
 import net.claustra01.tfie.data.providers.BuiltinBlockTags;
 import net.claustra01.tfie.data.providers.BuiltinClimateRanges;
 import net.claustra01.tfie.data.providers.BuiltinFuels;
@@ -56,6 +64,22 @@ public final class DataEntryPoint
                 new SawmillRecipes(output, event.getLookupProvider())));
         event.createProvider(output -> named("TFIE barrel recipes",
                 new BarrelRecipes(output, event.getLookupProvider())));
+        event.createProvider(output -> named("TFIE squeezer recipes",
+                new SqueezerRecipes(output, event.getLookupProvider())));
+        event.createProvider(output -> named("TFIE fermenter recipes",
+                new FermenterRecipes(output, event.getLookupProvider())));
+        event.createProvider(output -> named("TFIE coke oven recipes",
+                new CokeOvenRecipes(output, event.getLookupProvider())));
+        event.createProvider(output -> named("TFIE crusher recipes",
+                new CrusherRecipes(output, event.getLookupProvider())));
+        event.createProvider(output -> named("TFIE chisel recipes",
+                new ChiselRecipes(output, event.getLookupProvider())));
+        event.createProvider(output -> named("TFIE heating recipes",
+                new HeatRecipes(output, event.getLookupProvider())));
+        event.createProvider(output -> named("TFIE mixer recipes",
+                new MixerRecipes(output, event.getLookupProvider())));
+        event.createProvider(output -> named("TFIE refinery recipes",
+                new RefineryRecipes(output, event.getLookupProvider())));
         event.createProvider(output -> named("TFIE anvil recipes",
                 new AnvilRecipes(output, event.getLookupProvider())));
         event.createProvider(output -> named("TFIE crafting recipes",

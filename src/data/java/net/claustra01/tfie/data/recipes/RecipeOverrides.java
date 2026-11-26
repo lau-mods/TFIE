@@ -26,23 +26,36 @@ public final class RecipeOverrides extends RecipeProvider
     @Override
     protected void buildRecipes(RecipeOutput output)
     {
-        output.accept(ResourceLocation.fromNamespaceAndPath(
-                "immersiveengineering", "crafting/treated_wood_horizontal"), EmptyRecipe.INSTANCE, null,
-                FalseCondition.INSTANCE);
+        disable(output, "crafting/treated_wood_horizontal");
+        disable(output, "crafting/gunpowder_from_dusts");
+        disable(output, "crusher/nether_gold");
+        disable(output, "crusher/wool");
+        for(String metal : List.of(
+                "aluminum", "ardite", "coal", "cobalt", "copper", "diamond", "emerald", "fluorite",
+                "gold", "iron", "lapis", "lead", "nickel", "osmium", "platinum", "quartz", "redstone",
+                "silver", "tin", "tungsten", "uranium", "zinc"))
+            disable(output, "crusher/ore_" + metal);
+        for(String metal : List.of(
+                "aluminum", "ardite", "cobalt", "copper", "gold", "iron", "lead", "nickel", "osmium",
+                "platinum", "silver", "tin", "tungsten", "uranium", "zinc"))
+        {
+            disable(output, "crusher/raw_ore_" + metal);
+            disable(output, "crusher/raw_block_" + metal);
+        }
         for(String metal : REPLACED_METALS)
             for(String shape : List.of("plate", "rod", "wire"))
-                output.accept(ResourceLocation.fromNamespaceAndPath(
-                        "immersiveengineering", "metalpress/" + shape + "_" + metal),
-                        EmptyRecipe.INSTANCE, null, FalseCondition.INSTANCE);
-        output.accept(ResourceLocation.fromNamespaceAndPath(
-                "immersiveengineering", "metalpress/rod_netherite"), EmptyRecipe.INSTANCE, null,
-                FalseCondition.INSTANCE);
+                disable(output, "metalpress/" + shape + "_" + metal);
+        disable(output, "metalpress/rod_netherite");
         for(String recipe : List.of(
                 "armor_faraday_boots", "armor_faraday_chestplate", "armor_faraday_helmet",
                 "armor_faraday_leggings", "drillhead_iron", "drillhead_steel", "empty_casing",
                 "gunpart_barrel", "toolupgrade_revolver_bayonet"))
-            output.accept(ResourceLocation.fromNamespaceAndPath(
-                    "immersiveengineering", "crafting/" + recipe), EmptyRecipe.INSTANCE, null,
-                    FalseCondition.INSTANCE);
+            disable(output, "crafting/" + recipe);
+    }
+
+    private static void disable(RecipeOutput output, String path)
+    {
+        output.accept(ResourceLocation.fromNamespaceAndPath("immersiveengineering", path), EmptyRecipe.INSTANCE,
+                null, FalseCondition.INSTANCE);
     }
 }

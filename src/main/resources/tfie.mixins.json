@@ -4,6 +4,7 @@
   "package": "net.claustra01.tfie.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "CokeOvenLogicMixin",
     "accessor.TickableInventoryBlockEntityAccessor",
     "accessor.CrucibleBlockEntityAccessor",
     "AllowInCrateMixin",

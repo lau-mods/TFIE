@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "firmalife"
+    }
+  ],
+  "type": "immersiveengineering:mixer",
+  "energy": 800,
+  "fluid": {
+    "amount": 200,
+    "tag": "minecraft:water"
+  },
+  "inputs": [
+    {
+      "item": "tfc:blubber"
+    }
+  ],
+  "result": {
+    "amount": 200,
+    "id": "tfc:tallow"
+  }
+}

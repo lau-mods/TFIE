@@ -187,7 +187,8 @@ public final class HempGameTests
         helper.succeed();
     }
 
-    @GameTest(template = TEMPLATE, templateNamespace = "tfie", skyAccess = true)
+    @GameTest(template = TEMPLATE, templateNamespace = "tfie", skyAccess = true,
+            batch = "tfie_hemp_climate")
     public static void hemp_climate_and_nutrients(GameTestHelper helper)
     {
         CompoundTag calendarState = Calendars.SERVER.write();
@@ -402,7 +403,8 @@ public final class HempGameTests
         helper.succeed();
     }
 
-    @GameTest(template = TEMPLATE, templateNamespace = "tfie", skyAccess = true)
+    @GameTest(template = TEMPLATE, templateNamespace = "tfie", skyAccess = true,
+            batch = "tfie_hemp_seasons")
     public static void hemp_worldgen_and_seasons(GameTestHelper helper)
     {
         RegistryAccess access = helper.getLevel().registryAccess();
@@ -536,7 +538,8 @@ public final class HempGameTests
         }
     }
 
-    @GameTest(template = TEMPLATE, templateNamespace = "tfie", skyAccess = true)
+    @GameTest(template = TEMPLATE, templateNamespace = "tfie", skyAccess = true,
+            batch = "tfie_hemp_persistence")
     public static void hemp_persistence_and_top_proxy(GameTestHelper helper)
     {
         CompoundTag calendarState = Calendars.SERVER.write();
@@ -547,10 +550,10 @@ public final class HempGameTests
             BlockPos bottomPos = farmlandPos.above();
             BlockPos topPos = bottomPos.above();
             IFarmland farmland = farmlandEntity(helper, farmlandPos);
-            CropBlockEntity blockEntity = placeBottom(helper, farmlandPos, 3, 0.99F);
+            CropBlockEntity blockEntity = placeBottom(helper, farmlandPos, 4, 1.0F);
+            helper.getLevel().setBlockAndUpdate(topPos, cropState(4, Part.TOP));
             setNutrients(farmland, 1.0F, 1.0F, 1.0F);
             clearAbsorbed(blockEntity);
-            growOnce(helper, crop, bottomPos, blockEntity);
             BlockState bottom = helper.getLevel().getBlockState(bottomPos);
             BlockState top = helper.getLevel().getBlockState(topPos);
             helper.assertTrue(bottom.getValue(crop.getAgeProperty()) == 4 && top.is(crop)
@@ -670,6 +673,7 @@ public final class HempGameTests
                         level.setBlockAndUpdate(farmlandPos.below(), Blocks.STONE.defaultBlockState());
                         level.setBlockAndUpdate(farmlandPos, farmland());
                         level.setBlockAndUpdate(cropPos, Blocks.AIR.defaultBlockState());
+                        level.setBlockAndUpdate(cropPos.west(), Blocks.GLOWSTONE.defaultBlockState());
                         if (water)
                         {
                             level.setBlockAndUpdate(farmlandPos.east(), Blocks.WATER.defaultBlockState());

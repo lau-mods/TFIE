@@ -1,6 +1,7 @@
 package net.claustra01.tfie;
 
 import com.mojang.logging.LogUtils;
+import net.claustra01.tfie.common.DrillheadRepair;
 import net.claustra01.tfie.common.ModBlockEntities;
 import net.claustra01.tfie.common.ModBlocks;
 import net.claustra01.tfie.common.ModCreativeTabs;
@@ -15,6 +16,7 @@ import net.dries007.tfc.common.blockentities.TFCBlockEntities;
 import net.minecraft.gametest.framework.GlobalTestReporter;
 import net.minecraft.gametest.framework.JUnitLikeTestReporter;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.ModContainer;
@@ -22,6 +24,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.claustra01.tfie.util.EmptyRecipe;
 import org.slf4j.Logger;
 
@@ -43,6 +46,7 @@ public final class TFIE
         ModBlockEntities.register(modEventBus);
         ModCreativeTabs.register(modEventBus);
         TFIEConditions.register(modEventBus);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, DrillheadRepair::onAnvilUpdate);
         modEventBus.addListener(this::registerRecipes);
         modEventBus.addListener(this::setup);
         modEventBus.addListener(this::registerCapabilities);

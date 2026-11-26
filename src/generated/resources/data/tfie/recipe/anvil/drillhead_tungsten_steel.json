@@ -1,0 +1,37 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/double_sheet/tungsten_steel"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfie:drillhead_tungsten_steel"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "tungsten_steel"
+        }
+      ],
+      "reason": "tungsten_steel drill head material is unavailable",
+      "recipe": "tfie:anvil/drillhead_tungsten_steel"
+    }
+  ],
+  "type": "tfc:anvil",
+  "ingredient": {
+    "tag": "c:double_sheets/tungsten_steel"
+  },
+  "result": {
+    "count": 1,
+    "id": "tfie:drillhead_tungsten_steel"
+  },
+  "rules": [
+    "bend_third_last",
+    "draw_second_last",
+    "hit_last"
+  ],
+  "tier": 7
+}

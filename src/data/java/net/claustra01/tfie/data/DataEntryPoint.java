@@ -1,6 +1,7 @@
 package net.claustra01.tfie.data;
 
 import net.claustra01.tfie.TFIE;
+import net.claustra01.tfie.data.recipes.AnvilRecipes;
 import net.claustra01.tfie.data.recipes.BarrelRecipes;
 import net.claustra01.tfie.data.recipes.BlueprintRecipes;
 import net.claustra01.tfie.data.recipes.CraftingRecipes;
@@ -55,6 +56,8 @@ public final class DataEntryPoint
                 new SawmillRecipes(output, event.getLookupProvider())));
         event.createProvider(output -> named("TFIE barrel recipes",
                 new BarrelRecipes(output, event.getLookupProvider())));
+        event.createProvider(output -> named("TFIE anvil recipes",
+                new AnvilRecipes(output, event.getLookupProvider())));
         event.createProvider(output -> named("TFIE crafting recipes",
                 new CraftingRecipes(output, event.getLookupProvider())));
         event.createProvider(output -> named("TFIE recipe overrides",

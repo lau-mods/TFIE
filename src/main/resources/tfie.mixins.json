@@ -7,6 +7,7 @@
     "accessor.TickableInventoryBlockEntityAccessor",
     "accessor.CrucibleBlockEntityAccessor",
     "AllowInCrateMixin",
+    "AnvilBlockEntityMixin",
     "DynamoBlockEntityMixin",
     "IngredientFluidStackMixin",
     "TemplateMultiblockMixin"

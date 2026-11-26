@@ -77,6 +77,17 @@
     {"acId":"AC-F025-004","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"server_config_schema"},
     {"acId":"AC-F025-004","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"dynamo_modifier_and_receiver_limits"},
     {"acId":"AC-F025-004","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"dynamo_positive_negative_zero_and_disconnected"},
+    {"acId":"AC-F009-001","report":"build/test-results/gametest/TEST-tfie-firmalife.xml","classname":"tfie:gametest/empty_platform","name":"drillhead_performance_and_mining_areas"},
+    {"acId":"AC-F009-002","report":"build/test-results/gametest/TEST-tfie-firmalife.xml","classname":"tfie:gametest/empty_platform","name":"drillhead_anvil_recipes_and_failures"},
+    {"acId":"AC-F009-002","report":"build/test-results/gametest/TEST-tfie-firmalife.xml","classname":"tfie:gametest/empty_platform","name":"anvil_rules_temperature_and_hammer_contract"},
+    {"acId":"AC-F009-002","report":"build/test-results/gametest/TEST-tfie-disabled-materials.xml","classname":"tfie:gametest/empty_platform","name":"drillhead_anvil_recipes_and_failures"},
+    {"acId":"AC-F009-003","report":"build/test-results/gametest/TEST-tfie-firmalife.xml","classname":"tfie:gametest/empty_platform","name":"drillhead_repair_amounts"},
+    {"acId":"AC-F009-004","report":"build/test-results/gametest/TEST-tfie-firmalife.xml","classname":"tfie:gametest/empty_platform","name":"drillhead_repair_costs_and_names"},
+    {"acId":"AC-F010-001","report":"build/test-results/gametest/TEST-tfie-firmalife.xml","classname":"tfie:gametest/empty_platform","name":"other_anvil_recipes"},
+    {"acId":"AC-F010-002","report":"build/test-results/gametest/TEST-tfie-firmalife.xml","classname":"tfie:gametest/empty_platform","name":"anvil_rules_temperature_and_hammer_contract"},
+    {"acId":"AC-F010-003","report":"build/test-results/gametest/TEST-tfie-firmalife.xml","classname":"tfie:gametest/empty_platform","name":"forging_quality_boundaries"},
+    {"acId":"AC-F010-004","report":"build/test-results/gametest/TEST-tfie-firmalife.xml","classname":"tfie:gametest/empty_platform","name":"high_carbon_steel_slag_inventory_and_drop"},
+    {"acId":"AC-F010-005","report":"build/test-results/gametest/TEST-tfie-firmalife.xml","classname":"tfie:gametest/empty_platform","name":"high_carbon_steel_slag_exclusions"},
     {"acId":"AC-F022-001","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"fluid_tags_and_container_io"},
     {"acId":"AC-F022-002","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"fluid_ingredient_candidates_and_partial_return"},
     {"acId":"AC-F022-003","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"fixed_bucket_recipes_reject_tfc_containers"}
@@ -87,6 +98,7 @@
     {"acId":"AC-F013-009","scenario":"tests/e2e/wood-processing.mjs"},
     {"acId":"AC-F014-006","scenario":"tests/e2e/hemp-rendering.mjs"},
     {"acId":"AC-F003-005","scenario":"tests/e2e/metal-press.mjs"},
+    {"acId":"AC-F009-005","scenario":"tests/e2e/drillheads.mjs"},
     {"acId":"AC-F022-004","scenario":"tests/e2e/fluid-containers.mjs"}
   ]
 }

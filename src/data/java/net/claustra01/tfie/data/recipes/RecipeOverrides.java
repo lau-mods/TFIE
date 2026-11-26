@@ -37,5 +37,12 @@ public final class RecipeOverrides extends RecipeProvider
         output.accept(ResourceLocation.fromNamespaceAndPath(
                 "immersiveengineering", "metalpress/rod_netherite"), EmptyRecipe.INSTANCE, null,
                 FalseCondition.INSTANCE);
+        for(String recipe : List.of(
+                "armor_faraday_boots", "armor_faraday_chestplate", "armor_faraday_helmet",
+                "armor_faraday_leggings", "drillhead_iron", "drillhead_steel", "empty_casing",
+                "gunpart_barrel", "toolupgrade_revolver_bayonet"))
+            output.accept(ResourceLocation.fromNamespaceAndPath(
+                    "immersiveengineering", "crafting/" + recipe), EmptyRecipe.INSTANCE, null,
+                    FalseCondition.INSTANCE);
     }
 }

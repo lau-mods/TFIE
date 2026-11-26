@@ -1,0 +1,37 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/double_sheet/titanium"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfie:drillhead_titanium"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "titanium"
+        }
+      ],
+      "reason": "titanium drill head material is unavailable",
+      "recipe": "tfie:anvil/drillhead_titanium"
+    }
+  ],
+  "type": "tfc:anvil",
+  "ingredient": {
+    "tag": "c:double_sheets/titanium"
+  },
+  "result": {
+    "count": 1,
+    "id": "tfie:drillhead_titanium"
+  },
+  "rules": [
+    "bend_third_last",
+    "draw_second_last",
+    "hit_last"
+  ],
+  "tier": 5
+}

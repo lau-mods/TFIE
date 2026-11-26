@@ -20,28 +20,28 @@
       "effort": "high"
     },
     "codeReview": {
-      "command": "claude",
+      "command": "opencode",
       "initial": {
-        "model": "claude-opus-5-5",
-        "effort": "medium"
+        "model": "opencode-go/deepseek-v4.1-flash",
+        "effort": null
       },
       "retry": {
-        "model": "claude-sonnet-5-5",
-        "effort": "medium"
+        "model": "opencode-go/deepseek-v4.1-flash",
+        "effort": null
       },
-      "type": "claude"
+      "type": "opencode"
     },
     "e2eReview": {
-      "command": "claude",
+      "command": "opencode",
       "initial": {
-        "model": "claude-opus-5-5",
-        "effort": "high"
+        "model": "opencode-go/deepseek-v4.1-flash",
+        "effort": null
       },
       "retry": {
-        "model": "claude-sonnet-5-5",
-        "effort": "high"
+        "model": "opencode-go/deepseek-v4.1-flash",
+        "effort": null
       },
-      "type": "claude"
+      "type": "opencode"
     }
   },
   "runtime": {

@@ -1,0 +1,48 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/osmiridium"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "osmium"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "osmiridium"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "iridium"
+        }
+      ],
+      "reason": "Arc Furnace materials are unavailable",
+      "recipe": "tfie:arcfurnace/alloy/osmiridium"
+    }
+  ],
+  "type": "tfie:arc_furnace",
+  "additives": [
+    {
+      "tag": "c:ingots/iridium"
+    }
+  ],
+  "energy": 76800,
+  "input": {
+    "basePredicate": {
+      "tag": "c:ingots/osmium"
+    },
+    "count": 2
+  },
+  "mode": 1,
+  "results": [
+    {
+      "count": 3,
+      "id": "tfcm:metal/ingot/osmiridium"
+    }
+  ],
+  "time": 150
+}

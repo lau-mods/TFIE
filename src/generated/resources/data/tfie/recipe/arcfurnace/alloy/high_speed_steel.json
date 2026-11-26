@@ -1,0 +1,65 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/high_speed_steel"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "high_speed_steel"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "tungsten"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "vanadium"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "molybdenum"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "manganese"
+        }
+      ],
+      "reason": "Arc Furnace materials are unavailable",
+      "recipe": "tfie:arcfurnace/alloy/high_speed_steel"
+    }
+  ],
+  "type": "tfie:arc_furnace",
+  "additives": [
+    {
+      "tag": "c:ingots/tungsten"
+    },
+    {
+      "tag": "c:ingots/vanadium"
+    },
+    {
+      "tag": "c:ingots/molybdenum"
+    },
+    {
+      "tag": "c:ingots/manganese"
+    }
+  ],
+  "energy": 358400,
+  "input": {
+    "basePredicate": {
+      "tag": "c:ingots/steel"
+    },
+    "count": 10
+  },
+  "mode": 2,
+  "results": [
+    {
+      "count": 14,
+      "id": "tfcm:metal/ingot/high_speed_steel"
+    }
+  ],
+  "time": 700
+}

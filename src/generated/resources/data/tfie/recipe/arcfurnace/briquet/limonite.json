@@ -1,0 +1,35 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:ore_processing/briquet/limonite"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/cast_iron"
+        },
+        {
+          "type": "tfcm:ore_enabled",
+          "ore": "limonite"
+        }
+      ],
+      "reason": "Arc Furnace materials are unavailable",
+      "recipe": "tfie:arcfurnace/briquet/limonite"
+    }
+  ],
+  "type": "tfie:arc_furnace",
+  "additives": [],
+  "energy": 51200,
+  "input": {
+    "item": "tfcm:ore_processing/briquet/limonite"
+  },
+  "results": [
+    {
+      "id": "tfc:metal/ingot/cast_iron"
+    }
+  ],
+  "time": 100
+}

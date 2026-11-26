@@ -1,0 +1,37 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/electrum"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "electrum"
+        }
+      ],
+      "reason": "Arc Furnace materials are unavailable",
+      "recipe": "tfie:arcfurnace/alloy/electrum"
+    }
+  ],
+  "type": "tfie:arc_furnace",
+  "additives": [
+    {
+      "tag": "c:ingots/silver"
+    }
+  ],
+  "energy": 51200,
+  "input": {
+    "tag": "c:ingots/gold"
+  },
+  "mode": 2,
+  "results": [
+    {
+      "count": 2,
+      "id": "tfcm:metal/ingot/electrum"
+    }
+  ],
+  "time": 100
+}

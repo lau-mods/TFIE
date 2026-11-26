@@ -1,0 +1,37 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/constantan"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "constantan"
+        }
+      ],
+      "reason": "Arc Furnace materials are unavailable",
+      "recipe": "tfie:arcfurnace/alloy/constantan"
+    }
+  ],
+  "type": "tfie:arc_furnace",
+  "additives": [
+    {
+      "tag": "c:ingots/nickel"
+    }
+  ],
+  "energy": 51200,
+  "input": {
+    "tag": "c:ingots/copper"
+  },
+  "mode": 5,
+  "results": [
+    {
+      "count": 2,
+      "id": "tfcm:metal/ingot/constantan"
+    }
+  ],
+  "time": 100
+}

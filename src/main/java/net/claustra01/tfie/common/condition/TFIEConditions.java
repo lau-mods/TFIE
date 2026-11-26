@@ -34,13 +34,19 @@ public final class TFIEConditions
     public static LoggedRecipeCondition recipe(ResourceLocation recipe, String reason, String modId,
             List<ResourceLocation> items, List<ResourceLocation> fluids, Metal metal, String ore)
     {
+        return recipeForMetals(recipe, reason, modId, items, fluids,
+                metal == null ? List.of() : List.of(metal), ore);
+    }
+
+    public static LoggedRecipeCondition recipeForMetals(ResourceLocation recipe, String reason, String modId,
+            List<ResourceLocation> items, List<ResourceLocation> fluids, List<Metal> metals, String ore)
+    {
         List<ICondition> conditions = new ArrayList<>();
         if(modId != null)
             conditions.add(new ModLoadedCondition(modId));
         items.forEach(item -> conditions.add(new ItemExistsCondition(item)));
         fluids.forEach(fluid -> conditions.add(new FluidExistsCondition(fluid)));
-        if(metal != null)
-            conditions.add(new MetalEnabledCondition(metal));
+        metals.forEach(metal -> conditions.add(new MetalEnabledCondition(metal)));
         if(ore != null)
             conditions.add(new OreEnabledCondition(ore));
         return new LoggedRecipeCondition(recipe, reason, List.copyOf(conditions));

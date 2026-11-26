@@ -1,0 +1,44 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:rock/loose/andesite"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/andesite_alloy"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "andesite_alloy"
+        }
+      ],
+      "reason": "Arc Furnace materials are unavailable",
+      "recipe": "tfie:arcfurnace/alloy/andesite_alloy_from_zinc"
+    }
+  ],
+  "type": "tfie:arc_furnace",
+  "additives": [
+    {
+      "tag": "c:ingots/zinc"
+    }
+  ],
+  "energy": 256000,
+  "input": {
+    "basePredicate": {
+      "item": "tfc:rock/loose/andesite"
+    },
+    "count": 10
+  },
+  "mode": 1,
+  "results": [
+    {
+      "count": 10,
+      "id": "tfcm:metal/ingot/andesite_alloy"
+    }
+  ],
+  "time": 500
+}

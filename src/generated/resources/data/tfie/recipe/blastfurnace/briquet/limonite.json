@@ -1,0 +1,31 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:ore_processing/briquet/limonite"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:raw_iron_bloom"
+        },
+        {
+          "type": "tfcm:ore_enabled",
+          "ore": "limonite"
+        }
+      ],
+      "reason": "Blast Furnace briquet is unavailable",
+      "recipe": "tfie:blastfurnace/briquet/limonite"
+    }
+  ],
+  "type": "immersiveengineering:blast_furnace",
+  "input": {
+    "item": "tfcm:ore_processing/briquet/limonite"
+  },
+  "result": {
+    "id": "tfc:raw_iron_bloom"
+  },
+  "time": 1200
+}

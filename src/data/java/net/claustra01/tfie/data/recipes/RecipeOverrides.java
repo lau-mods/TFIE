@@ -30,6 +30,16 @@ public final class RecipeOverrides extends RecipeProvider
         disable(output, "crafting/gunpowder_from_dusts");
         disable(output, "crusher/nether_gold");
         disable(output, "crusher/wool");
+        disable(output, "arcfurnace/netherite_scrap");
+        disable(output, "arcfurnace/steel");
+        disable(output, "arcfurnace/insulating_glass");
+        disable(output, "blastfurnace/steel");
+        disable(output, "blastfurnace/steel_block");
+        disable(output, "blastfurnace/fuel_coke_block");
+        disable(output, "blastfurnace/fuel_charcoal_block");
+        for(String alloy : List.of("brass", "bronze", "constantan", "electrum", "invar", "rose_gold",
+                "manyullyn", "insulating_glass"))
+            disable(output, "alloysmelter/" + alloy);
         for(String metal : List.of(
                 "aluminum", "ardite", "coal", "cobalt", "copper", "diamond", "emerald", "fluorite",
                 "gold", "iron", "lapis", "lead", "nickel", "osmium", "platinum", "quartz", "redstone",
@@ -41,7 +51,17 @@ public final class RecipeOverrides extends RecipeProvider
         {
             disable(output, "crusher/raw_ore_" + metal);
             disable(output, "crusher/raw_block_" + metal);
+            disable(output, "arcfurnace/ore_" + metal);
+            disable(output, "arcfurnace/raw_ore_" + metal);
+            disable(output, "arcfurnace/raw_block_" + metal);
         }
+        for(String metal : List.of(
+                "aluminum", "ardite", "brass", "bronze", "cobalt", "constantan", "copper", "electrum",
+                "gold", "invar", "iron", "lead", "manyullyn", "nickel", "osmium", "platinum",
+                "rose_gold", "silver", "steel", "tin", "tungsten", "uranium", "zinc"))
+            disable(output, "arcfurnace/dust_" + metal);
+        for(String alloy : List.of("brass", "bronze", "constantan", "electrum", "invar", "manyullyn", "rose_gold"))
+            disable(output, "arcfurnace/alloy_" + alloy);
         for(String metal : REPLACED_METALS)
             for(String shape : List.of("plate", "rod", "wire"))
                 disable(output, "metalpress/" + shape + "_" + metal);

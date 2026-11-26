@@ -39,7 +39,7 @@ public final class CrateGameTests
     {
     }
 
-    @GameTest(template = TEMPLATE, templateNamespace = TFIE.MOD_ID)
+    @GameTest(template = TEMPLATE, templateNamespace = TFIE.MOD_ID, batch = "tfie_crate_config")
     public static void crate_size_boundaries(GameTestHelper helper)
     {
         Map<Size, ItemStack> samples = sizeSamples(helper);
@@ -59,7 +59,7 @@ public final class CrateGameTests
         helper.succeed();
     }
 
-    @GameTest(template = TEMPLATE, templateNamespace = TFIE.MOD_ID)
+    @GameTest(template = TEMPLATE, templateNamespace = TFIE.MOD_ID, batch = "tfie_crate_config")
     public static void crate_keeps_ie_rejections(GameTestHelper helper)
     {
         ItemStack nestedContainer = new ItemStack(Items.SHULKER_BOX);
@@ -128,7 +128,9 @@ public final class CrateGameTests
         var player = helper.makeMockPlayer(GameType.SURVIVAL);
         CrateMenu menu = new CrateMenu(IEMenuTypes.WOODEN_CRATE.get(), 0, player.getInventory(), crate);
         helper.assertTrue(menu.getSlot(0).mayPlace(sample) == accepted,
-                "Normal GUI insertion must follow the configured TFC size");
+                "Normal GUI insertion must follow the configured TFC size for "
+                        + BuiltInRegistries.ITEM.getKey(sample.getItem()) + " ("
+                        + ItemSizeManager.get(sample).getSize(sample) + ")");
 
         crate.clearContent();
         player.getInventory().setItem(9, sample.copy());

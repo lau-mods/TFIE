@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:ore_processing/briquet/rutile"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/titanium"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "titanium"
+        },
+        {
+          "type": "tfcm:ore_enabled",
+          "ore": "rutile"
+        }
+      ],
+      "reason": "Arc Furnace materials are unavailable",
+      "recipe": "tfie:arcfurnace/briquet/rutile"
+    }
+  ],
+  "type": "tfie:arc_furnace",
+  "additives": [],
+  "energy": 51200,
+  "input": {
+    "item": "tfcm:ore_processing/briquet/rutile"
+  },
+  "results": [
+    {
+      "id": "tfcm:metal/ingot/titanium"
+    }
+  ],
+  "time": 100
+}

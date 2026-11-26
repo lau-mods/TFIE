@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/sterling_silver"
+        }
+      ],
+      "reason": "Arc Furnace materials are unavailable",
+      "recipe": "tfie:arcfurnace/alloy/sterling_silver"
+    }
+  ],
+  "type": "tfie:arc_furnace",
+  "additives": [
+    {
+      "basePredicate": {
+        "tag": "c:ingots/copper"
+      },
+      "count": 2
+    }
+  ],
+  "energy": 128000,
+  "input": {
+    "basePredicate": {
+      "tag": "c:ingots/silver"
+    },
+    "count": 3
+  },
+  "mode": 1,
+  "results": [
+    {
+      "count": 5,
+      "id": "tfc:metal/ingot/sterling_silver"
+    }
+  ],
+  "time": 250
+}

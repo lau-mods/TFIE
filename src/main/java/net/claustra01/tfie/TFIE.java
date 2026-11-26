@@ -8,6 +8,7 @@ import net.claustra01.tfie.common.ModCreativeTabs;
 import net.claustra01.tfie.common.ModDataComponents;
 import net.claustra01.tfie.common.ModItems;
 import net.claustra01.tfie.common.condition.TFIEConditions;
+import net.claustra01.tfie.common.recipes.ModRecipes;
 import net.claustra01.tfie.config.TFIEConfig;
 import net.claustra01.tfie.util.CrucibleHeater;
 import net.claustra01.tfie.util.HerbicideEffects;
@@ -46,6 +47,7 @@ public final class TFIE
         ModItems.register(modEventBus);
         ModBlockEntities.register(modEventBus);
         ModCreativeTabs.register(modEventBus);
+        ModRecipes.register(modEventBus);
         TFIEConditions.register(modEventBus);
         ModClocheRenderFunctions.register();
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, DrillheadRepair::onAnvilUpdate);

@@ -1,0 +1,51 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/weak_blue_steel"
+        }
+      ],
+      "reason": "Arc Furnace materials are unavailable",
+      "recipe": "tfie:arcfurnace/alloy/weak_blue_steel"
+    }
+  ],
+  "type": "tfie:arc_furnace",
+  "additives": [
+    {
+      "basePredicate": {
+        "tag": "c:ingots/steel"
+      },
+      "count": 5
+    },
+    {
+      "basePredicate": {
+        "tag": "c:ingots/bismuth_bronze"
+      },
+      "count": 2
+    },
+    {
+      "basePredicate": {
+        "tag": "c:ingots/sterling_silver"
+      },
+      "count": 3
+    }
+  ],
+  "energy": 512000,
+  "input": {
+    "basePredicate": {
+      "tag": "c:ingots/black_steel"
+    },
+    "count": 10
+  },
+  "mode": 1,
+  "results": [
+    {
+      "count": 20,
+      "id": "tfc:metal/ingot/weak_blue_steel"
+    }
+  ],
+  "time": 1000
+}

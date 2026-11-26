@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/dust/wrought_iron"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "immersiveengineering:insulating_glass"
+        }
+      ],
+      "reason": "Alloy Kiln materials are unavailable",
+      "recipe": "tfie:alloysmelter/insulating_glass"
+    }
+  ],
+  "type": "immersiveengineering:alloy",
+  "input0": {
+    "basePredicate": {
+      "tag": "c:glass_blocks"
+    },
+    "count": 2
+  },
+  "input1": {
+    "item": "tfcm:metal/dust/wrought_iron"
+  },
+  "result": {
+    "count": 2,
+    "id": "immersiveengineering:insulating_glass"
+  }
+}

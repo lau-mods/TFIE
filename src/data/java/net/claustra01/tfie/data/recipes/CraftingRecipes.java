@@ -9,8 +9,10 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 
 import java.util.concurrent.CompletableFuture;
@@ -47,5 +49,15 @@ public final class CraftingRecipes extends RecipeProvider
                 .save(output.withConditions(new ModLoadedCondition("firmalife")),
                         ResourceLocation.fromNamespaceAndPath(TFIE.MOD_ID,
                                 "crafting/ersatz_leather_firmalife"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.ARC_FURNACE_BLUEPRINT.get())
+                .requires(Ingredient.of(ItemTags.create(
+                        ResourceLocation.fromNamespaceAndPath("c", "paper"))), 3)
+                .requires(Ingredient.of(ItemTags.create(
+                        ResourceLocation.fromNamespaceAndPath("c", "dyes/blue"))), 3)
+                .unlockedBy("has_paper", has(ItemTags.create(
+                        ResourceLocation.fromNamespaceAndPath("c", "paper"))))
+                .save(output, ResourceLocation.fromNamespaceAndPath(
+                        TFIE.MOD_ID, "crafting/arc_furnace_blueprint"));
     }
 }

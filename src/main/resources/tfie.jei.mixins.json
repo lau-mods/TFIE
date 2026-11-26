@@ -1,0 +1,13 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "net.claustra01.tfie.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "plugin": "net.claustra01.tfie.mixin.compat.jei.TFIEJeiMixinPlugin",
+  "client": [
+    "compat.jei.ArcFurnaceRecipeCategoryMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

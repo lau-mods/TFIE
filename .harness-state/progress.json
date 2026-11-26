@@ -1,25 +1,6 @@
 {
   "status": "running",
-  "active": [
-    {
-      "id": "M11",
-      "phase": "implementation",
-      "baseCommit": "191580e967ad1e7e967b12b1c7cc26d11ab6d4ce",
-      "failures": {
-        "build": 0,
-        "gametest": 0,
-        "e2e": 0
-      },
-      "recoveries": 0,
-      "codeReview": null,
-      "codeReviewTree": null,
-      "e2eReview": null,
-      "failure": null,
-      "conflicts": [],
-      "reviewConflicts": [],
-      "session": null
-    }
-  ],
+  "active": [],
   "completed": [
     "M01",
     "M02",
@@ -30,7 +11,8 @@
     "M08",
     "M04",
     "M10",
-    "M09"
+    "M09",
+    "M11"
   ],
   "lastCheckpoint": "191580e967ad1e7e967b12b1c7cc26d11ab6d4ce",
   "fatal": null

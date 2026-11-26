@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/bronze"
+        }
+      ],
+      "reason": "Arc Furnace materials are unavailable",
+      "recipe": "tfie:arcfurnace/alloy/bronze"
+    }
+  ],
+  "type": "tfie:arc_furnace",
+  "additives": [
+    {
+      "tag": "c:ingots/tin"
+    }
+  ],
+  "energy": 128000,
+  "input": {
+    "basePredicate": {
+      "tag": "c:ingots/copper"
+    },
+    "count": 9
+  },
+  "mode": 2,
+  "results": [
+    {
+      "count": 10,
+      "id": "tfc:metal/ingot/bronze"
+    }
+  ],
+  "time": 250
+}

@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/invar"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "invar"
+        }
+      ],
+      "reason": "Alloy Kiln materials are unavailable",
+      "recipe": "tfie:alloysmelter/invar"
+    }
+  ],
+  "type": "immersiveengineering:alloy",
+  "input0": {
+    "basePredicate": {
+      "tag": "c:ingots/wrought_iron"
+    },
+    "count": 2
+  },
+  "input1": {
+    "tag": "c:ingots/nickel"
+  },
+  "result": {
+    "count": 3,
+    "id": "tfcm:metal/ingot/invar"
+  }
+}

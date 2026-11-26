@@ -20,6 +20,12 @@ public final class LangProvider extends LanguageProvider
         addItem(ModItems.WIRECUTTER_HEAD, "Wirecutter Head");
         addItem(ModItems.MOLD_SHEET, "Sheet Mold");
         addItem(ModItems.ARC_FURNACE_BLUEPRINT, "Arc Furnace Blueprint");
+        add("tooltip.tfie.arc_furnace_blueprint.mode", "Mode %s");
+        add("tooltip.tfie.arc_furnace_blueprint.use", "Use in the main hand to change mode");
+        add("message.tfie.arc_furnace_blueprint.mode", "Arc Furnace mode: %s");
+        add("gui.tfie.arc_furnace.invalid_blueprints", "Multiple Arc Furnace Blueprints");
+        add("gui.tfie.arc_furnace.invalid_mode", "Invalid Arc Furnace Blueprint mode");
+        add("gui.tfie.arc_furnace.duplicate_recipe", "Conflicting Arc Furnace recipes");
         addItem(ModItems.DRILLHEAD_BLACK_STEEL, "Black Steel Drill Head");
         addItem(ModItems.DRILLHEAD_BLUE_STEEL, "Blue Steel Drill Head");
         addItem(ModItems.DRILLHEAD_RED_STEEL, "Red Steel Drill Head");

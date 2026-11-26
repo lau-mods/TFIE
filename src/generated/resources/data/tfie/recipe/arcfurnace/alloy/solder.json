@@ -1,0 +1,47 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/solder"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "antimony"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "solder"
+        }
+      ],
+      "reason": "Arc Furnace materials are unavailable",
+      "recipe": "tfie:arcfurnace/alloy/solder"
+    }
+  ],
+  "type": "tfie:arc_furnace",
+  "additives": [
+    {
+      "tag": "c:ingots/bismuth"
+    },
+    {
+      "tag": "c:ingots/tin"
+    }
+  ],
+  "energy": 102400,
+  "input": {
+    "basePredicate": {
+      "tag": "c:ingots/antimony"
+    },
+    "count": 2
+  },
+  "mode": 1,
+  "results": [
+    {
+      "count": 4,
+      "id": "tfcm:metal/ingot/solder"
+    }
+  ],
+  "time": 200
+}

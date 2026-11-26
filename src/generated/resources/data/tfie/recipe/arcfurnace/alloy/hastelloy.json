@@ -1,0 +1,67 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "firmalife"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/hastelloy"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "hastelloy"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "molybdenum"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "tungsten"
+        }
+      ],
+      "reason": "Arc Furnace materials are unavailable",
+      "recipe": "tfie:arcfurnace/alloy/hastelloy"
+    }
+  ],
+  "type": "tfie:arc_furnace",
+  "additives": [
+    {
+      "basePredicate": {
+        "tag": "c:ingots/chromium"
+      },
+      "count": 3
+    },
+    {
+      "basePredicate": {
+        "tag": "c:ingots/molybdenum"
+      },
+      "count": 2
+    },
+    {
+      "tag": "c:ingots/wrought_iron"
+    },
+    {
+      "tag": "c:ingots/tungsten"
+    }
+  ],
+  "energy": 358400,
+  "input": {
+    "basePredicate": {
+      "tag": "c:ingots/nickel"
+    },
+    "count": 7
+  },
+  "mode": 2,
+  "results": [
+    {
+      "count": 14,
+      "id": "tfcm:metal/ingot/hastelloy"
+    }
+  ],
+  "time": 700
+}

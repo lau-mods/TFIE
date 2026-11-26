@@ -171,7 +171,7 @@ public final class AnvilGameTests
         helper.succeed();
     }
 
-    @GameTest(template = TEMPLATE, templateNamespace = TFIE.MOD_ID)
+    @GameTest(template = TEMPLATE, templateNamespace = TFIE.MOD_ID, batch = "tfie_hcs_inventory")
     public static void high_carbon_steel_slag_inventory_and_drop(GameTestHelper helper)
     {
         ServerPlayer open = fakePlayer(helper, "tfie_hcs_open");
@@ -204,7 +204,7 @@ public final class AnvilGameTests
                 "tfc:metal/ingot/pig_iron", "tfc:metal/ingot/high_carbon_steel");
     }
 
-    @GameTest(template = TEMPLATE, templateNamespace = TFIE.MOD_ID)
+    @GameTest(template = TEMPLATE, templateNamespace = TFIE.MOD_ID, batch = "tfie_hcs_exclusions")
     public static void high_carbon_steel_slag_exclusions(GameTestHelper helper)
     {
         ServerPlayer player = fakePlayer(helper, "tfie_hcs_excl");

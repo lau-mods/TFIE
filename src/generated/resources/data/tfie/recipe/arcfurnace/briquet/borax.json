@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:ore_processing/briquet/borax"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/boron"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "boron"
+        },
+        {
+          "type": "tfcm:ore_enabled",
+          "ore": "borax"
+        }
+      ],
+      "reason": "Arc Furnace materials are unavailable",
+      "recipe": "tfie:arcfurnace/briquet/borax"
+    }
+  ],
+  "type": "tfie:arc_furnace",
+  "additives": [],
+  "energy": 51200,
+  "input": {
+    "item": "tfcm:ore_processing/briquet/borax"
+  },
+  "results": [
+    {
+      "id": "tfcm:metal/ingot/boron"
+    }
+  ],
+  "time": 100
+}

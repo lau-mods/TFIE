@@ -4,6 +4,13 @@
   "package": "net.claustra01.tfie.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "ArcFurnaceInputHandlerMixin",
+    "ArcFurnaceAdditiveSlotMixin",
+    "ArcFurnaceInputSlotMixin",
+    "ArcFurnaceLogicMixin",
+    "ArcFurnaceProcessMixin",
+    "ArcFurnaceProcessPersistenceMixin",
+    "ArcFurnaceStateMixin",
     "CokeOvenLogicMixin",
     "accessor.TickableInventoryBlockEntityAccessor",
     "accessor.CrucibleBlockEntityAccessor",
@@ -11,10 +18,15 @@
     "ClocheBlockEntityMixin",
     "AnvilBlockEntityMixin",
     "DynamoBlockEntityMixin",
+    "FurnaceHandlerMixin",
+    "FurnaceOutputSlotMixin",
     "IngredientFluidStackMixin",
+    "MultiblockProcessMixin",
+    "MultiblockProcessInMachineMixin",
     "TemplateMultiblockMixin"
   ],
   "client": [
+    "client.ArcFurnaceScreenMixin",
     "client.ContainedFluidModelMixin"
   ],
   "injectors": {

@@ -3,6 +3,7 @@ package net.claustra01.tfie.common;
 import blusunrize.immersiveengineering.common.items.DrillheadItem;
 import net.claustra01.tfcm.common.tool.ToolMetal;
 import net.claustra01.tfie.TFIE;
+import net.claustra01.tfie.common.items.ArcFurnaceBlueprintItem;
 import net.dries007.tfc.common.LevelTier;
 import net.dries007.tfc.common.TFCTiers;
 import net.minecraft.core.registries.Registries;
@@ -30,7 +31,7 @@ public final class ModItems
     public static final DeferredItem<Item> MOLD_SHEET =
             ITEMS.registerSimpleItem("mold_sheet", new Item.Properties().stacksTo(1));
     public static final DeferredItem<Item> ARC_FURNACE_BLUEPRINT =
-            ITEMS.register("arc_furnace_blueprint", () -> new Item(
+            ITEMS.register("arc_furnace_blueprint", () -> new ArcFurnaceBlueprintItem(
                     new Item.Properties().stacksTo(1).component(ModDataComponents.ARC_FURNACE_MODE, 1)));
 
     public static final DeferredItem<DrillheadItem> DRILLHEAD_BLACK_STEEL =

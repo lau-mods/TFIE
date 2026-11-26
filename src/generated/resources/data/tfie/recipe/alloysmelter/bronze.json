@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/bronze"
+        }
+      ],
+      "reason": "Alloy Kiln materials are unavailable",
+      "recipe": "tfie:alloysmelter/bronze"
+    }
+  ],
+  "type": "immersiveengineering:alloy",
+  "input0": {
+    "basePredicate": {
+      "tag": "c:ingots/copper"
+    },
+    "count": 9
+  },
+  "input1": {
+    "tag": "c:ingots/tin"
+  },
+  "result": {
+    "count": 10,
+    "id": "tfc:metal/ingot/bronze"
+  }
+}

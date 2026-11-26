@@ -2,8 +2,11 @@ package net.claustra01.tfie.data;
 
 import net.claustra01.tfie.TFIE;
 import net.claustra01.tfie.data.recipes.AnvilRecipes;
+import net.claustra01.tfie.data.recipes.AlloySmelterRecipes;
+import net.claustra01.tfie.data.recipes.ArcFurnaceRecipes;
 import net.claustra01.tfie.data.recipes.BarrelRecipes;
 import net.claustra01.tfie.data.recipes.BlueprintRecipes;
+import net.claustra01.tfie.data.recipes.BlastFurnaceRecipes;
 import net.claustra01.tfie.data.recipes.ChiselRecipes;
 import net.claustra01.tfie.data.recipes.CokeOvenRecipes;
 import net.claustra01.tfie.data.recipes.CraftingRecipes;
@@ -94,6 +97,12 @@ public final class DataEntryPoint
                 new RecipeOverrides(output, event.getLookupProvider())));
         event.createProvider(output -> named("TFIE metal press recipes",
                 new MetalPressRecipes(output, event.getLookupProvider())));
+        event.createProvider(output -> named("TFIE arc furnace recipes",
+                new ArcFurnaceRecipes(output, event.getLookupProvider())));
+        event.createProvider(output -> named("TFIE blast furnace recipes",
+                new BlastFurnaceRecipes(output, event.getLookupProvider())));
+        event.createProvider(output -> named("TFIE alloy smelter recipes",
+                new AlloySmelterRecipes(output, event.getLookupProvider())));
         event.createProvider(output -> named("TFIE blueprint recipes",
                 new BlueprintRecipes(output, event.getLookupProvider())));
         event.createProvider(output -> named("TFIE cloche recipes",

@@ -49,9 +49,10 @@ public final class GameTestStructureProvider implements DataProvider
         {
             NbtIo.writeCompressed(structure, bytes);
             byte[] contents = bytes.toByteArray();
-            output.writeIfNeeded(structures.file(
-                    ResourceLocation.fromNamespaceAndPath(TFIE.MOD_ID, "gametest/empty_platform"), "nbt"),
-                    contents, Hashing.sha256().hashBytes(contents));
+            for(String namespace : new String[]{TFIE.MOD_ID, "tfie_restart"})
+                output.writeIfNeeded(structures.file(
+                        ResourceLocation.fromNamespaceAndPath(namespace, "gametest/empty_platform"), "nbt"),
+                        contents, Hashing.sha256().hashBytes(contents));
             return CompletableFuture.completedFuture(null);
         }
         catch(IOException exception)

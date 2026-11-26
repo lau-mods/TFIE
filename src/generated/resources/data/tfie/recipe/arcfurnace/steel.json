@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/steel"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "immersiveengineering:slag"
+        }
+      ],
+      "reason": "Arc Furnace materials are unavailable",
+      "recipe": "tfie:arcfurnace/steel"
+    }
+  ],
+  "type": "tfie:arc_furnace",
+  "additives": [
+    {
+      "tag": "c:dusts/coal_coke"
+    }
+  ],
+  "energy": 204800,
+  "input": {
+    "tag": "c:ingots/wrought_iron"
+  },
+  "mode": 1,
+  "results": [
+    {
+      "id": "tfc:metal/ingot/steel"
+    }
+  ],
+  "slag": {
+    "id": "immersiveengineering:slag"
+  },
+  "time": 400
+}

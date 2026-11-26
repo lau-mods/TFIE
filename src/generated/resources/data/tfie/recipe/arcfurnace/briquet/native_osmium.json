@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:ore_processing/briquet/native_osmium"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:metal/ingot/osmium"
+        },
+        {
+          "type": "tfcm:metal_enabled",
+          "metal": "osmium"
+        },
+        {
+          "type": "tfcm:ore_enabled",
+          "ore": "native_osmium"
+        }
+      ],
+      "reason": "Arc Furnace materials are unavailable",
+      "recipe": "tfie:arcfurnace/briquet/native_osmium"
+    }
+  ],
+  "type": "tfie:arc_furnace",
+  "additives": [],
+  "energy": 51200,
+  "input": {
+    "item": "tfcm:ore_processing/briquet/native_osmium"
+  },
+  "results": [
+    {
+      "id": "tfcm:metal/ingot/osmium"
+    }
+  ],
+  "time": 100
+}

@@ -141,6 +141,22 @@ neoForge {
             systemProperty 'tfie.gametest.report', project.file('build/test-results/gametest/TEST-tfie-disabled-materials.xml').absolutePath
         }
 
+        gameTestServerRestartPrepare {
+            type = "gameTestServer"
+            gameDirectory = project.file('run/restart')
+            systemProperty 'neoforge.enabledGameTestNamespaces', 'tfie_restart'
+            systemProperty 'tfie.gametest.restartPhase', 'prepare'
+            systemProperty 'tfie.gametest.report', project.file('build/test-results/gametest/TEST-tfie-restart-prepare.xml').absolutePath
+        }
+
+        gameTestServerRestartVerify {
+            type = "gameTestServer"
+            gameDirectory = project.file('run/restart')
+            systemProperty 'neoforge.enabledGameTestNamespaces', 'tfie_restart'
+            systemProperty 'tfie.gametest.restartPhase', 'verify'
+            systemProperty 'tfie.gametest.report', project.file('build/test-results/gametest/TEST-tfie-restart.xml').absolutePath
+        }
+
         data {
             data()
             gameDirectory = project.file('run/data')
@@ -179,6 +195,7 @@ neoForge {
 }
 
 dependencies {
+    implementation("malte0811:DualCodecs:0.1.2")
     implementation("curse.maven:terrafirmacraft-302973:9569280") { transitive = false }
     implementation("blusunrize.immersiveengineering:ImmersiveEngineering:1.21.1-12.4.2-194")
     implementation("blusunrize.immersiveengineering:ImmersiveEngineering:1.21.1-12.4.2-194:datagen")
@@ -285,10 +302,20 @@ tasks.named('runGameTestServerDisabledMaterials') {
     dependsOn(writeDisabledMaterialsConfig)
     mustRunAfter 'runGameTestServerAll'
 }
+def clearArcRestartGameTestWorld = tasks.register('clearArcRestartGameTestWorld', Delete) {
+    delete layout.projectDirectory.dir('run/restart/world')
+}
+tasks.named('runGameTestServerRestartPrepare') {
+    dependsOn(clearArcRestartGameTestWorld)
+    mustRunAfter 'runGameTestServerDisabledMaterials'
+}
+tasks.named('runGameTestServerRestartVerify') {
+    dependsOn 'runGameTestServerRestartPrepare'
+}
 tasks.named('runGameTestServer') {
     finalizedBy 'runGameTestServerFirmalife', 'runGameTestServerAdvancedTfcTech',
             'runGameTestServerAfc', 'runGameTestServerOverdims', 'runGameTestServerAll',
-            'runGameTestServerDisabledMaterials'
+            'runGameTestServerDisabledMaterials', 'runGameTestServerRestartVerify'
 }
 
 def copyDataCompatMods = tasks.register('copyDataCompatMods', Copy) {

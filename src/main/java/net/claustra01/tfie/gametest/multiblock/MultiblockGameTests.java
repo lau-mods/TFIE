@@ -1,7 +1,10 @@
 package net.claustra01.tfie.gametest.multiblock;
 
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.AlloySmelterMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.ArcFurnaceMultiblock;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.BlastFurnaceMultiblock;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.ImprovedBlastfurnaceMultiblock;
 import net.claustra01.tfie.TFIE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -48,6 +51,40 @@ public final class MultiblockGameTests
         assertEveryMissingCoordinateFails(helper, arc);
         assertFormsAtMaster(helper, arc, Direction.SOUTH, false, true);
         helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, templateNamespace = TFIE.MOD_ID, timeoutTicks = 200)
+    public static void furnace_multiblock_templates(GameTestHelper helper)
+    {
+        for(Machine machine : furnaces())
+        {
+            assertTemplate(helper, machine);
+            assertEveryMissingCoordinateFails(helper, machine);
+            assertFormsAtMaster(helper, machine, Direction.SOUTH, false, false);
+        }
+        assertInvalidImprovedBlastFurnaceHoppers(helper);
+        helper.succeed();
+    }
+
+    private static void assertInvalidImprovedBlastFurnaceHoppers(GameTestHelper helper)
+    {
+        Machine machine = improvedBlastFurnace();
+        BlockPos hopper = new BlockPos(1, 3, 1);
+        BlockState expected = machine.expected().get(hopper);
+        for(BlockState invalid : List.of(
+                expected.setValue(net.minecraft.world.level.block.HopperBlock.FACING, Direction.NORTH),
+                expected.setValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.ENABLED,
+                        false)))
+            assertSubstitutionFails(helper, machine, hopper, invalid);
+
+        place(helper, machine, Direction.SOUTH, false, hopper);
+        helper.getLevel().setBlockAndUpdate(absolute(helper, machine, new BlockPos(0, 3, 1),
+                Direction.SOUTH, false), expected);
+        helper.assertTrue(!machine.multiblock().createStructure(helper.getLevel(),
+                        absoluteTrigger(helper, machine, Direction.SOUTH, false), Direction.SOUTH,
+                        helper.makeMockPlayer(GameType.CREATIVE)),
+                "Improved blast furnace accepted its Hopper at the wrong position");
+        clear(helper, absoluteTrigger(helper, machine, Direction.SOUTH, false));
     }
 
     @GameTest(template = TEMPLATE, templateNamespace = TFIE.MOD_ID, timeoutTicks = 200)
@@ -303,6 +340,36 @@ public final class MultiblockGameTests
         return List.of(grist(), loom());
     }
 
+    private static List<Machine> furnaces()
+    {
+        return List.of(blastFurnace(), improvedBlastFurnace(), alloyKiln());
+    }
+
+    private static Machine blastFurnace()
+    {
+        Map<BlockPos, BlockState> blocks = new LinkedHashMap<>();
+        addCube(blocks, "immersiveengineering:blastbrick", 3, 3, 3);
+        return new Machine("blast furnace", new BlastFurnaceMultiblock(), new Vec3i(3, 3, 3),
+                new BlockPos(1, 1, 2), new BlockPos(1, 1, 1), blocks);
+    }
+
+    private static Machine improvedBlastFurnace()
+    {
+        Map<BlockPos, BlockState> blocks = new LinkedHashMap<>();
+        addCube(blocks, "immersiveengineering:blastbrick_reinforced", 3, 3, 3);
+        add(blocks, "minecraft:hopper", "1,3,1", "facing=down,enabled=true");
+        return new Machine("improved blast furnace", new ImprovedBlastfurnaceMultiblock(),
+                new Vec3i(3, 4, 3), new BlockPos(1, 1, 2), new BlockPos(1, 1, 1), blocks);
+    }
+
+    private static Machine alloyKiln()
+    {
+        Map<BlockPos, BlockState> blocks = new LinkedHashMap<>();
+        addCube(blocks, "immersiveengineering:alloybrick", 2, 2, 2);
+        return new Machine("alloy kiln", new AlloySmelterMultiblock(), new Vec3i(2, 2, 2),
+                new BlockPos(1, 1, 1), new BlockPos(0, 0, 1), blocks);
+    }
+
     private static Machine arc()
     {
         Map<BlockPos, BlockState> blocks = new LinkedHashMap<>();
@@ -380,6 +447,16 @@ public final class MultiblockGameTests
     private static void add(Map<BlockPos, BlockState> target, String blockId, String coordinates)
     {
         add(target, blockId, coordinates, "");
+    }
+
+    private static void addCube(Map<BlockPos, BlockState> target, String blockId,
+                                int sizeX, int sizeY, int sizeZ)
+    {
+        BlockState state = block(blockId).defaultBlockState();
+        for(int x = 0; x < sizeX; x++)
+            for(int y = 0; y < sizeY; y++)
+                for(int z = 0; z < sizeZ; z++)
+                    target.put(new BlockPos(x, y, z), state);
     }
 
     private static void add(Map<BlockPos, BlockState> target, String blockId, String coordinates, String properties)

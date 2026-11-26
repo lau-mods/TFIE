@@ -1,0 +1,35 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "tfie:logged_recipe",
+      "conditions": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfcm:ore_processing/briquet/cassiterite"
+        },
+        {
+          "type": "neoforge:item_exists",
+          "item": "tfc:metal/ingot/tin"
+        },
+        {
+          "type": "tfcm:ore_enabled",
+          "ore": "cassiterite"
+        }
+      ],
+      "reason": "Arc Furnace materials are unavailable",
+      "recipe": "tfie:arcfurnace/briquet/cassiterite"
+    }
+  ],
+  "type": "tfie:arc_furnace",
+  "additives": [],
+  "energy": 51200,
+  "input": {
+    "item": "tfcm:ore_processing/briquet/cassiterite"
+  },
+  "results": [
+    {
+      "id": "tfc:metal/ingot/tin"
+    }
+  ],
+  "time": 100
+}

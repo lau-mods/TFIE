@@ -8,7 +8,11 @@
     "accessor.CrucibleBlockEntityAccessor",
     "AllowInCrateMixin",
     "DynamoBlockEntityMixin",
+    "IngredientFluidStackMixin",
     "TemplateMultiblockMixin"
+  ],
+  "client": [
+    "client.ContainedFluidModelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -3,8 +3,8 @@
   "active": [
     {
       "id": "M04",
-      "phase": "implementation",
-      "baseCommit": "6eaf92d3cf78f6263c82c6d1efb5063a6c67713a",
+      "phase": "gametest",
+      "baseCommit": "6f1d8f710693ffdac4b7fb5d84923a6195e4b439",
       "failures": {
         "build": 0,
         "gametest": 0,
@@ -58,6 +58,36 @@
                 "by": "claude",
                 "note": "coke_oven_capacity_during_processing now creates a real CokeOvenLogic.State and ticks it through a multiblock context. It covers output Coke 0/1/60/64, a renamed Coke, Charcoal, less than 500 mB free tank capacity, insertion/extraction during processing, and a capacity clamp at completion, asserting input, output and Creosote amounts. The build test-results contain no failures.",
                 "at": "2026-11-26T07:55:59.764Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "coke_oven_capacity_during_processing now creates a real CokeOvenLogic.State and ticks it through TestMultiblockContext. It covers output Coke 0/1/60/64, renamed Coke, Charcoal, a tank with only 499 mB free, insertion and extraction during processing, and a full output blocking progress, asserting input, Coke and Creosote amounts.",
+                "at": "2026-11-26T08:15:31.812Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "coke_oven_capacity_during_processing now constructs a real CokeOvenLogic.State and ticks it through its multiblock context. It covers output Coke 0/1/60/64, a renamed Coke, Charcoal, a tank with only 499 mB free, insertion and extraction during processing, and completion clamping at 63/64 Coke, asserting input, output and Creosote amounts. The 60-Coke and 1-Coke cases would fail if the capacity redirect did not apply, and the build test-results show the test passing.",
+                "at": "2026-11-26T08:40:20.073Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "coke_oven_capacity_during_processing now constructs a real CokeOvenLogic.State and drives tickServer through TestMultiblockContext. It covers output Coke 0/1/60/64, named Coke, Charcoal, a tank with only 499 mB free, insertion and extraction during processing, and a full output blocking progress, asserting input, Coke and Creosote amounts. The current IE bytecode confirms the first getCount() in tickServer is the output-capacity term, and the 1-Coke and 60-Coke cases would fail without the redirect. The base GameTest report shows this test passing.",
+                "at": "2026-11-26T09:10:10.494Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "coke_oven_capacity_during_processing now builds a real CokeOvenLogic.State and drives tickServer through TestMultiblockContext. It covers output Coke 0/1/60/64, named Coke and Charcoal, a tank with 499 mB free, insertion of 63 Coke and extraction mid-process, and the full-output block, asserting input, output and Creosote. IE's tickServer itemSpace is the first getCount() call, so the ordinal-0 redirect is the capacity term. The base GameTest report has no failures.",
+                "at": "2026-11-26T09:38:20.839Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "coke_oven_capacity_during_processing now builds a real CokeOvenLogic.State and drives tickServer through TestMultiblockContext. It covers output Coke 0/1/60/64, named Coke, Charcoal, a tank with 499 mB free, mid-process insertion/extraction, and a blocked completion, asserting input, output and Creosote amounts. The 1- and 60-Coke cases require the residual-capacity redirect, so the mixin is exercised.",
+                "at": "2026-11-26T10:08:57.523Z"
               }
             ]
           },
@@ -105,6 +135,36 @@
                 "by": "claude",
                 "note": "coke_oven_batch_processing now runs the real oven logic with 1, 16 and 17 Bituminous Coal, including the 6000-tick process, and asserts the resulting Coke, Creosote and leftover input.",
                 "at": "2026-11-26T07:55:59.764Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "coke_oven_batch_processing now runs the real oven logic for 1, 16 and 17 Bituminous Coal. It verifies the 6000-tick duration and the resulting Coke, Creosote and leftover input (1 Coke/500 mB, 16 Coke/8000 mB, and 1 leftover with 16 Coke/8000 mB).",
+                "at": "2026-11-26T08:15:31.812Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "coke_oven_batch_processing now runs the real oven state with 1, 16 and 17 Bituminous Coal. It verifies the 6000-tick MAX_BURN_TIME and the resulting Coke, Creosote and leftover input (1 Coke/500 mB, 16 Coke/8000 mB, and 1 leftover with 16 Coke/8000 mB).",
+                "at": "2026-11-26T08:40:20.073Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "coke_oven_batch_processing now runs the real oven state with 1, 16 and 17 Bituminous Coal. It verifies the 6000-tick MAX_BURN_TIME and the resulting Coke, Creosote and leftover input (1 Coke/500 mB, 16 Coke/8000 mB, and 1 leftover with 16 Coke/8000 mB). The test appears with no failures in the base report.",
+                "at": "2026-11-26T09:10:10.494Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "coke_oven_batch_processing runs the real oven state with 1, 16 and 17 Bituminous Coal. It checks MAX_BURN_TIME 6000 and the 6000-tick boundary, then asserts 1 Coke/500 mB, 16 Coke/8,000 mB, and 1 leftover with 16 Coke/8,000 mB for 17 inputs. The base report shows it passing.",
+                "at": "2026-11-26T09:38:20.839Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "coke_oven_batch_processing runs the real oven state with 1, 16 and 17 Bituminous Coal. It checks MAX_BURN_TIME 6000 and the 6000-tick completion boundary, then asserts 1 Coke/500 mB, 16 Coke/8,000 mB, and 1 leftover input with 16 Coke/8,000 mB.",
+                "at": "2026-11-26T10:08:57.523Z"
               }
             ]
           },
@@ -152,6 +212,36 @@
                 "by": "claude",
                 "note": "The grain test asserts that the serialized ingredient is the c:foods/grain tag, then verifies the six TFC grains match and the unthreshed forms do not, so an item-list ingredient would fail.",
                 "at": "2026-11-26T07:55:59.764Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The grain test asserts that the serialized ingredient is the c:foods/grain tag, then checks the six TFC grains match and unthreshed forms do not. An item-list ingredient would fail this assertion.",
+                "at": "2026-11-26T08:15:31.812Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The grain test asserts that the serialized ingredient's tag is c:foods/grain, so an item-list ingredient would fail, and it separately verifies that the six TFC grains match while unthreshed forms do not.",
+                "at": "2026-11-26T08:40:20.073Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "fermenter_food_and_grain_table asserts that the serialized grains ingredient's tag is c:foods/grain, so an item-list ingredient would fail. It separately verifies the six TFC grains match and the unthreshed forms do not. The test passes in the base report.",
+                "at": "2026-11-26T09:10:10.494Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "fermenter_food_and_grain_table asserts the serialized grains ingredient's tag is c:foods/grain, so an item-list ingredient would fail. It separately verifies all six TFC grains match and the unthreshed forms do not.",
+                "at": "2026-11-26T09:38:20.839Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "fermenter_food_and_grain_table asserts the serialized grains ingredient is the c:foods/grain tag, so an item-list ingredient would fail. It also verifies the six TFC grains match and the unthreshed forms do not.",
+                "at": "2026-11-26T10:08:57.523Z"
               }
             ]
           },
@@ -199,6 +289,36 @@
                 "by": "claude",
                 "note": "assertMixer now receives the expected item alternatives for every solid input and checks each one: all three copper powders, Sulfur, Flux/Lime, Salt, Olive Paste, Blubber, Wood Ash and Butter. The Herbicide test also rejects tfcm:metal/dust/copper in either input.",
                 "at": "2026-11-26T07:55:59.764Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "assertMixer now receives the expected item alternatives for each solid input and checks all of them: the three copper powders, Sulfur, Flux/Lime, Salt, Olive Paste, Blubber, Wood Ash and Butter. The Herbicide test also rejects tfcm:metal/dust/copper in either input.",
+                "at": "2026-11-26T08:15:31.812Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "assertMixer now receives the expected item alternatives for every solid input and checks each one: the three copper powders, Sulfur, Flux/Lime, Salt, Olive Paste, Blubber, Wood Ash and Butter. The Herbicide test separately rejects tfcm:metal/dust/copper in either input.",
+                "at": "2026-11-26T08:40:20.073Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "assertMixer now receives the expected item alternatives for each solid input and checks every one: the three copper powders, Sulfur, Flux/Lime, Salt, Olive Paste, Blubber, Wood Ash and Butter. The Herbicide test separately asserts that tfcm:metal/dust/copper matches neither input.",
+                "at": "2026-11-26T09:10:10.494Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "assertMixer now takes the expected item alternatives per input and tests each one: all three copper powders, Sulfur, Flux/Lime, Salt, Olive Paste, Blubber, Wood Ash and Butter. The Herbicide test separately asserts tfcm:metal/dust/copper matches neither item input, and the fluid inputs/outputs are checked.",
+                "at": "2026-11-26T09:38:20.839Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "assertMixer now takes the expected item alternatives per input and tests each one: all three copper powders, Sulfur, Flux/Lime, Salt, Olive Paste, Blubber, Wood Ash and Butter. The Herbicide test separately rejects tfcm:metal/dust/copper in either item input, and fluid inputs/outputs are checked.",
+                "at": "2026-11-26T10:08:57.523Z"
               }
             ]
           },
@@ -246,6 +366,36 @@
                 "by": "claude",
                 "note": "The Chisel test requires the exact SLAB and STAIR modes, checks that the result item is the matching slab_/stairs_ block item, and verifies one extra slab output for Slab mode and none for Stair mode.",
                 "at": "2026-11-26T07:55:59.764Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The Chisel test requires ChiselMode.SLAB and ChiselMode.STAIR, checks the result item is the matching slab_/stairs_ block item, and verifies one additional slab output for Slab mode and none for Stair mode.",
+                "at": "2026-11-26T08:15:31.812Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The Chisel test requires the exact SLAB and STAIR modes, checks that the result item is the matching slab_/stairs_ block item, and verifies one additional slab output for Slab mode and none for Stair mode.",
+                "at": "2026-11-26T08:40:20.073Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The chisel test requires ChiselMode.SLAB and ChiselMode.STAIR, checks that getResultItem is the matching slab_/stairs_ block item, and verifies one additional slab output for Slab mode and none for Stair mode.",
+                "at": "2026-11-26T09:10:10.494Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The Chisel test requires ChiselMode.SLAB and ChiselMode.STAIR, checks getResultItem is the matching slab_/stairs_ block item, and verifies one extra slab output for Slab mode and none for Stair mode.",
+                "at": "2026-11-26T09:38:20.839Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "chisel_and_heating_table requires ChiselMode.SLAB and ChiselMode.STAIR, checks that getResultItem is the matching slab_/stairs_ block item, and verifies one extra slab output for Slab mode and none for Stair mode.",
+                "at": "2026-11-26T10:08:57.523Z"
               }
             ]
           },
@@ -293,6 +443,36 @@
                 "by": "claude",
                 "note": "tests/acceptance.json registers AC-F018-008 for firmalife_fermentation_chain and firmalife_chemical_table in the base TEST-tfie.xml report as well as the FirmaLife report.",
                 "at": "2026-11-26T07:55:59.764Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "tests/acceptance.json registers AC-F018-008 for firmalife_fermentation_chain and firmalife_chemical_table in the base TEST-tfie.xml report as well as the FirmaLife report.",
+                "at": "2026-11-26T08:15:31.812Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "tests/acceptance.json registers AC-F018-008 for firmalife_fermentation_chain and firmalife_chemical_table in the base TEST-tfie.xml report as well as the FirmaLife report.",
+                "at": "2026-11-26T08:40:20.073Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "tests/acceptance.json registers AC-F018-008 for firmalife_fermentation_chain and firmalife_chemical_table in the base TEST-tfie.xml report as well as in the FirmaLife report.",
+                "at": "2026-11-26T09:10:10.494Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "tests/acceptance.json registers AC-F018-008 for both firmalife_fermentation_chain and firmalife_chemical_table in the base TEST-tfie.xml report, in addition to the FirmaLife report entries.",
+                "at": "2026-11-26T09:38:20.839Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "tests/acceptance.json registers AC-F018-008 for firmalife_fermentation_chain and firmalife_chemical_table in the base TEST-tfie.xml report, alongside the FirmaLife report entries.",
+                "at": "2026-11-26T10:08:57.523Z"
               }
             ]
           },
@@ -340,6 +520,36 @@
                 "by": "claude",
                 "note": "The base scenario now captures seed usage, grain-tag Fermenter usage and the base Ethanol view without Raw Honey, while the separately registered FirmaLife scenario captures the Raw Honey Fermenter view.",
                 "at": "2026-11-26T07:55:59.764Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The base non-metal scenario captures seed usage, grain-tag Fermenter usage and the base Ethanol view without Raw Honey; the separately registered FirmaLife scenario captures the Raw Honey Fermenter view. The only diff since the last review changes the JEI tab click coordinates, not the captured coverage.",
+                "at": "2026-11-26T08:15:31.812Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The base scenario captures seed usage, grain-tag Fermenter usage and the base Ethanol view without Raw Honey, while the separately registered FirmaLife scenario captures the Raw Honey Fermenter view. The diff only changes how JEI categories are selected, not the captured coverage.",
+                "at": "2026-11-26T08:40:20.073Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The base scenario (no extra mods) captures seed usage, grain-tag Fermenter usage and the base Ethanol view without Raw Honey; the separately registered FirmaLife scenario captures the Raw Honey Fermenter view. The diff only changes how JEI categories are selected, and its click formula matches the working wood-processing scenario, so the captured coverage remains.",
+                "at": "2026-11-26T09:10:10.494Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The base non-metal scenario captures seed usage with only the Squeezer category, grain-tag Fermenter usage and the base Ethanol view without Raw Honey; the separately registered FirmaLife scenario captures the Raw Honey Fermenter view. The diff only adjusts the grain tab index to 2 and removes no capture.",
+                "at": "2026-11-26T09:38:20.839Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The base non-metal scenario captures seed usage with the Squeezer category, grain-tag Fermenter usage and the base Ethanol view without Raw Honey; the separately registered FirmaLife scenario captures the Raw Honey Fermenter view.",
+                "at": "2026-11-26T10:08:57.523Z"
               }
             ]
           },
@@ -387,6 +597,36 @@
                 "by": "claude",
                 "note": "The base scenario captures the base Mixer recipes, Brine, single base Milk Vinegar, Slag Glass heating and wool usage without a Crusher, while the FirmaLife scenario captures the six FirmaLife recipes and its Milk Vinegar.",
                 "at": "2026-11-26T07:55:59.764Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The base scenario captures the base Mixer recipes, Brine, single base Milk Vinegar, Slag Glass heating and wool usage without a Crusher, while the FirmaLife scenario captures the six FirmaLife recipes and its Milk Vinegar. Both remain registered.",
+                "at": "2026-11-26T08:15:31.812Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The base scenario captures the base Mixer recipes, Brine, single base Milk Vinegar, Slag Glass heating and wool usage without a Crusher, while the FirmaLife scenario captures the six FirmaLife recipes and its Milk Vinegar. Both remain registered; the tab-selection change does not remove any capture.",
+                "at": "2026-11-26T08:40:20.073Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The base scenario captures the base Mixer recipes, Brine, single base Milk Vinegar, Slag Glass heating and wool usage without a Crusher; the FirmaLife scenario captures the six FirmaLife recipes and its Milk Vinegar. Both remain registered for AC-F018-010; the tab-selection change does not remove any capture.",
+                "at": "2026-11-26T09:10:10.494Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The base scenario captures the base Mixer recipes, Brine, single base Milk Vinegar, Slag Glass heating and wool usage without a Crusher; the FirmaLife scenario captures the six FirmaLife recipes and its Milk Vinegar. Both remain registered for AC-F018-010, and the tab adjustment does not remove any capture.",
+                "at": "2026-11-26T09:38:20.839Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The base scenario captures the base Mixer recipes, Brine, single base Milk Vinegar, Slag Glass heating and wool usage without a Crusher; the FirmaLife scenario captures the six FirmaLife recipes and its Milk Vinegar. Both are registered for AC-F018-010.",
+                "at": "2026-11-26T10:08:57.523Z"
               }
             ]
           },
@@ -434,6 +674,36 @@
                 "by": "claude",
                 "note": "MixerRecipes.firmalife now takes only path, input and result; the 200 mB water input, 200 mB output and 800 FE are set inline.",
                 "at": "2026-11-26T07:55:59.764Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "MixerRecipes.firmalife now takes only path, input and result; the 200 mB water input, 200 mB output and 800 FE are set inline.",
+                "at": "2026-11-26T08:15:31.812Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "MixerRecipes.firmalife now takes only path, input and result; the 200 mB water input, 200 mB output and 800 FE are set inline.",
+                "at": "2026-11-26T08:40:20.073Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "MixerRecipes.firmalife now takes only path, input and result; the 200 mB water input, 200 mB output and 800 FE are set inline.",
+                "at": "2026-11-26T09:10:10.494Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "MixerRecipes.firmalife now takes only path, input and result; the 200 mB water input, 200 mB output and 800 FE are inline in the helper, with no invariant amount/energy parameters.",
+                "at": "2026-11-26T09:38:20.839Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "MixerRecipes.firmalife now takes only path, input and result; the 200 mB water input, 200 mB output and 800 FE are set inline in the helper, with no invariant amount/energy parameters.",
+                "at": "2026-11-26T10:08:57.523Z"
               }
             ]
           },
@@ -456,7 +726,7 @@
           }
         ]
       },
-      "codeReviewTree": "9821267f5ceeb25be8231bcaa252aba480b7a0c5",
+      "codeReviewTree": "0627384d4b0e3c15add735630282928cf595a592",
       "e2eReview": {
         "kind": "e2e",
         "issues": [
@@ -480,6 +750,36 @@
                 "by": "claude",
                 "note": "The new screenshot shows the Industrial Squeezer category (1/1) with a seed input and plant-oil fluid output, an empty solid-output slot, and no Fermenter tab.",
                 "at": "2026-11-26T08:11:27.078Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Industrial Squeezer category (1/1) with an alfalfa-seed input, plant-oil fluid output, an empty solid-output slot, and no Fermenter category in the visible tab row.",
+                "at": "2026-11-26T08:30:05.580Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The new screenshot still shows the Crafting category (1/1) with a seed/fishing-rod recipe; the Industrial Squeezer category and the seed -> 80mB Plant Oil recipe with no solid byproduct are not shown.",
+                "at": "2026-11-26T09:02:26.559Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Alfalfa seed usage now directly selects the fourth tab, Industrial Squeezer.",
+                "at": "2026-11-26T09:05:31.883Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot now shows the Industrial Squeezer category (1/1) with an alfalfa-seed input and plant-oil fluid output; the solid-output slot is empty and the visible category tab row contains no Fermenter tab.",
+                "at": "2026-11-26T09:26:30.866Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot now shows the Industrial Squeezer category (1/1) with the alfalfa-seed input and plant-oil fluid output; the solid-output slot is empty and the visible tab row contains no Fermenter tab.",
+                "at": "2026-11-26T09:54:00.615Z"
               }
             ]
           },
@@ -503,6 +803,36 @@
                 "by": "claude",
                 "note": "The new screenshot shows the Industrial Squeezer category with a seed input and plant-oil fluid output, with no solid byproduct.",
                 "at": "2026-11-26T08:11:27.078Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Industrial Squeezer category (1/1) with the seed input and plant-oil fluid output and no solid output.",
+                "at": "2026-11-26T08:30:05.580Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The new screenshot still shows the Crafting category from the seed lookup, not the Industrial Squeezer; the seed -> 80mB Plant Oil recipe is not visible.",
+                "at": "2026-11-26T09:02:26.559Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Canola seed usage now directly selects the fourth tab, showing seed to Plant Oil without a solid output.",
+                "at": "2026-11-26T09:05:31.883Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Industrial Squeezer category (1/1) with a canola-seed input and plant-oil fluid output and no solid byproduct, instead of the bottling page.",
+                "at": "2026-11-26T09:26:30.866Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot now shows the Industrial Squeezer category (1/1) with a canola-seed input, plant-oil fluid output and empty solid-output slot, not the bottling page.",
+                "at": "2026-11-26T09:54:00.615Z"
               }
             ]
           },
@@ -513,7 +843,7 @@
             "reason": "The 'u' lookup on tfc:food/barley_grain opens the item-tag usage page first; the Fermenter category tab is never selected.",
             "fix": "Select the IE Fermenter category tab and show the tfie:fermenter/grains recipe with the grain tag input and Ethanol 80mB.",
             "id": "ER-003",
-            "status": "open",
+            "status": "resolved",
             "history": [
               {
                 "status": "open",
@@ -526,6 +856,54 @@
                 "by": "claude",
                 "note": "The new screenshot still shows Item Tags 1/29 (#tfc:camel_food), not the Industrial Fermenter category; the grain -> Ethanol 80mB recipe is not shown.",
                 "at": "2026-11-26T08:11:27.078Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The grain lookup now clicks the center of the IE Fermenter tab.",
+                "at": "2026-11-26T08:13:33.314Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The new screenshot still shows the Item Tags page 'Grains' (c:foods/grain, 1/29), not the Industrial Fermenter category; the grain -> Ethanol 80mB recipe is not shown.",
+                "at": "2026-11-26T08:30:05.580Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The grain lookup now advances once from Item Tags to Industrial Fermenter.",
+                "at": "2026-11-26T08:37:39.879Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The new screenshot still shows Item Tags 1/29 (Alpaca Foods), not the Industrial Fermenter; the grain-tag -> 80mB Ethanol recipe is not shown.",
+                "at": "2026-11-26T09:02:26.559Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Barley Grain usage now directly selects the second tab, Industrial Fermenter.",
+                "at": "2026-11-26T09:05:31.883Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The screenshot still does not show the Industrial Fermenter. The barley-grain lookup lands on the 'Grist Mill' category (1/1), so the #c:foods/grain -> Ethanol 80mB recipe remains invisible.",
+                "at": "2026-11-26T09:26:30.866Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The grain usage capture now selects the third JEI tab, Industrial Fermenter, instead of Grist Mill.",
+                "at": "2026-11-26T09:27:57.855Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot now shows the Industrial Fermenter category (1/1) with a grain tag (#) input and ethanol fluid output instead of the Item Tags page.",
+                "at": "2026-11-26T09:54:00.615Z"
               }
             ]
           },
@@ -549,6 +927,30 @@
                 "by": "claude",
                 "note": "The new screenshot now shows the Industrial Fermenter category with food recipes instead of the bottling page, and no Raw Honey recipe appears in the base configuration.",
                 "at": "2026-11-26T08:11:27.078Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Industrial Fermenter category (1/18) with food recipes instead of the bottling page, and no Raw Honey recipe is visible.",
+                "at": "2026-11-26T08:30:05.580Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Industrial Fermenter category (1/18) with food recipes instead of the bottling page, and no Raw Honey recipe appears in the base configuration.",
+                "at": "2026-11-26T09:02:26.559Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Industrial Fermenter category (1/18) with food recipes instead of the bottling page, and no Raw Honey recipe is visible in the base configuration.",
+                "at": "2026-11-26T09:26:30.866Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Industrial Fermenter category (1/18) with food recipes instead of the bottling page, and no Raw Honey recipe is visible.",
+                "at": "2026-11-26T09:54:00.615Z"
               }
             ]
           },
@@ -572,6 +974,48 @@
                 "by": "claude",
                 "note": "The new screenshot shows the Coke Oven category with the coal -> coke plus creosote recipe.",
                 "at": "2026-11-26T08:11:27.078Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The new screenshot shows Item Tags 'Charcoal Forge Fuels' (tfc:forge_fuel), not the Coke Oven category; the Coal -> Coke 1 + Creosote 500mB recipe is not shown.",
+                "at": "2026-11-26T08:30:05.580Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Bituminous Coal now advances once to the second category, Coke Oven.",
+                "at": "2026-11-26T08:37:39.879Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The new screenshot still shows the Crafting category (1/1), not the Coke Oven category; the coal -> Coke 1 + Creosote 500mB recipe is not shown.",
+                "at": "2026-11-26T09:02:26.559Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Bituminous Coal usage now selects the second tab, Coke Oven.",
+                "at": "2026-11-26T09:05:31.883Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The screenshot shows Item Tags 'Ores' (tfc:ore_pieces, 1/3), not the Coke Oven category; the coal -> Coke 1 + Creosote 500mB recipe is still not shown.",
+                "at": "2026-11-26T09:26:30.866Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The bituminous coal usage capture now selects the third JEI tab, Coke Oven, instead of Item Tags.",
+                "at": "2026-11-26T09:27:57.855Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot now shows the Coke Oven category (1/1) with the coal -> coal coke recipe and the creosote fluid output.",
+                "at": "2026-11-26T09:54:00.615Z"
               }
             ]
           },
@@ -582,7 +1026,7 @@
             "reason": "Opening recipes for tfc:sand/black opens the crafting page first; the Crusher category tab is not selected.",
             "fix": "Select the IE Crusher category tab and page to the black-sandstone recipe, showing the 2 Sand output and the 50% Saltpeter secondary.",
             "id": "ER-006",
-            "status": "open",
+            "status": "resolved",
             "history": [
               {
                 "status": "open",
@@ -595,6 +1039,48 @@
                 "by": "claude",
                 "note": "The new screenshot still shows Crafting 1/1 (black sand -> black sandstone), not the Crusher category; the 2 Sand plus 50% Saltpeter recipe is not visible.",
                 "at": "2026-11-26T08:11:27.078Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The sandstone lookup now clicks the center of the IE Crusher tab.",
+                "at": "2026-11-26T08:13:33.314Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The new screenshot still shows Crafting 1/1 (4 Black Sand -> Black Sandstone), not the Crusher category; the 2 Sand + 50% Saltpeter recipe is not shown.",
+                "at": "2026-11-26T08:30:05.580Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The black sandstone lookup now advances once from Crafting to Crusher.",
+                "at": "2026-11-26T08:37:39.879Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The new screenshot still shows Crafting 1/1 (4 Black Sand -> Black Sandstone), not the Crusher category; the 2 Sand + 50% Saltpeter recipe is not shown.",
+                "at": "2026-11-26T09:02:26.559Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Black Sand recipes now directly select the second tab, Crusher.",
+                "at": "2026-11-26T09:05:31.883Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot now shows the Crusher category (1/2) with the sandstone/sand recipe producing 2 Sand plus a 50% Saltpeter secondary output instead of the crafting page.",
+                "at": "2026-11-26T09:26:30.866Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot now shows the Crusher category (1/2) with the sandstone -> sand recipe and the 50% saltpeter secondary output.",
+                "at": "2026-11-26T09:54:00.615Z"
               }
             ]
           },
@@ -618,6 +1104,42 @@
                 "by": "claude",
                 "note": "The new screenshot shows the TFC Heating Recipe category with bricks -> Clinker Brick and the temperature indicator.",
                 "at": "2026-11-26T08:11:27.078Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The new screenshot shows Smoking 1/1 (bricks -> bricks), not the TFC Heating category; the bricks -> Clinker Brick recipe at 1,499°C is not shown.",
+                "at": "2026-11-26T08:30:05.580Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The Clinker Brick lookup now advances twice to TFC Heating.",
+                "at": "2026-11-26T08:37:39.879Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The new screenshot still shows Crafting 1/1 (2 Brick -> Bricks Block), not the TFC Heating category; the 1,499 C Clinker Brick recipe is not shown.",
+                "at": "2026-11-26T09:02:26.559Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Clinker Brick recipes now directly select the third tab, TFC Heating.",
+                "at": "2026-11-26T09:05:31.883Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the TFC 'Heating Recipe' category (1/1) with the bricks -> brick (Clinker Brick) recipe and a temperature indicator, not the crafting page.",
+                "at": "2026-11-26T09:26:30.866Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the TFC Heating Recipe category (1/1) with minecraft:bricks -> Clinker Brick and a temperature indicator.",
+                "at": "2026-11-26T09:54:00.615Z"
               }
             ]
           },
@@ -628,7 +1150,7 @@
             "reason": "Opening recipes for immersiveengineering:slag_glass selects the Smelting page; the Heating category tab (fire icon) is not selected.",
             "fix": "Select the TFC Heating category tab and show IE Slag -> Slag Glass with the 380°C temperature indicator.",
             "id": "ER-008",
-            "status": "open",
+            "status": "resolved",
             "history": [
               {
                 "status": "open",
@@ -641,6 +1163,48 @@
                 "by": "claude",
                 "note": "The new screenshot still shows Smelting 1/1 (0.1 XP, 10s) instead of the TFC Heating category; the slag -> slag glass 380°C recipe is not shown.",
                 "at": "2026-11-26T08:11:27.078Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The Slag Glass lookup now clicks the center of the TFC Heating tab.",
+                "at": "2026-11-26T08:13:33.314Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The new screenshot still shows Smelting 1/1 (Slag, 0.1 XP, 10s), not the TFC Heating category; the Slag -> Slag Glass 380°C recipe is not shown.",
+                "at": "2026-11-26T08:30:05.580Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The Slag Glass lookup now advances once from Smelting to TFC Heating.",
+                "at": "2026-11-26T08:37:39.879Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The new screenshot still shows Smelting 1/1 (Slag -> Slag Glass), not the TFC Heating category; the 380 C recipe is not shown.",
+                "at": "2026-11-26T09:02:26.559Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Slag Glass recipes now directly select the second tab, TFC Heating.",
+                "at": "2026-11-26T09:05:31.883Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the TFC 'Heating Recipe' category (1/1) with Slag -> Slag Glass and a temperature indicator (Very Hot), not the Smelting page.",
+                "at": "2026-11-26T09:26:30.866Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the TFC Heating Recipe category (1/1) with Slag -> Slag Glass and the temperature indicator, not the Smelting page.",
+                "at": "2026-11-26T09:54:00.615Z"
               }
             ]
           },
@@ -664,6 +1228,30 @@
                 "by": "claude",
                 "note": "The new screenshot shows the Mixer category with sulfur and copper-powder inputs and the herbicide fluid output.",
                 "at": "2026-11-26T08:11:27.078Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Mixer category with the sulfur and copper-powder inputs and the herbicide fluid output.",
+                "at": "2026-11-26T08:30:05.580Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Mixer category (1/1) with sulfur and copper-powder inputs and the Herbicide fluid output.",
+                "at": "2026-11-26T09:02:26.559Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Mixer category with the sulfur and copper-powder item inputs and the herbicide fluid output, not the bottling page.",
+                "at": "2026-11-26T09:26:30.866Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Mixer category with sulfur and copper-powder inputs and the herbicide fluid output, not the bottling page.",
+                "at": "2026-11-26T09:54:00.615Z"
               }
             ]
           },
@@ -687,6 +1275,30 @@
                 "by": "claude",
                 "note": "The new screenshot shows the Mixer category with the flux/water -> limewater recipe.",
                 "at": "2026-11-26T08:11:27.078Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Mixer category with the flux/lime input, water, and limewater output.",
+                "at": "2026-11-26T08:30:05.580Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Mixer category (1/1) with the flux/lime input, water, and Limewater output.",
+                "at": "2026-11-26T09:02:26.559Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Mixer category (1/1) with the flux/lime input, water and the limewater output, not the bottling page.",
+                "at": "2026-11-26T09:26:30.866Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Mixer category with the flux/water inputs and the limewater output, not the bottling page.",
+                "at": "2026-11-26T09:54:00.615Z"
               }
             ]
           },
@@ -710,6 +1322,30 @@
                 "by": "claude",
                 "note": "The new screenshot shows the Mixer category with the salt/water -> salt-water recipe.",
                 "at": "2026-11-26T08:11:27.078Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Mixer category with the salt input, water, and salt-water output.",
+                "at": "2026-11-26T08:30:05.580Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Mixer category (1/1) with the salt input, water, and Salt Water output.",
+                "at": "2026-11-26T09:02:26.559Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Mixer category (1/1) with the salt input, water and the salt-water output, not the bottling page.",
+                "at": "2026-11-26T09:26:30.866Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Mixer category with the salt/water inputs and the salt-water output, not the bottling page.",
+                "at": "2026-11-26T09:54:00.615Z"
               }
             ]
           },
@@ -733,6 +1369,30 @@
                 "by": "claude",
                 "note": "The new screenshot shows the Refinery category with the brine recipe.",
                 "at": "2026-11-26T08:11:27.078Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Refinery category with the brine recipe instead of the bottling page.",
+                "at": "2026-11-26T08:30:05.580Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Refinery category (1/1) with the Brine recipe.",
+                "at": "2026-11-26T09:02:26.559Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Refinery category (1/1) with the brine recipe, not the bottling page.",
+                "at": "2026-11-26T09:26:30.866Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Refinery category (1/1) with the brine recipe and its fluid inputs/output, not the bottling page.",
+                "at": "2026-11-26T09:54:00.615Z"
               }
             ]
           },
@@ -756,6 +1416,30 @@
                 "by": "claude",
                 "note": "The new screenshot shows the Refinery category with the single base Milk Vinegar recipe.",
                 "at": "2026-11-26T08:11:27.078Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Refinery category (1/1) with the single base Milk Vinegar recipe.",
+                "at": "2026-11-26T08:30:05.580Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Refinery category (1/1) with the single base Milk Vinegar recipe.",
+                "at": "2026-11-26T09:02:26.559Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Refinery category (1/1) with the single base Milk Vinegar recipe, not the bottling page.",
+                "at": "2026-11-26T09:26:30.866Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Refinery category (1/1) with the single base Milk Vinegar recipe, not the bottling page.",
+                "at": "2026-11-26T09:54:00.615Z"
               }
             ]
           },
@@ -779,6 +1463,42 @@
                 "by": "claude",
                 "note": "The new screenshot shows the Industrial Fermenter category with the Raw Honey -> Ethanol recipe instead of the Crafting page.",
                 "at": "2026-11-26T08:11:27.078Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The new screenshot still shows Item Tags 'Pig Foods' (tfc:pig_food, 1/3), not the Industrial Fermenter category; the Raw Honey -> Ethanol 250mB recipe is not shown.",
+                "at": "2026-11-26T08:30:05.580Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Raw Honey now advances twice to Industrial Fermenter, showing its 250 mB Ethanol recipe.",
+                "at": "2026-11-26T08:37:39.879Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The new screenshot still shows Crafting 3/5 for Raw Honey, not the Industrial Fermenter; the Raw Honey -> 250mB Ethanol recipe is not shown.",
+                "at": "2026-11-26T09:02:26.559Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Raw Honey usage now directly selects the third tab, Industrial Fermenter.",
+                "at": "2026-11-26T09:05:31.883Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Industrial Fermenter category (1/1) with the Raw Honey input and ethanol fluid output, instead of the crafting page.",
+                "at": "2026-11-26T09:26:30.866Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Industrial Fermenter category (1/1) with the Raw Honey input and ethanol fluid output, not the crafting page.",
+                "at": "2026-11-26T09:54:00.615Z"
               }
             ]
           },
@@ -802,6 +1522,30 @@
                 "by": "claude",
                 "note": "The new screenshot shows the Mixer category with the olive-paste/water -> olive-oil-water recipe.",
                 "at": "2026-11-26T08:11:27.078Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Mixer category with olive paste and water producing olive oil water.",
+                "at": "2026-11-26T08:30:05.580Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Mixer category (1/1) with Olive Paste and Water producing Olive Oil Water.",
+                "at": "2026-11-26T09:02:26.559Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Mixer category (1/1) with Olive Paste and Water producing Olive Oil Water, not the bottling page.",
+                "at": "2026-11-26T09:26:30.866Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Mixer category with Olive Paste and Water producing Olive Oil Water, not the bottling page.",
+                "at": "2026-11-26T09:54:00.615Z"
               }
             ]
           },
@@ -825,6 +1569,30 @@
                 "by": "claude",
                 "note": "The new screenshot shows the Mixer category with the blubber/water -> tallow recipe.",
                 "at": "2026-11-26T08:11:27.078Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Mixer category with the blubber input and tallow fluid output.",
+                "at": "2026-11-26T08:30:05.580Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Mixer category (1/1) with Blubber and Water producing Tallow.",
+                "at": "2026-11-26T09:02:26.559Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Mixer category (1/1) with Blubber and Water producing Tallow, not the bottling page.",
+                "at": "2026-11-26T09:26:30.866Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Mixer category with Blubber and Water producing Tallow, not the bottling page.",
+                "at": "2026-11-26T09:54:00.615Z"
               }
             ]
           },
@@ -848,6 +1616,30 @@
                 "by": "claude",
                 "note": "The new screenshot shows the Mixer category with the wood-ash/water -> lye recipe.",
                 "at": "2026-11-26T08:11:27.078Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Mixer category with the wood-ash input and lye output.",
+                "at": "2026-11-26T08:30:05.580Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Mixer category (1/1) with Wood Ash and Water producing Lye.",
+                "at": "2026-11-26T09:02:26.559Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Mixer category (1/1) with Wood Ash and Water producing Lye, not the bottling page.",
+                "at": "2026-11-26T09:26:30.866Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Mixer category with Wood Ash and Water producing Lye, not the bottling page.",
+                "at": "2026-11-26T09:54:00.615Z"
               }
             ]
           },
@@ -871,6 +1663,30 @@
                 "by": "claude",
                 "note": "The new screenshot shows the Mixer category with the butter/water -> caramel recipe instead of the bottling page.",
                 "at": "2026-11-26T08:11:27.078Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Mixer category with the butter input and caramel fluid output instead of the bottling page.",
+                "at": "2026-11-26T08:30:05.580Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Mixer category (1/1) with Butter and Sugar Water producing Caramel.",
+                "at": "2026-11-26T09:02:26.559Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Mixer category (1/1) with the Butter and Sugar Water inputs and the Caramel fluid output, not the bottling page.",
+                "at": "2026-11-26T09:26:30.866Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Mixer category (1/1) with Butter and Sugar Water producing Caramel, not the bottling page.",
+                "at": "2026-11-26T09:54:00.615Z"
               }
             ]
           },
@@ -881,7 +1697,7 @@
             "reason": "The 'u' lookup on firmalife:wild_honeycomb opens the item-tag usage page first; the Squeezer category tab is not selected.",
             "fix": "Select the IE Squeezer category tab for Wild Honeycomb and show only the solid Raw Honey output, with no fluid output and no additional byproduct.",
             "id": "ER-019",
-            "status": "open",
+            "status": "resolved",
             "history": [
               {
                 "status": "open",
@@ -894,6 +1710,48 @@
                 "by": "claude",
                 "note": "The new screenshot still shows Item Tags 1/1 (Bee Baits, firmalife:bee_bait), not the Industrial Squeezer category; the solid-only Raw Honey output is not shown.",
                 "at": "2026-11-26T08:11:27.078Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The Wild Honeycomb lookup now clicks the center of the IE Squeezer tab.",
+                "at": "2026-11-26T08:13:33.314Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The new screenshot still shows Item Tags 1/1 'Bee Baits' (firmalife:bee_bait), not the Industrial Squeezer category; the solid-only Raw Honey output is not shown.",
+                "at": "2026-11-26T08:30:05.580Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Wild Honeycomb now advances once from Item Tags to Industrial Squeezer, showing the solid-only Raw Honey output.",
+                "at": "2026-11-26T08:37:39.879Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The new screenshot still shows Item Tags 1/1 (Bee Baits), not the Industrial Squeezer; the solid-only Raw Honey output is not shown.",
+                "at": "2026-11-26T09:02:26.559Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Wild Honeycomb usage now directly selects the second tab, Industrial Squeezer.",
+                "at": "2026-11-26T09:05:31.883Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Industrial Squeezer category (1/1) with Wild Honeycomb producing only the solid Raw Honey output and no fluid output, not the Item Tags page.",
+                "at": "2026-11-26T09:26:30.866Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Industrial Squeezer category (1/1) with Wild Honeycomb producing only the solid Raw Honey output and no fluid output.",
+                "at": "2026-11-26T09:54:00.615Z"
               }
             ]
           },
@@ -917,143 +1775,316 @@
                 "by": "claude",
                 "note": "The new screenshot shows the Refinery category with the milk-vinegar recipe and the #firmalife:milks input tag.",
                 "at": "2026-11-26T08:11:27.078Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Refinery category with the #firmalife:milks input and Milk Vinegar output.",
+                "at": "2026-11-26T08:30:05.580Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Refinery category (1/1) with the #firmalife:milks input tag and Milk Vinegar output.",
+                "at": "2026-11-26T09:02:26.559Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Refinery category (1/1) with the #firmalife:milks input tag and the Milk Vinegar output, not the bottling page.",
+                "at": "2026-11-26T09:26:30.866Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The screenshot shows the Refinery category (1/1) with the #firmalife:milks tag input and the Milk Vinegar output, not the bottling page.",
+                "at": "2026-11-26T09:54:00.615Z"
               }
             ]
           }
         ]
       },
-      "failure": {
-        "phase": "e2e",
-        "summary": "2 E2E scenario(s) failed",
-        "details": "tests/e2e/non-metal-recipes.mjs: Error: MC Pilot gui wait-open --timeout 10 failed: \"TIMEOUT\"\n    at mct (file://.harness/e2e/lib.mjs:21:37)\n    at captureJeiRecipes (file://.harness-state/runtime/worktrees/M04/tests/e2e/open-jei-recipes.mjs:12:9)\n    at async file://.harness-state/runtime/worktrees/M04/tests/e2e/non-metal-recipes.mjs:7:3\n    at async scenario (file://.harness/e2e/lib.mjs:59:5)\n    at async file://.harness-state/runtime/worktrees/M04/tests/e2e/non-metal-recipes.mjs:5:1\nAC-F016-004 Expected Result: 対象23種の加工がSqueezerカテゴリで種1個からPlant Oil80mBとして表示される。旧Fermenter経路と存在しない固体副産物を表示しない。詳細仕様第20章と第32章の表示条件も合否対象とする。検証方式はE2Eとする。\nAC-F017-005 Expected Result: 食品・穀粒の80mBとRaw Honeyの250mBを区別して表示する。Raw HoneyはFirmaLife導入時だけ表示し、種子からPlant Oilを得る旧Fermenterレシピを表示しない。詳細仕様第21章と第32章の表示条件も合否対象とする。検証方式はE2Eとする。\nAC-F018-010 Expected Result: 実際の機械カテゴリ、数量、流体、確率副産物、Heating温度を表示する。FirmaLifeの6件は導入構成だけに表示し、Caramelの非腐敗条件とHoneycombの固体のみの出力を識別する。羊毛Crusher、重複Milk Vinegar、AFCのIE代替経路を表示しない。詳細仕様第23章と第32章の表示条件も合否対象とする。検証方式はE2Eとする。\n\ntests/e2e/non-metal-recipes-firmalife.mjs: Error: MC Pilot gui wait-open --timeout 10 failed: \"TIMEOUT\"\n    at mct (file://.harness/e2e/lib.mjs:21:37)\n    at captureJeiRecipes (file://.harness-state/runtime/worktrees/M04/tests/e2e/open-jei-recipes.mjs:12:9)\n    at async file://.harness-state/runtime/worktrees/M04/tests/e2e/non-metal-recipes-firmalife.mjs:7:3\n    at async scenario (file://.harness/e2e/lib.mjs:59:5)\n    at async file://.harness-state/runtime/worktrees/M04/tests/e2e/non-metal-recipes-firmalife.mjs:5:1\nAC-F017-005 Expected Result: 食品・穀粒の80mBとRaw Honeyの250mBを区別して表示する。Raw HoneyはFirmaLife導入時だけ表示し、種子からPlant Oilを得る旧Fermenterレシピを表示しない。詳細仕様第21章と第32章の表示条件も合否対象とする。検証方式はE2Eとする。\nAC-F018-010 Expected Result: 実際の機械カテゴリ、数量、流体、確率副産物、Heating温度を表示する。FirmaLifeの6件は導入構成だけに表示し、Caramelの非腐敗条件とHoneycombの固体のみの出力を識別する。羊毛Crusher、重複Milk Vinegar、AFCのIE代替経路を表示しない。詳細仕様第23章と第32章の表示条件も合否対象とする。検証方式はE2Eとする。",
-        "logs": [
-          ".harness-state/runs/2026-11-26T06-23-15-943Z-014-M04-e2e/runtime/server.log",
-          ".harness-state/runs/2026-11-26T06-23-15-943Z-014-M04-e2e/runtime/client-tfie-a.log",
-          ".harness-state/runs/2026-11-26T06-23-15-943Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes.mjs/stdout.log",
-          ".harness-state/runs/2026-11-26T06-23-15-943Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes.mjs/stderr.log",
-          ".harness-state/runs/2026-11-26T06-23-15-943Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes-firmalife.mjs/stdout.log",
-          ".harness-state/runs/2026-11-26T06-23-15-943Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes-firmalife.mjs/stderr.log"
-        ],
-        "screenshots": []
-      },
+      "failure": null,
       "conflicts": [],
       "reviewConflicts": [],
       "session": "01a21169-f791-79f1-872c-149ecdb72bda"
     },
     {
-      "id": "M06",
+      "id": "M08",
       "phase": "gametest",
-      "baseCommit": "11d39fdc9b7fa46c00529a0bf24d09e81c0a9782",
+      "baseCommit": "6f1d8f710693ffdac4b7fb5d84923a6195e4b439",
       "failures": {
         "build": 0,
-        "gametest": 0,
-        "e2e": 1
+        "gametest": 3,
+        "e2e": 0
       },
-      "recoveries": 1,
+      "recoveries": 0,
       "codeReview": {
         "kind": "code",
         "issues": [
           {
-            "target": "src/main/java/net/claustra01/tfie/mixin/IngredientFluidStackMixin.java:22",
-            "acId": "AC-F022-002",
-            "problem": "This IE mixin uses the default remapping mode, unlike the other IE mixins in the project (`AllowInCrateMixin`, `DynamoBlockEntityMixin`, `TemplateMultiblockMixin`), which all specify `remap = false`. `IngredientFluidStack`, its `fluidIngredient` field and `getItems` are mod-owned names, so Mixin may remap the shadow field and injection target against Minecraft mappings and fail or target the wrong member outside the development environment.",
-            "reason": "IE classes and members are not part of the Minecraft mapping set. The project's existing IE mixins explicitly disable remapping for this reason; a production refmap or runtime name mismatch can make the candidate generation and JEI display unavailable.",
-            "fix": "Declare the mixin as `@Mixin(value = IngredientFluidStack.class, remap = false)`.",
+            "target": "src/main/java/net/claustra01/tfie/common/items/Drillhead.java:5-10",
+            "acId": null,
+            "problem": "The new Drillhead class is an empty subclass of IE's DrillheadItem; it adds no behavior. The seven TFIE heads continue to inherit everything from IE, and the class only introduces an unnecessary indirection.",
+            "reason": "The milestone requires completing the drill-head implementation, but an empty subclass does not implement anything and violates the style rule to use the existing base class directly unless a second behavior is needed.",
+            "fix": "Either remove Drillhead and register DrillheadItem directly for the seven heads, or move the required head-specific implementation (dig area, hit-position shifting, extra-block eligibility, or other missing overrides) into Drillhead. Do not leave an empty subclass.",
             "id": "CR-001",
             "status": "resolved",
             "history": [
               {
                 "status": "open",
                 "by": "codex",
-                "note": "fixed: Declared IngredientFluidStackMixin with `remap = false`; the dedicated-server GameTest run confirmed the corrected mixin loads and applies to IE's IngredientFluidStack.",
-                "at": "2026-11-26T07:46:19.947Z"
+                "note": "fixed: 空のDrillhead派生クラスを削除し、7種のHeadをIEのDrillheadItemへ直接登録する構成に戻しました。採掘範囲と追加ブロック判定は対象版IEの基底実装を使用します。",
+                "at": "2026-11-26T09:45:28.726Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "Line 22 now declares `@Mixin(value = IngredientFluidStack.class, remap = false)`, matching the project's other IE mixins (AllowInCrateMixin, DynamoBlockEntityMixin, TemplateMultiblockMixin), so the IE-owned `fluidIngredient` shadow and `getItems` injection target are no longer remapped against Minecraft mappings.",
-                "at": "2026-11-26T07:46:36.634Z"
+                "note": "Drillhead.java is deleted, ModItems registers IE's DrillheadItem directly for all seven heads, and no references to the old subclass remain.",
+                "at": "2026-11-26T09:46:22.513Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "Current line 22 declares `@Mixin(value = IngredientFluidStack.class, remap = false)`, so the IE-owned `fluidIngredient` shadow and `getItems` target are no longer remapped. The only change since the previous review is in tests/acceptance.json (report paths), which does not affect this mixin.",
-                "at": "2026-11-26T07:56:46.947Z"
+                "note": "Drillhead.java no longer exists; ModItems registers Immersive Engineering's DrillheadItem directly for all seven heads through the drillhead helper, with no empty subclass or residual references.",
+                "at": "2026-11-26T09:56:21.437Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "src/main/java/net/claustra01/tfie/mixin/IngredientFluidStackMixin.java line 22 still declares `@Mixin(value = IngredientFluidStack.class, remap = false)`. The only changes since the previous review are in build.gradle (GameTest task guards) and tests/acceptance.json (report paths), neither of which affects this mixin, so the IE-owned `fluidIngredient` shadow and `getItems` target remain unremapped.",
-                "at": "2026-11-26T08:05:47.503Z"
+                "note": "There is no Drillhead.java; ModItems registers IE's DrillheadItem directly for all seven TFIE heads via the drillhead helper, so the empty subclass is gone.",
+                "at": "2026-11-26T10:04:41.132Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "src/main/java/net/claustra01/tfie/mixin/IngredientFluidStackMixin.java line 22 still declares `@Mixin(value = IngredientFluidStack.class, remap = false)`, matching the other IE mixins, so the IE-owned `fluidIngredient` shadow and `getItems` target are not remapped. The only diff since the previous review touches tests/e2e/fluid-containers.mjs and does not affect this mixin.",
-                "at": "2026-11-26T08:12:23.184Z"
+                "note": "Drillhead.java no longer exists; ModItems.drillhead registers Immersive Engineering's DrillheadItem directly for all seven TFIE heads. No empty subclass or residual references remain.",
+                "at": "2026-11-26T10:17:24.079Z"
               }
             ]
           },
           {
-            "target": "src/main/java/net/claustra01/tfie/mixin/IngredientFluidStackMixin.java:38-47",
+            "target": "src/main/java/net/claustra01/tfie/gametest/anvil/AnvilGameTests.java:283-289",
             "acId": null,
-            "problem": "`filledContainer` is a helper with only one call site. It is also neither annotated `@Unique` nor prefixed like the project's other mixin-added members, so it is both an unnecessary abstraction and an unguarded name in the target class.",
-            "reason": "The code style asks to inline helpers until a second call site exists, and mixin-added members should be unique to avoid collisions with the target class or another mixin. The fill/drain/filter sequence is used only inside the `getItems` lambda.",
-            "fix": "Inline the fill/drain/filter logic into the `map` lambda in `tfie$getTfcFluidContainers`. If the method is kept, annotate it with `@Unique` and rename it to `tfie$filledContainer`.",
+            "problem": "The explicit else-if branch for HIT_THIRD_LAST/HIT_SECOND_LAST/HIT_LAST duplicates the same rule set handled by stepsFor at lines 309-310. Because the else-if always matches first, the stepsFor branch is unreachable.",
+            "reason": "This is dead/duplicated test code, which makes the test helper harder to maintain and is explicitly covered by the unused-code review criterion.",
+            "fix": "Remove the duplicate else-if branch and let stepsFor build the HIT_THIRD_LAST/DRAW_SECOND_LAST/UPSET_LAST sequence, or remove the unreachable stepsFor branch. Keep one code path for that rule set.",
             "id": "CR-002",
             "status": "resolved",
             "history": [
               {
                 "status": "open",
                 "by": "codex",
-                "note": "fixed: Removed the single-use `filledContainer` helper and inlined capability filling, draining, and candidate filtering into the `getItems` mapping lambda.",
-                "at": "2026-11-26T07:46:19.947Z"
+                "note": "fixed: 重複していた三連HIT分岐を削除し、stepsForが操作列を構築する単一経路へ統合しました。",
+                "at": "2026-11-26T09:45:28.726Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "The single-use `filledContainer` helper has been fully removed (no remaining method in the file); capability lookup, fill, drain and `fluidIngredient.test` filtering are inlined directly in the `map` lambda inside `tfie$getTfcFluidContainers`, leaving no unguarded extra member in the target class.",
-                "at": "2026-11-26T07:46:36.634Z"
+                "note": "The duplicate HIT_THIRD_LAST/HIT_SECOND_LAST/HIT_LAST else-if branch is gone; stepsFor now provides the single unreachable-free path for that rule set.",
+                "at": "2026-11-26T09:46:22.513Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "The single-use `filledContainer` helper is gone; capability lookup, fill, drain and `fluidIngredient.test` filtering are inlined in the `map` lambda of `tfie$getTfcFluidContainers`, leaving no unguarded extra member. The acceptance.json diff does not reintroduce it.",
-                "at": "2026-11-26T07:56:46.947Z"
+                "note": "The duplicate HIT_THIRD_LAST/HIT_SECOND_LAST/HIT_LAST else-if branch is gone. The rule set is handled by a single path in stepsFor (lines 363-364), which is now reachable from complete().",
+                "at": "2026-11-26T09:56:21.437Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "The single-use `filledContainer` helper is still absent from IngredientFluidStackMixin.java. Capability lookup, `fill` with `Integer.MAX_VALUE`, `drain(..., SIMULATE)`, and the `fluidIngredient.test(content)` filter are all inlined in the `map` lambda inside `tfie$getTfcFluidContainers`, so no extra unguarded member is added to the target class. The build.gradle and acceptance.json changes do not reintroduce it.",
-                "at": "2026-11-26T08:05:47.503Z"
+                "note": "The duplicate HIT_THIRD_LAST/HIT_SECOND_LAST/HIT_LAST else-if branch is gone, and that rule set is handled by a single reachable branch in stepsFor (three HIT_LIGHT steps) called from complete().",
+                "at": "2026-11-26T10:04:41.132Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "The single-use `filledContainer` helper remains absent from IngredientFluidStackMixin.java (a repo-wide grep finds no occurrence). Capability lookup, `fill` with `Integer.MAX_VALUE`, `drain(..., SIMULATE)` and the `fluidIngredient.test(content)` filter are inlined in the `map` lambda inside `tfie$getTfcFluidContainers`, so no extra unguarded member is added to the target class. The e2e test diff does not reintroduce it.",
-                "at": "2026-11-26T08:12:23.184Z"
+                "note": "The duplicate HIT_THIRD_LAST/HIT_SECOND_LAST/HIT_LAST else-if branch is gone. stepsFor is the single path for that rule set, and complete() calls it; the HIT_THIRD_LAST/DRAW_SECOND_LAST/UPSET_LAST branch is also present only once in stepsFor.",
+                "at": "2026-11-26T10:17:24.079Z"
+              }
+            ]
+          },
+          {
+            "target": "src/main/java/net/claustra01/tfie/common/DrillheadRepair.java:42-51",
+            "acId": null,
+            "problem": "The handler clears output, cost and material cost before checking whether a repair actually applies. For a damaged mapped head with an empty right slot, or an undamaged head, it erases the normal anvil result (including a rename-only operation) even though it does not handle the repair.",
+            "reason": "Only the repair behavior is in scope; suppressing non-handled anvil results is extra behavior and can block valid vanilla/IE anvil operations.",
+            "fix": "Return without modifying the event when the head is not damaged, the right slot is empty, or the right item is not a repair material. Set output/cost/material only after a repair is actually identified, and cancel only for a non-empty conflicting repair input where rejection is required (e.g. Iron with cast iron or vanilla iron).",
+            "id": "CR-003",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: 未損傷、右欄空、無関係な材料ではイベントを変更せずreturnします。有効な修理を確定してから結果を設定し、Ironの通常Iron・Cast Iron競合だけを明示的に取消します。",
+                "at": "2026-11-26T09:45:28.726Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "DrillheadRepair returns before modifying the event for undamaged heads, empty right slots, or unrelated materials, and only writes output/cost/material cost after a valid repair is identified; cancellation is limited to Iron heads with iron/cast-iron inputs.",
+                "at": "2026-11-26T09:46:22.513Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "DrillheadRepair returns before touching the event when the left item is not a drill head, the head is undamaged, the right slot is empty, or the input is an unrelated material. Output/cost/materialCost are written only after a valid repair is confirmed, and cancellation is limited to an iron head with iron/cast-iron ingots.",
+                "at": "2026-11-26T09:56:21.437Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "DrillheadRepair returns without modifying the event when the item is not a mapped drill head, the head is undamaged, the right slot is empty, or the input is unrelated. Output/cost/materialCost are written only after a valid repair is identified, and cancellation is limited to an iron head with iron/cast-iron ingots.",
+                "at": "2026-11-26T10:04:41.132Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "DrillheadRepair returns without modifying the event when the item is not a mapped head, the head is undamaged, the right slot is empty, or the material is unrelated. Output/cost/materialCost are set only after a valid repair is identified, and cancellation is limited to an iron head receiving vanilla iron or cast iron.",
+                "at": "2026-11-26T10:17:24.079Z"
+              }
+            ]
+          },
+          {
+            "target": "src/main/java/net/claustra01/tfie/gametest/drill/DrillGameTests.java:143-164",
+            "acId": "AC-F009-003",
+            "problem": "The repair-amount test calls DrillheadRepair.onAnvilUpdate directly instead of exercising the registered AnvilUpdateEvent chain or an anvil menu. It therefore does not verify that the LOWEST-priority TFIE handler wins over IE's existing handler, which is essential for the Iron-only-wrought-iron rule and for the final amount/material cost in game.",
+            "reason": "The criterion is about the normal Minecraft anvil, and the test bypasses the event bus and handler ordering where the feature's behavior is actually integrated.",
+            "fix": "Fire the AnvilUpdateEvent through NeoForge.EVENT_BUS (or use a real AnvilMenu/anvil) so IE's handler also runs, then assert the final output, material cost and Iron rejection after all handlers have been applied.",
+            "id": "CR-004",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: 修理量テストをNeoForge.EVENT_BUS経由へ変更し、IEハンドラとLOWEST優先度のTFIEハンドラを通過した最終出力、材料消費、Iron拒否を検証します。",
+                "at": "2026-11-26T09:45:28.726Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "DrillGameTests.repair posts AnvilUpdateEvent through NeoForge.EVENT_BUS, so IE's handler and the LOWEST-priority TFIE handler both run; the test asserts the final output, repair amount, material cost, and Iron rejection.",
+                "at": "2026-11-26T09:46:22.513Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "DrillGameTests.drillhead_repair_amounts now builds AnvilUpdateEvent through the repair helper, which posts on NeoForge.EVENT_BUS so IE's handler and TFIE's LOWEST-priority handler both run. It asserts the final damage after repair, exact material cost, and the iron rejection cases.",
+                "at": "2026-11-26T09:56:21.437Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "drillhead_repair_amounts builds each AnvilUpdateEvent through the repair helper, which posts it on NeoForge.EVENT_BUS, so IE's handler and TFIE's LOWEST-priority handler both run. It asserts the final output damage, material cost, and iron rejection cases.",
+                "at": "2026-11-26T10:04:41.132Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "drillhead_repair_amounts builds each AnvilUpdateEvent through repair(), which posts it on NeoForge.EVENT_BUS so IE's handler and TFIE's LOWEST-priority handler both execute. Assertions use the final output damage, material cost, and Iron rejection results.",
+                "at": "2026-11-26T10:17:24.079Z"
+              }
+            ]
+          },
+          {
+            "target": "src/main/java/net/claustra01/tfie/gametest/drill/DrillGameTests.java:179-197",
+            "acId": "AC-F009-004",
+            "problem": "The XP/name test likewise calls DrillheadRepair.onAnvilUpdate directly. It does not verify the final result/cost after IE's repair handler has run, so a handler-priority regression could change the name or cost in game while the test still passes.",
+            "reason": "The criterion requires the normal anvil behavior, including the final level cost and name; direct invocation bypasses the integration point.",
+            "fix": "Post the AnvilUpdateEvent on the event bus or exercise an AnvilMenu, and assert the final output, cost and name after all handlers have processed the event.",
+            "id": "CR-005",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: XP・名称テストもNeoForge.EVENT_BUS経由へ変更し、全ハンドラ処理後の費用と名称を検証します。rename-only結果を変更しないケースも追加しました。",
+                "at": "2026-11-26T09:45:28.726Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The XP/name test also posts through NeoForge.EVENT_BUS and asserts final cost/name after all handlers, plus a rename-only preservation case for undamaged heads with an empty right slot.",
+                "at": "2026-11-26T09:46:22.513Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "drillhead_repair_costs_and_names also posts through NeoForge.EVENT_BUS and asserts final cost and name after all handlers, including same-name retention, name removal, rename, first name, and preservation of a rename-only result for an undamaged head with an empty right slot.",
+                "at": "2026-11-26T09:56:21.437Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "drillhead_repair_costs_and_names also posts every case on NeoForge.EVENT_BUS and asserts the final cost and name after all handlers, including rename-only preservation for an undamaged head with an empty right slot.",
+                "at": "2026-11-26T10:04:41.132Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "drillhead_repair_costs_and_names posts every AnvilUpdateEvent on NeoForge.EVENT_BUS and asserts final cost/name after all handlers, including keeping, removing, changing, first naming, and preservation of a rename-only result for an undamaged head with an empty right slot.",
+                "at": "2026-11-26T10:17:24.079Z"
+              }
+            ]
+          },
+          {
+            "target": "src/main/java/net/claustra01/tfie/gametest/anvil/AnvilGameTests.java:220-246",
+            "acId": "AC-F010-005",
+            "problem": "The HCS exclusion test only directly invokes AnvilSlag.giveIfCompleted for an in-progress call and a non-HCS steel recipe, then exercises one remote call. It does not perform the failed-work, extraction-only, other high-carbon-steel, or HCS-to-Steel cases as actual operations, despite those being the preconditions and actions in AC-F010-005.",
+            "reason": "The test does not prepare or assert several required exclusion cases, so it cannot catch a regression where the mixin gives slag on failure, extraction or another high-carbon recipe.",
+            "fix": "Add actual anvil/work cases for failed completion, extraction-only, other high-carbon steels (black/blue/red) and HCS-to-Steel, plus the machine/remote path, and assert that no slag is produced in each case.",
+            "id": "CR-006",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: 加工途中、低温失敗、完成品の取り出し、HCSからSteel、高炭素Black/Blue/Red Steel、遠隔加工を実際のAnvilBlockEntity操作で実行し、InventoryにもドロップにもSlagが生成されないことを検証します。",
+                "at": "2026-11-26T09:45:28.726Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The exclusion test now performs real AnvilBlockEntity work for in-progress, cold failed, extraction-only, HCS-to-Steel, other high-carbon steel, and remote paths, and asserts no slag appears in the player inventory or as drops.",
+                "at": "2026-11-26T09:46:22.513Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "high_carbon_steel_slag_exclusions now performs real AnvilBlockEntity operations for in-progress work, cold failed work, extraction-only, HCS-to-Steel, other high-carbon steels (black/blue/red), and remote work, then asserts no slag in the player inventory and no slag drops near the anvils.",
+                "at": "2026-11-26T09:56:21.437Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "high_carbon_steel_slag_exclusions now performs real AnvilBlockEntity operations for in-progress, cold failed, extraction-only, HCS-to-Steel, other high-carbon steels (black/blue/red), and remote work, then asserts no slag in the player inventory or as nearby drops.",
+                "at": "2026-11-26T10:04:41.132Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "high_carbon_steel_slag_exclusions performs real AnvilBlockEntity operations for in-progress work, cold failed work, extraction-only, HCS-to-Steel completion, the black/blue/red high-carbon steels, and remote work, then asserts no slag in the player inventory or as nearby drops across those anvils.",
+                "at": "2026-11-26T10:17:24.079Z"
               }
             ]
           }
         ]
       },
-      "codeReviewTree": "257191084c4e331a0387b79e9059088ce756571b",
+      "codeReviewTree": "9160080d345f6c24e149d077397c7b7e992e13ac",
       "e2eReview": null,
       "failure": {
-        "phase": "e2e",
-        "summary": "1 E2E scenario(s) failed",
-        "details": "tests/e2e/fluid-containers.mjs: Error: MC Pilot gui layout failed: \"GUI_NOT_OPEN\"\n    at mct (file://.harness/e2e/lib.mjs:21:37)\n    at file://.harness-state/runtime/worktrees/M06/tests/e2e/fluid-containers.mjs:16:27\n    at async scenario (file://.harness/e2e/lib.mjs:59:5)\n    at async file://.harness-state/runtime/worktrees/M06/tests/e2e/fluid-containers.mjs:3:1\nAC-F022-004 Expected Result: TFC空容器タグから、実際に対象流体と必要量を満たす容器だけを候補へ表示する。受入不可・容量不足の容器を表示せず、流体量と容器モデルが一致する。固定Bucket入力は固定Bucketとして表示する。詳細仕様第27章と第32章の表示条件も合否対象とする。検証方式はE2Eとする。",
+        "phase": "gametest",
+        "summary": "1 GameTest testcase(s) did not pass",
+        "details": "AC-F009-002 tfie:gametest/empty_platform.drillhead_anvil_recipes_and_failures: missing\nExpected Result: 対応Headを1個生成し、全9レシピはapply_bonus=falseとなる。IronはWrought Iron Double Sheetを使用する。低tier・低温では成立せず、IE標準のIron/Steel Headクラフトと独自溶接製法を追加しない。無効化したTFCM金属のHead製法は読み込まれない。 詳細仕様第13章の該当する全表行・条件も合否対象とする。検証方式はGameTestとする。\nMessage: Testcase is not in build/test-results/gametest/TEST-tfie-disabled-materials.xml\n\nGameTest task output:\n-Dio.netty.initialSeedUniquifier: 0xa784cb503b669574\n[19:07:33] [Server thread/INFO] [immersiveengineering/]: Couldn't fully analyze 1 immersiveengineering:jerrycan, missing knowledge for {1 minecraft:bucket=4.0}\n[19:07:33] [Server thread/INFO] [immersiveengineering/]: Finished recipe profiler for Arc Recycling, took 125 milliseconds\n[19:07:33] [Server thread/INFO] [minecraft/GameTestServer]: 54 tests are now running at position 14867293, -59, -13082181!\n[19:07:33] [Server thread/INFO] [minecraft/GameTestRunner]: Running test batch 'tfie_crate_config:0' (1 tests)...\n[19:07:33] [Server thread/INFO] [minecraft/GameTestServer]: [                                                      ]\n[19:07:33] [Server thread/INFO] [minecraft/GameTestServer]: [                                                      ]\n[19:07:33] [Server thread/DEBUG] [mixin/]: Mixing accessors.CraftingContainerAccess from immersiveengineering.mixins.json into net.minecraft.world.inventory.TransientCraftingContainer\n[19:07:33] [Server thread/DEBUG] [mixin/]: immersiveengineering.mixins.json:accessors.CraftingContainerAccess from mod immersiveengineering: Class version 65 required is higher than the class version supported by the current version of Mixin (JAVA_17 supports class version 61)\n[19:07:33] [Server thread/INFO] [minecraft/GameTestRunner]: Running test batch 'tfie_heater_config:0' (1 tests)...\n[19:07:33] [Server thread/INFO] [minecraft/GameTestServer]: [+                                                     ]\n[19:07:33] [Server thread/INFO] [minecraft/GameTestRunner]: Running test batch 'tfie_hemp_growth:0' (1 tests)...\n[19:07:33] [Server thread/INFO] [minecraft/GameTestServer]: [++                                                    ]\n[19:07:34] [Server thread/INFO] [minecraft/GameTestRunner]: Running test batch 'defaultBatch:0' (50 tests)...\n[19:07:34] [Server thread/INFO] [minecraft/GameTestServer]: [+++                                                   ]\n[19:07:34] [Server thread/INFO] [minecraft/GameTestServer]: [+++                                                   ]\n[19:07:34] [Server thread/DEBUG] [ne.ne.ne.co.ModConfigSpec/CORE]: Range value -1.0 is not within its bounds 0.0-32000.0\n[19:07:34] [Server thread/DEBUG] [ne.ne.ne.co.ModConfigSpec/CORE]: Range value -1.0 is not within its bounds 0.0-2.147483647E9\n[19:07:34] [Server thread/DEBUG] [ne.ne.ne.co.ModConfigSpec/CORE]: Range value 0.0 is not within its bounds 2.2250738585072014E-308-1.7976931348623157E308\n[19:07:34] [Server thread/DEBUG] [ne.ne.ne.co.ModConfigSpec/CORE]: Range value -1.0 is not within its bounds 2.2250738585072014E-308-1.7976931348623157E308\n[19:07:34] [Server thread/DEBUG] [mixin/]: Mixing accessors.ServerPlayNetHandlerAccess from immersiveengineering.mixins.json into net.minecraft.server.network.ServerGamePacketListenerImpl\n[19:07:34] [Server thread/DEBUG] [mixin/]: immersiveengineering.mixins.json:accessors.ServerPlayNetHandlerAccess from mod immersiveengineering: Class version 65 required is higher than the class version supported by the current version of Mixin (JAVA_17 supports class version 61)\n[19:07:35] [Server thread/INFO] [minecraft/GameTestServer]: [++++     +++++   +++++   +_+     +++     X++          ]\n[19:07:36] [Server thread/INFO] [minecraft/GameTestRunner]: Running test batch 'tfie_dynamo_config:0' (1 tests)...\n[19:07:36] [Server thread/INFO] [minecraft/GameTestServer]: [+++++++++++++++++++++++++++++++++++++++++X+++++++++++ ]\n[19:07:36] [Server thread/INFO] [minecraft/GameTestServer]: [+++++++++++++++++++++++++++++++++++++++++X++++++++++++]\n[19:07:36] [Server thread/INFO] [minecraft/GameTestServer]: ========= 54 GAME TESTS COMPLETE IN 3.132 s ======================\n[19:07:36] [Server thread/INFO] [minecraft/GameTestServer]: 1 required tests failed :(\n[19:07:36] [Server thread/INFO] [minecraft/GameTestServer]:    - herbicide_tfc_soils_and_crops\n[19:07:36] [Server thread/INFO] [minecraft/GameTestServer]: ====================================================\n[19:07:36] [Server thread/INFO] [minecraft/MinecraftServer]: Stopping server\n[19:07:36] [Server thread/INFO] [minecraft/MinecraftServer]: Saving players\n[19:07:36] [Server thread/INFO] [minecraft/MinecraftServer]: Saving worlds\n[19:07:36] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[Test Level]'/minecraft:overworld\n[19:07:36] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[Test Level]'/minecraft:the_end\n[19:07:36] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[Test Level]'/minecraft:the_nether\n[19:07:36] [Server thread/DEBUG] [ne.ne.ne.co.CommonHooks/WP]: Gathered mod list to write to world save Test Level\n[19:07:36] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (world): All chunks are saved\n[19:07:36] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved\n[19:07:36] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved\n[19:07:36] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved\n[19:07:36] [Server thread/DEBUG] [ne.ne.fm.co.ConfigTracker/CONFIG]: Unloading configs type SERVER\n[19:07:36] [Server thread/INFO] [minecraft/GameTestServer]: Game test server shutting down\n\n> Task :runGameTestServerAll FAILED\n31 actionable tasks: 6 executed, 25 up-to-date\nConfiguration cache entry reused.\n\n\nFAILURE: Build failed with an exception.\n\n* What went wrong:\nExecution failed for task ':runGameTestServerAll'.\n> Process 'command '/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java'' finished with non-zero exit value 1\n\n* Try:\n> Run with --stacktrace option to get the stack trace.\n> Run with --info or --debug option to get more log output.\n> Run with --scan to generate a Build Scan (powered by Develocity).\n> Get more help at https://help.gradle.org.\n\nBUILD FAILED in 2m 55s\n",
         "logs": [
-          ".harness-state/runs/2026-11-26T08-08-20-706Z-048-M06-e2e/runtime/server.log",
-          ".harness-state/runs/2026-11-26T08-08-20-706Z-048-M06-e2e/runtime/client-tfie-a.log",
-          ".harness-state/runs/2026-11-26T08-08-20-706Z-048-M06-e2e/scenarios/tests-e2e-fluid-containers.mjs/stdout.log",
-          ".harness-state/runs/2026-11-26T08-08-20-706Z-048-M06-e2e/scenarios/tests-e2e-fluid-containers.mjs/stderr.log"
+          ".harness-state/runs/2026-11-26T10-04-41-134Z-122-M08-gametest/stdout.log",
+          ".harness-state/runs/2026-11-26T10-04-41-134Z-122-M08-gametest/stderr.log"
         ],
         "screenshots": []
       },
       "conflicts": [],
       "reviewConflicts": [],
-      "session": "01a216ab-e5f5-7983-a3cb-efd6c9e3f5ed"
+      "session": "01a216e9-c9c0-7340-9b4c-acf5b3801a85"
     }
   ],
   "completed": [
@@ -1061,8 +2092,9 @@
     "M02",
     "M05",
     "M03",
-    "M07"
+    "M07",
+    "M06"
   ],
-  "lastCheckpoint": "29451492106f63275cfa7729b2c552b53e7cca00",
+  "lastCheckpoint": "6f1d8f710693ffdac4b7fb5d84923a6195e4b439",
   "fatal": null
 }

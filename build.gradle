@@ -248,6 +248,7 @@ tasks.withType(JavaCompile).configureEach {
     }
     tasks.named("runGameTestServer${name}") {
         dependsOn(copyMod)
+        onlyIf { !configuration.files.empty }
     }
 }
 
@@ -264,6 +265,7 @@ def copyAllGameTestMods = tasks.register('copyGameTestAllMods', Copy) {
 tasks.named('runGameTestServerAll') {
     dependsOn(copyAllGameTestMods)
     mustRunAfter 'runGameTestServerOverdims'
+    onlyIf { !afcRuntimeConfiguration.files.empty && !overdimsRuntimeConfiguration.files.empty }
 }
 def writeDisabledMaterialsConfig = tasks.register('writeDisabledMaterialsConfig') {
     def config = layout.projectDirectory.file('run/disabled-materials/config/tfcm-common.toml')

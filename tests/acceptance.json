@@ -76,13 +76,17 @@
     {"acId":"AC-F025-003","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"crate_keeps_ie_rejections"},
     {"acId":"AC-F025-004","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"server_config_schema"},
     {"acId":"AC-F025-004","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"dynamo_modifier_and_receiver_limits"},
-    {"acId":"AC-F025-004","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"dynamo_positive_negative_zero_and_disconnected"}
+    {"acId":"AC-F025-004","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"dynamo_positive_negative_zero_and_disconnected"},
+    {"acId":"AC-F022-001","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"fluid_tags_and_container_io"},
+    {"acId":"AC-F022-002","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"fluid_ingredient_candidates_and_partial_return"},
+    {"acId":"AC-F022-003","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"fixed_bucket_recipes_reject_tfc_containers"}
   ],
   "e2e": [
     {"acId":"AC-F001-004","scenario":"tests/e2e/creative-tab.mjs"},
     {"acId":"AC-F012-008","scenario":"tests/e2e/multiblock-structures.mjs"},
     {"acId":"AC-F013-009","scenario":"tests/e2e/wood-processing.mjs"},
     {"acId":"AC-F014-006","scenario":"tests/e2e/hemp-rendering.mjs"},
-    {"acId":"AC-F003-005","scenario":"tests/e2e/metal-press.mjs"}
+    {"acId":"AC-F003-005","scenario":"tests/e2e/metal-press.mjs"},
+    {"acId":"AC-F022-004","scenario":"tests/e2e/fluid-containers.mjs"}
   ]
 }

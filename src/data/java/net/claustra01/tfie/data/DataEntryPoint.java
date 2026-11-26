@@ -7,10 +7,10 @@ import net.claustra01.tfie.data.recipes.CraftingRecipes;
 import net.claustra01.tfie.data.recipes.MetalPressRecipes;
 import net.claustra01.tfie.data.recipes.RecipeOverrides;
 import net.claustra01.tfie.data.recipes.SawmillRecipes;
-import net.claustra01.tfie.data.tags.TreatedLumberFluidTags;
 import net.claustra01.tfie.data.providers.BuiltinBlockTags;
 import net.claustra01.tfie.data.providers.BuiltinClimateRanges;
 import net.claustra01.tfie.data.providers.BuiltinFuels;
+import net.claustra01.tfie.data.providers.BuiltinFluidTags;
 import net.claustra01.tfie.data.providers.BuiltinItemHeat;
 import net.claustra01.tfie.data.providers.BuiltinItemSizes;
 import net.claustra01.tfie.data.providers.BuiltinItemTags;
@@ -68,7 +68,7 @@ public final class DataEntryPoint
         event.createProvider(BuiltinFuels::new);
         event.createProvider(BuiltinItemHeat::new);
         event.createProvider(BuiltinItemSizes::new);
-        event.createProvider(output -> new TreatedLumberFluidTags(output, event.getLookupProvider(),
+        event.createProvider(output -> new BuiltinFluidTags(output, event.getLookupProvider(),
                 event.getExistingFileHelper()));
     }
 

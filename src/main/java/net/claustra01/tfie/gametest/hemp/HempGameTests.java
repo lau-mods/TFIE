@@ -246,7 +246,8 @@ public final class HempGameTests
         }
     }
 
-    @GameTest(template = TEMPLATE, templateNamespace = "tfie", skyAccess = true)
+    @GameTest(template = TEMPLATE, templateNamespace = "tfie", skyAccess = true,
+            batch = "tfie_hemp_growth")
     public static void hemp_growth_top_and_limit(GameTestHelper helper)
     {
         CompoundTag calendarState = Calendars.SERVER.write();

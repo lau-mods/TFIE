@@ -9,6 +9,7 @@ import net.claustra01.tfie.common.ModItems;
 import net.claustra01.tfie.common.condition.TFIEConditions;
 import net.claustra01.tfie.config.TFIEConfig;
 import net.claustra01.tfie.util.CrucibleHeater;
+import net.claustra01.tfie.util.HerbicideEffects;
 import net.claustra01.tfie.util.ModInteractionManager;
 import net.dries007.tfc.common.blockentities.TFCBlockEntities;
 import net.minecraft.gametest.framework.GlobalTestReporter;
@@ -65,7 +66,11 @@ public final class TFIE
 
     private void setup(FMLCommonSetupEvent event)
     {
-        event.enqueueWork(ModInteractionManager::register);
+        event.enqueueWork(() ->
+        {
+            ModInteractionManager.register();
+            HerbicideEffects.register();
+        });
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event)

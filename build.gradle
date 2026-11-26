@@ -193,8 +193,8 @@ dependencies {
 
     firmalifeRuntime("curse.maven:firmalife-453394:9399547") { transitive = false }
     advancedTfcTechRuntime("maven.modrinth:wEKs9gH0:xzXArmox") { transitive = false }
-    afcRuntime files(fileTree('.tmp/afc') { include '*.jar' })
-    overdimsRuntime files(fileTree('.tmp/overdims') { include '*.jar' })
+    afcRuntime("curse.maven:arborfirmacraft-877545:8722148") { transitive = false }
+    overdimsRuntime("curse.maven:tfc-overdims-1772161:9719778") { transitive = false }
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

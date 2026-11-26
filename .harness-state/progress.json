@@ -3,7 +3,7 @@
   "active": [
     {
       "id": "M04",
-      "phase": "gametest",
+      "phase": "implementation",
       "baseCommit": "6eaf92d3cf78f6263c82c6d1efb5063a6c67713a",
       "failures": {
         "build": 0,
@@ -34,6 +34,30 @@
                 "by": "claude",
                 "note": "The GameTest now builds a real CokeOvenLogic.State and ticks it through a test multiblock context. It covers Coke 0/1/60/64, a renamed Coke, Charcoal, low fluid, and insertion or extraction mid-process. I haven't run it.",
                 "at": "2026-11-25T07:34:08.217Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "coke_oven_capacity_during_processing now creates a real CokeOvenLogic.State and drives tickServer through a test multiblock context. It covers Coke 0/1/60/64, a renamed Coke, Charcoal, low fluid capacity, and insertion/extraction during processing, including the 63-Coke completion clamp. The GameTest results in build/test-results show it passing.",
+                "at": "2026-11-26T06:18:36.475Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "coke_oven_capacity_during_processing now creates a real CokeOvenLogic.State and drives tickServer through a test multiblock context. It covers output Coke 0/1/60/64, renamed Coke, Charcoal, less than 500 mB free tank capacity, mid-process insertion/extraction, and a 64-item output blocking completion. The GameTest results contain no failures.",
+                "at": "2026-11-26T06:33:23.099Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "coke_oven_capacity_during_processing now creates a real CokeOvenLogic.State and ticks it through a multiblock context. It covers output Coke 0/1/60/64, a renamed Coke, Charcoal, less than 500 mB free tank capacity, insertion and extraction during processing, and a full output blocking progress, asserting input, output and Creosote amounts.",
+                "at": "2026-11-26T07:05:59.819Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "coke_oven_capacity_during_processing now creates a real CokeOvenLogic.State and ticks it through a multiblock context. It covers output Coke 0/1/60/64, a renamed Coke, Charcoal, less than 500 mB free tank capacity, insertion/extraction during processing, and a capacity clamp at completion, asserting input, output and Creosote amounts. The build test-results contain no failures.",
+                "at": "2026-11-26T07:55:59.764Z"
               }
             ]
           },
@@ -57,6 +81,30 @@
                 "by": "claude",
                 "note": "The real-oven test runs 1, 16 and 17 Bituminous Coal. It asserts the 6000-tick duration, the Coke and Creosote amounts, and the leftover input.",
                 "at": "2026-11-25T07:34:08.217Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "coke_oven_batch_processing now runs a real oven with 1, 16 and 17 Bituminous Coal. It asserts the 6000-tick MAX_BURN_TIME and the resulting Coke, Creosote and leftover input (1 Coke/500 mB, 16 Coke/8000 mB, and 1 input left with 17).",
+                "at": "2026-11-26T06:18:36.475Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "coke_oven_batch_processing now runs the real oven logic with 1, 16, and 17 inputs. It asserts the 6,000-tick duration, 1/16/16 Coke, 500/8,000/8,000 mB Creosote, and the leftover input for the 17-item case.",
+                "at": "2026-11-26T06:33:23.099Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "coke_oven_batch_processing runs the real oven state with 1, 16 and 17 Bituminous Coal. It checks the 6000-tick MAX_BURN_TIME, then asserts 1 Coke/500 mB, 16 Coke/8000 mB, and 1 leftover input with 16 Coke/8000 mB for 17 inputs.",
+                "at": "2026-11-26T07:05:59.819Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "coke_oven_batch_processing now runs the real oven logic with 1, 16 and 17 Bituminous Coal, including the 6000-tick process, and asserts the resulting Coke, Creosote and leftover input.",
+                "at": "2026-11-26T07:55:59.764Z"
               }
             ]
           },
@@ -80,6 +128,30 @@
                 "by": "claude",
                 "note": "The test now asserts the serialized grain ingredient is the c:foods/grain tag, and the generated JSON uses that tag. I did not check that `serialize()` returns that shape at runtime.",
                 "at": "2026-11-25T07:34:08.217Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The grain test asserts that the serialized grains ingredient is the c:foods/grain tag, not an item list. It also verifies the six TFC grains match and unthreshed crops do not.",
+                "at": "2026-11-26T06:18:36.475Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The grain test asserts that the serialized ingredient is the c:foods/grain tag, then verifies the six TFC grains match and the unthreshed crops do not. The generated grains recipe also uses the tag.",
+                "at": "2026-11-26T06:33:23.099Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The grain test independently asserts that the serialized ingredient is the c:foods/grain tag, then verifies the six TFC grains match and the unthreshed forms do not.",
+                "at": "2026-11-26T07:05:59.819Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The grain test asserts that the serialized ingredient is the c:foods/grain tag, then verifies the six TFC grains match and the unthreshed forms do not, so an item-list ingredient would fail.",
+                "at": "2026-11-26T07:55:59.764Z"
               }
             ]
           },
@@ -103,6 +175,30 @@
                 "by": "claude",
                 "note": "assertMixer now takes the expected items for each input and tests every alternative. This covers all three copper powders, Sulfur, Flux/Lime, Salt and the FirmaLife inputs. A separate check rejects Copper Dust for Herbicide. The new NonMetalItemTags provider puts tfc:powder/sulfur in c:dusts/sulfur.",
                 "at": "2026-11-25T07:34:08.217Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "assertMixer now takes the expected item alternatives for each input and tests every copper powder, Sulfur, Flux/Lime, Salt, Olive Paste, Blubber and Wood Ash. It separately asserts that tfcm:metal/dust/copper does not match either Herbicide input.",
+                "at": "2026-11-26T06:18:36.475Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "assertMixer now receives the expected item alternatives for each input and checks them all: the three copper powders, Sulfur, Flux/Lime, Salt, Olive Paste, Blubber, and Wood Ash. The Herbicide test also rejects tfcm:metal/dust/copper in either input.",
+                "at": "2026-11-26T06:33:23.099Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "assertMixer now receives the expected item alternatives for each solid input and tests every one: the three copper powders, Sulfur, Flux/Lime, Salt, Olive Paste, Blubber, Wood Ash and Butter. The Herbicide test also asserts that tfcm:metal/dust/copper matches neither input.",
+                "at": "2026-11-26T07:05:59.819Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "assertMixer now receives the expected item alternatives for every solid input and checks each one: all three copper powders, Sulfur, Flux/Lime, Salt, Olive Paste, Blubber, Wood Ash and Butter. The Herbicide test also rejects tfcm:metal/dust/copper in either input.",
+                "at": "2026-11-26T07:55:59.764Z"
               }
             ]
           },
@@ -126,6 +222,30 @@
                 "by": "claude",
                 "note": "The chisel assertions now require ChiselMode.SLAB and ChiselMode.STAIR. They also check the placed result item (slab_ or stairs_ per material) and the extra output.",
                 "at": "2026-11-25T07:34:08.217Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The chisel test now requires the exact SLAB and STAIR modes, checks the placed result is the corresponding slab_/stairs_ block item, and verifies the additional slab item output.",
+                "at": "2026-11-26T06:18:36.475Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The Chisel test now requires ChiselMode.SLAB and ChiselMode.STAIR, checks the placed result item is the matching slab_/stairs_ item, and verifies the additional slab output or its absence for stairs.",
+                "at": "2026-11-26T06:33:23.099Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The Chisel test requires ChiselMode.SLAB and ChiselMode.STAIR, the matching slab_/stairs_ result item, one extra slab output for Slab mode, and no extra output for Stair mode.",
+                "at": "2026-11-26T07:05:59.819Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The Chisel test requires the exact SLAB and STAIR modes, checks that the result item is the matching slab_/stairs_ block item, and verifies one extra slab output for Slab mode and none for Stair mode.",
+                "at": "2026-11-26T07:55:59.764Z"
               }
             ]
           },
@@ -149,6 +269,30 @@
                 "by": "claude",
                 "note": "tests/acceptance.json now registers AC-F018-008 for firmalife_fermentation_chain and firmalife_chemical_table in the base TEST-tfie.xml. Both tests check the load condition in each configuration.",
                 "at": "2026-11-25T07:34:08.217Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "tests/acceptance.json now registers AC-F018-008 for both firmalife_fermentation_chain and firmalife_chemical_table in the base TEST-tfie.xml report, in addition to the FirmaLife report entries.",
+                "at": "2026-11-26T06:18:36.475Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "tests/acceptance.json now registers AC-F018-008 for firmalife_fermentation_chain and firmalife_chemical_table in the base TEST-tfie.xml report, in addition to the FirmaLife report entries.",
+                "at": "2026-11-26T06:33:23.099Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "tests/acceptance.json registers AC-F018-008 for both firmalife_fermentation_chain and firmalife_chemical_table in the base TEST-tfie.xml report, in addition to the FirmaLife report entries.",
+                "at": "2026-11-26T07:05:59.819Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "tests/acceptance.json registers AC-F018-008 for firmalife_fermentation_chain and firmalife_chemical_table in the base TEST-tfie.xml report as well as the FirmaLife report.",
+                "at": "2026-11-26T07:55:59.764Z"
               }
             ]
           },
@@ -172,6 +316,30 @@
                 "by": "claude",
                 "note": "There are now two E2E scenarios, base and FirmaLife, both registered. The base one captures seed usage, grain-tag Fermenter usage and Ethanol without Raw Honey. The FirmaLife one captures Raw Honey. I did not confirm how the harness runs each scenario in its own configuration.",
                 "at": "2026-11-25T07:34:08.217Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The base scenario captures seed usage, grain-tag Fermenter usage and base Ethanol without Raw Honey; the FirmaLife scenario captures Raw Honey usage, and both are registered for AC-F017-005. The open-jei change still opens the chest via the valid block interact command.",
+                "at": "2026-11-26T06:18:36.475Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The base scenario captures seed usage, grain-tag Fermenter usage, and base Ethanol without Raw Honey; the FirmaLife scenario captures Raw Honey. Both scenarios are registered for AC-F017-005, and AC-F016-004 remains registered for the base seed usage.",
+                "at": "2026-11-26T06:33:23.099Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The base scenario captures seed usage, grain-tag Fermenter usage and base Ethanol without Raw Honey. The FirmaLife scenario captures Raw Honey and is registered with the FirmaLife jar copied to build/e2e-mods, while the base entry has no extra mods.",
+                "at": "2026-11-26T07:05:59.819Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The base scenario now captures seed usage, grain-tag Fermenter usage and the base Ethanol view without Raw Honey, while the separately registered FirmaLife scenario captures the Raw Honey Fermenter view.",
+                "at": "2026-11-26T07:55:59.764Z"
               }
             ]
           },
@@ -195,6 +363,30 @@
                 "by": "claude",
                 "note": "The base scenario captures Mixer (Herbicide, Limewater, Salt Water), Brine, Slag Glass heating, Milk Vinegar and wool usage. The FirmaLife scenario captures the FirmaLife recipes and the single FirmaLife Milk Vinegar.",
                 "at": "2026-11-25T07:34:08.217Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The base scenario captures the base Mixers, Brine, single base Milk Vinegar, Slag Glass heating and wool usage without a Crusher; the FirmaLife scenario captures the six FirmaLife recipes and its Milk Vinegar. Both scenarios remain registered for AC-F018-010.",
+                "at": "2026-11-26T06:18:36.475Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The base scenario captures the base Mixers, Brine, base Milk Vinegar, Slag Glass heating, and wool usage without Crusher. The FirmaLife scenario captures the six FirmaLife recipes and its Milk Vinegar. Both are registered for AC-F018-010.",
+                "at": "2026-11-26T06:33:23.099Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The base scenario captures the base Mixers, Brine, base Milk Vinegar, Slag Glass heating and wool usage without a Crusher. The FirmaLife scenario captures the six FirmaLife recipes and its Milk Vinegar, with the FirmaLife jar added only to that scenario.",
+                "at": "2026-11-26T07:05:59.819Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The base scenario captures the base Mixer recipes, Brine, single base Milk Vinegar, Slag Glass heating and wool usage without a Crusher, while the FirmaLife scenario captures the six FirmaLife recipes and its Milk Vinegar.",
+                "at": "2026-11-26T07:55:59.764Z"
               }
             ]
           },
@@ -218,6 +410,30 @@
                 "by": "claude",
                 "note": "The firmalife() helper in MixerRecipes no longer takes amount or energy. It uses 200 mB and 800 FE inline.",
                 "at": "2026-11-25T07:34:08.217Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The MixerRecipes.firmalife helper no longer takes amount/energy parameters and uses the invariant 200 mB water input, 200 mB output and 800 FE inline.",
+                "at": "2026-11-26T06:18:36.475Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The MixerRecipes.firmalife helper no longer takes amount or energy parameters. Its three call sites pass only path, input, and result, while 200 mB and 800 FE are set inline.",
+                "at": "2026-11-26T06:33:23.099Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "MixerRecipes.firmalife now takes only path, input and result; the 200 mB water input, 200 mB output and 800 FE are set inline at all three call sites.",
+                "at": "2026-11-26T07:05:59.819Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "MixerRecipes.firmalife now takes only path, input and result; the 200 mB water input, 200 mB output and 800 FE are set inline.",
+                "at": "2026-11-26T07:55:59.764Z"
               }
             ]
           },
@@ -240,134 +456,613 @@
           }
         ]
       },
-      "codeReviewTree": "3fb2a7113010d6ced31f45f386433fa8664ef7ae",
-      "e2eReview": null,
-      "failure": null,
+      "codeReviewTree": "9821267f5ceeb25be8231bcaa252aba480b7a0c5",
+      "e2eReview": {
+        "kind": "e2e",
+        "issues": [
+          {
+            "target": ".harness-state/runs/2026-11-26T07-10-38-380Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes.mjs/screenshots/AC-F016-004-seed-usage-squeezer-without-fermenter.png",
+            "acId": "AC-F016-004",
+            "problem": "The screenshot shows the Crafting page for the alfalfa-seed fishing-rod bait recipe (title 'Crafting 1/1'), not the IE Squeezer category. The seed -> Plant Oil 80mB recipe and the absence of a solid byproduct are not visible, and the absence of the old Fermenter seed route cannot be checked from this page.",
+            "reason": "captureJeiRecipes presses 'u' on tfc:seeds/alfalfa and screenshots the first JEI page; it never selects the Industrial Squeezer category tab (the 4th top tab).",
+            "fix": "After the seed uses screen opens, select the IE Squeezer category tab and show 1 seed -> Plant Oil 80mB with no solid output. Keep the full category tab row visible so the missing Fermenter seed route is also visible.",
+            "id": "ER-001",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The alfalfa seed uses screen now selects the fourth JEI tab, showing the Industrial Squeezer recipe while retaining the complete category row.",
+                "at": "2026-11-26T07:47:03.695Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Industrial Squeezer category (1/1) with a seed input and plant-oil fluid output, an empty solid-output slot, and no Fermenter tab.",
+                "at": "2026-11-26T08:11:27.078Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-26T07-10-38-380Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes.mjs/screenshots/AC-F016-004-squeezer-seeds-to-80mb-plant-oil.png",
+            "acId": "AC-F016-004",
+            "problem": "The screenshot shows the 'Bottling Machine - Bucket...' page for immersiveengineering:plantoil_bucket (empty bucket -> plant oil bucket), not the Squeezer recipe. The seed input, the Plant Oil 80mB output and the absence of a solid output are not shown.",
+            "reason": "The lookup is started from the plant-oil bucket item, so the only category is the bucket-filling recipe; the Squeezer recipe belongs to the seed or to the plant-oil fluid.",
+            "fix": "Look up the immersiveengineering:plantoil fluid (or open the seed's uses) and select the Industrial Squeezer category, then show seed 1 -> Plant Oil 80mB.",
+            "id": "ER-002",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The bucket lookup was replaced with a canola seed use lookup that directly selects its Industrial Squeezer recipe.",
+                "at": "2026-11-26T07:47:03.695Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Industrial Squeezer category with a seed input and plant-oil fluid output, with no solid byproduct.",
+                "at": "2026-11-26T08:11:27.078Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-26T07-10-38-380Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes.mjs/screenshots/AC-F017-005-grain-tag-fermenter-usage.png",
+            "acId": "AC-F017-005",
+            "problem": "The screenshot shows the Item Tags page 'Donkey Foods' (tfc:donkey_food), not the Industrial Fermenter category. The #c:foods/grain input and the Ethanol 80mB output are not visible.",
+            "reason": "The 'u' lookup on tfc:food/barley_grain opens the item-tag usage page first; the Fermenter category tab is never selected.",
+            "fix": "Select the IE Fermenter category tab and show the tfie:fermenter/grains recipe with the grain tag input and Ethanol 80mB.",
+            "id": "ER-003",
+            "status": "open",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The barley grain use lookup now selects the Industrial Fermenter tab.",
+                "at": "2026-11-26T07:47:03.695Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The new screenshot still shows Item Tags 1/29 (#tfc:camel_food), not the Industrial Fermenter category; the grain -> Ethanol 80mB recipe is not shown.",
+                "at": "2026-11-26T08:11:27.078Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-26T07-10-38-380Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes.mjs/screenshots/AC-F017-005-base-fermenter-ethanol-without-raw-honey.png",
+            "acId": "AC-F017-005",
+            "problem": "The screenshot shows the 'Bottling Machine - Bucket...' page for the ethanol bucket, not the Fermenter category. It does not show a food -> Ethanol 80mB recipe or that Raw Honey is absent in the base configuration.",
+            "reason": "Opening recipes for immersiveengineering:ethanol_bucket only yields the bucket-filling recipe; the Fermenter category is not selected.",
+            "fix": "Open the Fermenter category (for example from a food item such as Red Apple, or from the Fermenter block) and show a food -> Ethanol 80mB recipe. Keep the category list visible so the absence of a Raw Honey recipe and of the old seed -> Plant Oil Fermenter recipe can be checked.",
+            "id": "ER-004",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The ethanol bucket screen now focuses its fluid gauge and opens fluid recipes, which leads to the Fermenter category instead of Bottling.",
+                "at": "2026-11-26T07:47:03.695Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot now shows the Industrial Fermenter category with food recipes instead of the bottling page, and no Raw Honey recipe appears in the base configuration.",
+                "at": "2026-11-26T08:11:27.078Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-26T07-10-38-380Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes.mjs/screenshots/AC-F018-010-coke-oven-coal-to-coke-and-creosote.png",
+            "acId": "AC-F018-010",
+            "problem": "The screenshot shows the Crafting page 'Coke Block -> 9 Coal Coke', not the Coke Oven category. The Coal/Lignite -> Coke 1 + Creosote 500mB recipe is not visible.",
+            "reason": "captureJeiRecipes opens recipes for immersiveengineering:coal_coke and captures the first (Crafting) page; the Coke Oven category tab is not selected.",
+            "fix": "Select the IE Coke Oven category tab and page to the TFIE coal and lignite recipes, showing Coke 1 and Creosote 500mB.",
+            "id": "ER-005",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The scenario now starts from Bituminous Coal and selects its Coke Oven category, uniquely identifying the TFIE recipe.",
+                "at": "2026-11-26T07:47:03.695Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Coke Oven category with the coal -> coke plus creosote recipe.",
+                "at": "2026-11-26T08:11:27.078Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-26T07-10-38-380Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes.mjs/screenshots/AC-F018-010-crusher-sandstone-with-saltpeter-byproduct.png",
+            "acId": "AC-F018-010",
+            "problem": "The screenshot shows the Crafting page '4 Black Sand -> Black Sandstone', not the Crusher category. The TFIE recipe Sandstone -> 2 Sand with a 50% Saltpeter secondary output is not visible.",
+            "reason": "Opening recipes for tfc:sand/black opens the crafting page first; the Crusher category tab is not selected.",
+            "fix": "Select the IE Crusher category tab and page to the black-sandstone recipe, showing the 2 Sand output and the 50% Saltpeter secondary.",
+            "id": "ER-006",
+            "status": "open",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The black sand recipe lookup now selects the Crusher tab showing the sandstone outputs and secondary Saltpeter.",
+                "at": "2026-11-26T07:47:03.695Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The new screenshot still shows Crafting 1/1 (black sand -> black sandstone), not the Crusher category; the 2 Sand plus 50% Saltpeter recipe is not visible.",
+                "at": "2026-11-26T08:11:27.078Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-26T07-10-38-380Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes.mjs/screenshots/AC-F018-010-heating-bricks-to-clinker.png",
+            "acId": "AC-F018-010",
+            "problem": "The screenshot shows the Crafting page '2 Brick -> Bricks Block', not the TFC Heating category. The minecraft:bricks -> Clinker Brick recipe at 1,499°C is not visible.",
+            "reason": "The first recipe page for immersiveengineering:clinker_brick is Crafting; the Heating category tab (fire icon) is not selected.",
+            "fix": "Select the TFC Heating category tab and show the minecraft:bricks -> Clinker Brick recipe with the 1,499°C temperature indicator.",
+            "id": "ER-007",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The Clinker Brick lookup now selects the TFC Heating tab.",
+                "at": "2026-11-26T07:47:03.695Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the TFC Heating Recipe category with bricks -> Clinker Brick and the temperature indicator.",
+                "at": "2026-11-26T08:11:27.078Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-26T07-10-38-380Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes.mjs/screenshots/AC-F018-010-heating-slag-to-slag-glass-380c.png",
+            "acId": "AC-F018-010",
+            "problem": "The screenshot shows a 'Smelting' page (0.1 XP, 10s, coal fuel), not the TFC Heating category. The Slag -> Slag Glass recipe at 380°C is not visible.",
+            "reason": "Opening recipes for immersiveengineering:slag_glass selects the Smelting page; the Heating category tab (fire icon) is not selected.",
+            "fix": "Select the TFC Heating category tab and show IE Slag -> Slag Glass with the 380°C temperature indicator.",
+            "id": "ER-008",
+            "status": "open",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The Slag Glass lookup now selects the TFC Heating tab instead of Smelting.",
+                "at": "2026-11-26T07:47:03.695Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The new screenshot still shows Smelting 1/1 (0.1 XP, 10s) instead of the TFC Heating category; the slag -> slag glass 380°C recipe is not shown.",
+                "at": "2026-11-26T08:11:27.078Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-26T07-10-38-380Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes.mjs/screenshots/AC-F018-010-mixer-base-herbicide.png",
+            "acId": "AC-F018-010",
+            "problem": "The screenshot shows the 'Bottling Machine - Bucket...' page for the herbicide bucket, not the Mixer category. The Sulfur + copper-ore powder + Ethanol 500mB -> Herbicide 500mB recipe is not visible.",
+            "reason": "The bucket item is used for the lookup, so JEI shows only the bottling recipe; the Mixer recipe is attached to the herbicide fluid and its item inputs.",
+            "fix": "Look up the immersiveengineering:herbicide fluid (or the sulfur/copper-powder inputs) and select the Mixer category, showing Ethanol 500mB and Herbicide 500mB with the correct inputs.",
+            "id": "ER-009",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The Herbicide bucket lookup now reopens recipes from the fluid gauge, displaying the Mixer recipe.",
+                "at": "2026-11-26T07:47:03.695Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Mixer category with sulfur and copper-powder inputs and the herbicide fluid output.",
+                "at": "2026-11-26T08:11:27.078Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-26T07-10-38-380Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes.mjs/screenshots/AC-F018-010-mixer-base-limewater.png",
+            "acId": "AC-F018-010",
+            "problem": "The screenshot shows the 'Bottling Machine - Bucket...' page for the limewater bucket, not the Mixer category. The Fresh Water 500mB + Flux/Lime 1 -> Limewater 500mB recipe is not visible.",
+            "reason": "The bucket item is used for the lookup, so JEI shows only the bottling recipe; the Mixer recipe is attached to the limewater fluid and its item inputs.",
+            "fix": "Look up the tfc:limewater fluid (or the flux/lime input) and select the Mixer category, showing Fresh Water 500mB and Limewater 500mB.",
+            "id": "ER-010",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The Limewater bucket lookup now reopens recipes from the fluid gauge, displaying the Mixer recipe.",
+                "at": "2026-11-26T07:47:03.695Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Mixer category with the flux/water -> limewater recipe.",
+                "at": "2026-11-26T08:11:27.078Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-26T07-10-38-380Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes.mjs/screenshots/AC-F018-010-mixer-base-salt-water.png",
+            "acId": "AC-F018-010",
+            "problem": "The screenshot shows the 'Bottling Machine - Bucket...' page for the salt-water bucket, not the Mixer category. The Fresh Water 125mB + Salt 1 -> Salt Water 125mB recipe is not visible.",
+            "reason": "The bucket item is used for the lookup, so JEI shows only the bottling recipe; the Mixer recipe is attached to the salt-water fluid and its item input.",
+            "fix": "Look up the tfc:salt_water fluid (or the salt input) and select the Mixer category, showing Fresh Water 125mB and Salt Water 125mB.",
+            "id": "ER-011",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The Salt Water bucket lookup now reopens recipes from the fluid gauge, displaying the Mixer recipe.",
+                "at": "2026-11-26T07:47:03.695Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Mixer category with the salt/water -> salt-water recipe.",
+                "at": "2026-11-26T08:11:27.078Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-26T07-10-38-380Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes.mjs/screenshots/AC-F018-010-refinery-base-brine.png",
+            "acId": "AC-F018-010",
+            "problem": "The screenshot shows the 'Bottling Machine - Bucket...' page for the brine bucket, not the Refinery category. The Vinegar 1mB + Salt Water 9mB -> Brine 10mB recipe is not visible.",
+            "reason": "The bucket item is used for the lookup, so JEI never reaches the Refinery recipe, which is attached to the tfc:brine fluid.",
+            "fix": "Look up the tfc:brine fluid and select the Refinery category, showing Vinegar 1mB, Salt Water 9mB and Brine 10mB.",
+            "id": "ER-012",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The Brine bucket lookup now reopens recipes from the fluid gauge, displaying the Refinery recipe.",
+                "at": "2026-11-26T07:47:03.695Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Refinery category with the brine recipe.",
+                "at": "2026-11-26T08:11:27.078Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-26T07-10-38-380Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes.mjs/screenshots/AC-F018-010-refinery-single-base-milk-vinegar.png",
+            "acId": "AC-F018-010",
+            "problem": "The screenshot shows the 'Bottling Machine - Bucket...' page for the milk-vinegar bucket, not the Refinery category. The single Milk Vinegar recipe (Milk 9mB + Vinegar 1mB -> 10mB) is not visible.",
+            "reason": "The bucket item is used for the lookup, so JEI never reaches the Refinery recipe, which is attached to the tfc:milk_vinegar fluid.",
+            "fix": "Look up the tfc:milk_vinegar fluid and select the Refinery category, showing exactly one Milk Vinegar recipe with Milk 9mB, Vinegar 1mB and 10mB output.",
+            "id": "ER-013",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The base Milk Vinegar bucket lookup now opens the output fluid's Refinery recipe.",
+                "at": "2026-11-26T07:47:03.695Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Refinery category with the single base Milk Vinegar recipe.",
+                "at": "2026-11-26T08:11:27.078Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-26T07-10-38-380Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes-firmalife.mjs/screenshots/AC-F017-005-firmalife-fermenter-raw-honey-250mb.png",
+            "acId": "AC-F017-005",
+            "problem": "The screenshot shows the Crafting page 1/5 for Raw Honey, not the Industrial Fermenter category. The Raw Honey 1 -> Ethanol 250mB recipe is not visible.",
+            "reason": "The 'u' lookup on firmalife:food/raw_honey opens the crafting uses first; the Fermenter category tab is not selected.",
+            "fix": "Select the IE Fermenter category tab for Raw Honey and show Raw Honey 1 -> Ethanol 250mB.",
+            "id": "ER-014",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Raw Honey uses now select the Industrial Fermenter tab showing the 250 mB recipe.",
+                "at": "2026-11-26T07:47:03.695Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Industrial Fermenter category with the Raw Honey -> Ethanol recipe instead of the Crafting page.",
+                "at": "2026-11-26T08:11:27.078Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-26T07-10-38-380Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes-firmalife.mjs/screenshots/AC-F018-010-firmalife-mixer-olive-oil-water.png",
+            "acId": "AC-F018-010",
+            "problem": "The screenshot shows the 'Bottling Machine - Bucket...' page for olive oil water, not the Mixer category. The Olive Paste 1 + Water 200mB -> Olive Oil Water 200mB recipe is not visible.",
+            "reason": "The tfc:bucket/olive_oil_water item is used for the lookup, so JEI shows only the bottling recipe; the Mixer recipe is attached to the olive-oil-water fluid and Olive Paste.",
+            "fix": "Look up the tfc:olive_oil_water fluid (or Olive Paste) and select the Mixer category, showing Olive Paste 1, Water 200mB and Olive Oil Water 200mB.",
+            "id": "ER-015",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Olive Oil Water now opens fluid recipes from its bucket and displays the Mixer category.",
+                "at": "2026-11-26T07:47:03.695Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Mixer category with the olive-paste/water -> olive-oil-water recipe.",
+                "at": "2026-11-26T08:11:27.078Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-26T07-10-38-380Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes-firmalife.mjs/screenshots/AC-F018-010-firmalife-mixer-tallow.png",
+            "acId": "AC-F018-010",
+            "problem": "The screenshot shows the 'Bottling Machine - Bucket...' page for the tallow bucket, not the Mixer category. The Blubber 1 + Water 200mB -> Tallow 200mB recipe is not visible.",
+            "reason": "The tfc:bucket/tallow item is used for the lookup, so JEI shows only the bottling recipe; the Mixer recipe is attached to the tallow fluid and Blubber.",
+            "fix": "Look up the tfc:tallow fluid (or Blubber) and select the Mixer category, showing Blubber 1, Water 200mB and Tallow 200mB.",
+            "id": "ER-016",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Tallow now opens fluid recipes from its bucket and displays the Mixer category.",
+                "at": "2026-11-26T07:47:03.695Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Mixer category with the blubber/water -> tallow recipe.",
+                "at": "2026-11-26T08:11:27.078Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-26T07-10-38-380Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes-firmalife.mjs/screenshots/AC-F018-010-firmalife-mixer-lye.png",
+            "acId": "AC-F018-010",
+            "problem": "The screenshot shows the 'Bottling Machine - Bucket...' page for the lye bucket, not the Mixer category. The Wood Ash 1 + Water 200mB -> Lye 200mB recipe is not visible.",
+            "reason": "The tfc:bucket/lye item is used for the lookup, so JEI shows only the bottling recipe; the Mixer recipe is attached to the lye fluid and Wood Ash.",
+            "fix": "Look up the tfc:lye fluid (or Wood Ash) and select the Mixer category, showing Wood Ash 1, Water 200mB and Lye 200mB.",
+            "id": "ER-017",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Lye now opens fluid recipes from its bucket and displays the Mixer category.",
+                "at": "2026-11-26T07:47:03.695Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Mixer category with the wood-ash/water -> lye recipe.",
+                "at": "2026-11-26T08:11:27.078Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-26T07-10-38-380Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes-firmalife.mjs/screenshots/AC-F018-010-firmalife-mixer-caramel-not-rotten-butter.png",
+            "acId": "AC-F018-010",
+            "problem": "The screenshot shows the 'Bottling Machine - Bucket...' page for caramel, not the Mixer category. The non-rotten Butter 1 + Sugar Water 1,000mB -> Caramel 1,000mB recipe and its not-rotten condition are not visible.",
+            "reason": "The firmalife:bucket/caramel item is used for the lookup, so JEI shows only the bottling recipe; the Mixer recipe is attached to the caramel fluid and Butter.",
+            "fix": "Look up the firmalife:caramel fluid (or Butter) and select the Mixer category, showing non-rotten Butter 1, Sugar Water 1,000mB and Caramel 1,000mB, with the not-rotten condition identifiable.",
+            "id": "ER-018",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Caramel now opens its Mixer recipe from the fluid gauge and hovers the Butter input so its non-rotten state is identifiable.",
+                "at": "2026-11-26T07:47:03.695Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Mixer category with the butter/water -> caramel recipe instead of the bottling page.",
+                "at": "2026-11-26T08:11:27.078Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-26T07-10-38-380Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes-firmalife.mjs/screenshots/AC-F018-010-firmalife-squeezer-wild-honeycomb-solid-output.png",
+            "acId": "AC-F018-010",
+            "problem": "The screenshot shows the Item Tags page 'Bee Baits' (firmalife:bee_bait), not the Squeezer category. The Wild Honeycomb 1 -> Raw Honey 1 solid-only recipe is not visible.",
+            "reason": "The 'u' lookup on firmalife:wild_honeycomb opens the item-tag usage page first; the Squeezer category tab is not selected.",
+            "fix": "Select the IE Squeezer category tab for Wild Honeycomb and show only the solid Raw Honey output, with no fluid output and no additional byproduct.",
+            "id": "ER-019",
+            "status": "open",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Wild Honeycomb uses now select the Industrial Squeezer tab, showing the solid-only Raw Honey output.",
+                "at": "2026-11-26T07:47:03.695Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The new screenshot still shows Item Tags 1/1 (Bee Baits, firmalife:bee_bait), not the Industrial Squeezer category; the solid-only Raw Honey output is not shown.",
+                "at": "2026-11-26T08:11:27.078Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-26T07-10-38-380Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes-firmalife.mjs/screenshots/AC-F018-010-refinery-single-firmalife-milk-vinegar.png",
+            "acId": "AC-F018-010",
+            "problem": "The screenshot shows the 'Bottling Machine - Bucket...' page for milk vinegar, not the Refinery category. The single #firmalife:milks 9mB + Vinegar 1mB -> Milk Vinegar 10mB recipe is not visible.",
+            "reason": "The tfc:bucket/milk_vinegar item is used for the lookup, so JEI shows only the bottling recipe; the Refinery recipe is attached to the tfc:milk_vinegar fluid.",
+            "fix": "Look up the tfc:milk_vinegar fluid and select the Refinery category, showing exactly one recipe with #firmalife:milks 9mB, Vinegar 1mB and Milk Vinegar 10mB.",
+            "id": "ER-020",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: FirmaLife Milk Vinegar now opens the output fluid's Refinery recipe, exposing the conditional milk-tag inputs.",
+                "at": "2026-11-26T07:47:03.695Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The new screenshot shows the Refinery category with the milk-vinegar recipe and the #firmalife:milks input tag.",
+                "at": "2026-11-26T08:11:27.078Z"
+              }
+            ]
+          }
+        ]
+      },
+      "failure": {
+        "phase": "e2e",
+        "summary": "2 E2E scenario(s) failed",
+        "details": "tests/e2e/non-metal-recipes.mjs: Error: MC Pilot gui wait-open --timeout 10 failed: \"TIMEOUT\"\n    at mct (file://.harness/e2e/lib.mjs:21:37)\n    at captureJeiRecipes (file://.harness-state/runtime/worktrees/M04/tests/e2e/open-jei-recipes.mjs:12:9)\n    at async file://.harness-state/runtime/worktrees/M04/tests/e2e/non-metal-recipes.mjs:7:3\n    at async scenario (file://.harness/e2e/lib.mjs:59:5)\n    at async file://.harness-state/runtime/worktrees/M04/tests/e2e/non-metal-recipes.mjs:5:1\nAC-F016-004 Expected Result: 対象23種の加工がSqueezerカテゴリで種1個からPlant Oil80mBとして表示される。旧Fermenter経路と存在しない固体副産物を表示しない。詳細仕様第20章と第32章の表示条件も合否対象とする。検証方式はE2Eとする。\nAC-F017-005 Expected Result: 食品・穀粒の80mBとRaw Honeyの250mBを区別して表示する。Raw HoneyはFirmaLife導入時だけ表示し、種子からPlant Oilを得る旧Fermenterレシピを表示しない。詳細仕様第21章と第32章の表示条件も合否対象とする。検証方式はE2Eとする。\nAC-F018-010 Expected Result: 実際の機械カテゴリ、数量、流体、確率副産物、Heating温度を表示する。FirmaLifeの6件は導入構成だけに表示し、Caramelの非腐敗条件とHoneycombの固体のみの出力を識別する。羊毛Crusher、重複Milk Vinegar、AFCのIE代替経路を表示しない。詳細仕様第23章と第32章の表示条件も合否対象とする。検証方式はE2Eとする。\n\ntests/e2e/non-metal-recipes-firmalife.mjs: Error: MC Pilot gui wait-open --timeout 10 failed: \"TIMEOUT\"\n    at mct (file://.harness/e2e/lib.mjs:21:37)\n    at captureJeiRecipes (file://.harness-state/runtime/worktrees/M04/tests/e2e/open-jei-recipes.mjs:12:9)\n    at async file://.harness-state/runtime/worktrees/M04/tests/e2e/non-metal-recipes-firmalife.mjs:7:3\n    at async scenario (file://.harness/e2e/lib.mjs:59:5)\n    at async file://.harness-state/runtime/worktrees/M04/tests/e2e/non-metal-recipes-firmalife.mjs:5:1\nAC-F017-005 Expected Result: 食品・穀粒の80mBとRaw Honeyの250mBを区別して表示する。Raw HoneyはFirmaLife導入時だけ表示し、種子からPlant Oilを得る旧Fermenterレシピを表示しない。詳細仕様第21章と第32章の表示条件も合否対象とする。検証方式はE2Eとする。\nAC-F018-010 Expected Result: 実際の機械カテゴリ、数量、流体、確率副産物、Heating温度を表示する。FirmaLifeの6件は導入構成だけに表示し、Caramelの非腐敗条件とHoneycombの固体のみの出力を識別する。羊毛Crusher、重複Milk Vinegar、AFCのIE代替経路を表示しない。詳細仕様第23章と第32章の表示条件も合否対象とする。検証方式はE2Eとする。",
+        "logs": [
+          ".harness-state/runs/2026-11-26T06-23-15-943Z-014-M04-e2e/runtime/server.log",
+          ".harness-state/runs/2026-11-26T06-23-15-943Z-014-M04-e2e/runtime/client-tfie-a.log",
+          ".harness-state/runs/2026-11-26T06-23-15-943Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes.mjs/stdout.log",
+          ".harness-state/runs/2026-11-26T06-23-15-943Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes.mjs/stderr.log",
+          ".harness-state/runs/2026-11-26T06-23-15-943Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes-firmalife.mjs/stdout.log",
+          ".harness-state/runs/2026-11-26T06-23-15-943Z-014-M04-e2e/scenarios/tests-e2e-non-metal-recipes-firmalife.mjs/stderr.log"
+        ],
+        "screenshots": []
+      },
       "conflicts": [],
       "reviewConflicts": [],
       "session": "01a21169-f791-79f1-872c-149ecdb72bda"
     },
     {
       "id": "M06",
-      "phase": "implementation",
+      "phase": "gametest",
       "baseCommit": "11d39fdc9b7fa46c00529a0bf24d09e81c0a9782",
       "failures": {
         "build": 0,
         "gametest": 0,
-        "e2e": 0
+        "e2e": 1
       },
-      "recoveries": 0,
+      "recoveries": 1,
       "codeReview": {
         "kind": "code",
         "issues": [
           {
-            "target": "src/main/java/net/claustra01/tfie/mixin/IngredientFluidStackMixin.java:41-55",
+            "target": "src/main/java/net/claustra01/tfie/mixin/IngredientFluidStackMixin.java:22",
             "acId": "AC-F022-002",
-            "problem": "The `test` injection adds a new matching rule. It empties a copy of the stack and returns false unless the empty container is in `#tfc:fluid_item_ingredient_empty_containers`. IE fluid recipes therefore stop accepting fluid containers like the IE Jerrycan, even when they hold the right fluid in the required amount.",
-            "reason": "Chapter 27 says the ingredient must be judged by fluid type and held amount, not by the container item, and that TFIE keeps IE's matching and drain rules while changing only the display candidates to TFC containers. The milestone approach also says IE's own logic stays unchanged. Checking tag membership of the emptied item is an item-identity check that IE does not have.",
-            "fix": "Remove the `tfie$requireTFCFluidContainer` injection and its now-unused imports, so IE's own `test` decides matches by fluid and amount. Keep only the `getItems` candidate injection. In `fluid_ingredient_returns_partial_container`, remove the assertion that a filled Jerrycan must not match.",
+            "problem": "This IE mixin uses the default remapping mode, unlike the other IE mixins in the project (`AllowInCrateMixin`, `DynamoBlockEntityMixin`, `TemplateMultiblockMixin`), which all specify `remap = false`. `IngredientFluidStack`, its `fluidIngredient` field and `getItems` are mod-owned names, so Mixin may remap the shadow field and injection target against Minecraft mappings and fail or target the wrong member outside the development environment.",
+            "reason": "IE classes and members are not part of the Minecraft mapping set. The project's existing IE mixins explicitly disable remapping for this reason; a production refmap or runtime name mismatch can make the candidate generation and JEI display unavailable.",
+            "fix": "Declare the mixin as `@Mixin(value = IngredientFluidStack.class, remap = false)`.",
             "id": "CR-001",
             "status": "resolved",
             "history": [
               {
                 "status": "open",
                 "by": "codex",
-                "note": "fixed: IngredientFluidStack.testへの注入を削除しました。TFIEは表示候補だけをTFC空容器タグから生成し、照合はIE本来の流体種類・保持量判定を維持します。",
-                "at": "2026-11-25T07:28:17.159Z"
+                "note": "fixed: Declared IngredientFluidStackMixin with `remap = false`; the dedicated-server GameTest run confirmed the corrected mixin loads and applies to IE's IngredientFluidStack.",
+                "at": "2026-11-26T07:46:19.947Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "The `test` injection is gone. The mixin now only overrides `getItems`, so IE's own matching by fluid and amount applies. The imports left in the file are used or harmless.",
-                "at": "2026-11-25T07:28:38.891Z"
+                "note": "Line 22 now declares `@Mixin(value = IngredientFluidStack.class, remap = false)`, matching the project's other IE mixins (AllowInCrateMixin, DynamoBlockEntityMixin, TemplateMultiblockMixin), so the IE-owned `fluidIngredient` shadow and `getItems` injection target are no longer remapped against Minecraft mappings.",
+                "at": "2026-11-26T07:46:36.634Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Current line 22 declares `@Mixin(value = IngredientFluidStack.class, remap = false)`, so the IE-owned `fluidIngredient` shadow and `getItems` target are no longer remapped. The only change since the previous review is in tests/acceptance.json (report paths), which does not affect this mixin.",
+                "at": "2026-11-26T07:56:46.947Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "src/main/java/net/claustra01/tfie/mixin/IngredientFluidStackMixin.java line 22 still declares `@Mixin(value = IngredientFluidStack.class, remap = false)`. The only changes since the previous review are in build.gradle (GameTest task guards) and tests/acceptance.json (report paths), neither of which affects this mixin, so the IE-owned `fluidIngredient` shadow and `getItems` target remain unremapped.",
+                "at": "2026-11-26T08:05:47.503Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "src/main/java/net/claustra01/tfie/mixin/IngredientFluidStackMixin.java line 22 still declares `@Mixin(value = IngredientFluidStack.class, remap = false)`, matching the other IE mixins, so the IE-owned `fluidIngredient` shadow and `getItems` target are not remapped. The only diff since the previous review touches tests/e2e/fluid-containers.mjs and does not affect this mixin.",
+                "at": "2026-11-26T08:12:23.184Z"
               }
             ]
           },
           {
-            "target": "src/main/java/net/claustra01/tfie/gametest/fluid/FluidGameTests.java:154-157",
-            "acId": "AC-F022-002",
-            "problem": "`fluid_ingredient_returns_partial_container` asserts that a filled `immersiveengineering:jerrycan` is rejected by the fluid ingredient. This locks in the extra item-based restriction.",
-            "reason": "AC-F022-002 and chapter 27 require matching by fluid type and amount using IE's rule. The test should not require rejecting a capable container that holds enough of the right fluid.",
-            "fix": "Delete the untagged-Jerrycan assertion. The test then covers the match, the partial drain and the returned container with 750 mB left.",
+            "target": "src/main/java/net/claustra01/tfie/mixin/IngredientFluidStackMixin.java:38-47",
+            "acId": null,
+            "problem": "`filledContainer` is a helper with only one call site. It is also neither annotated `@Unique` nor prefixed like the project's other mixin-added members, so it is both an unnecessary abstraction and an unguarded name in the target class.",
+            "reason": "The code style asks to inline helpers until a second call site exists, and mixin-added members should be unique to avoid collisions with the target class or another mixin. The fill/drain/filter sequence is used only inside the `getItems` lambda.",
+            "fix": "Inline the fill/drain/filter logic into the `map` lambda in `tfie$getTfcFluidContainers`. If the method is kept, annotate it with `@Unique` and rename it to `tfie$filledContainer`.",
             "id": "CR-002",
             "status": "resolved",
             "history": [
               {
                 "status": "open",
                 "by": "codex",
-                "note": "fixed: Jerrycan拒否の誤った検証を、十分なCreosoteを保持するJerrycanがIEの判定で成立する検証へ修正しました。",
-                "at": "2026-11-25T07:28:17.159Z"
+                "note": "fixed: Removed the single-use `filledContainer` helper and inlined capability filling, draining, and candidate filtering into the `getItems` mapping lambda.",
+                "at": "2026-11-26T07:46:19.947Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "The test no longer requires the Jerrycan to be rejected. It now asserts that a Jerrycan holding enough creosote is accepted, which matches IE's rule.",
-                "at": "2026-11-25T07:28:38.891Z"
-              }
-            ]
-          },
-          {
-            "target": "tests/e2e/fluid-containers.mjs:9-28",
-            "acId": "AC-F022-004",
-            "problem": "The scenario opens only one IE fluid-ingredient recipe (the drill lube upgrade) and screenshots its candidate cycling. AC-F022-004 requires recipes that need different fluid amounts, so the screenshots never show the candidate set changing with the required amount.",
-            "reason": "The criterion's precondition is \"必要流体量の異なるIE流体Ingredientレシピを開く\" (open IE fluid-ingredient recipes with different required amounts). The display must show only containers that meet the fluid and amount, and with a single recipe the amount filtering is never shown.",
-            "fix": "Add a second IE recipe whose fluid ingredient needs a different amount (e.g. a sub-1000 mB IngredientFluidStack recipe such as Treated Wood's creosote ingredient, if it is still shipped). Open it in JEI and capture its candidate cycling the same way, so the screenshots show the candidates for each required amount.",
-            "id": "CR-003",
-            "status": "open",
-            "history": [
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: E2Eへ実際に出荷するCreosote 50 mBのTreated Lumber樽レシピを追加し、1000 mBのDrill Lube候補切替と必要量差を撮影します。固定版IEのIngredientFluidStackレシピは全て1000 mBで、標準Treated WoodレシピもF-013により無効なため、架空の製品レシピは追加していません。",
-                "at": "2026-11-25T07:28:17.159Z"
-              },
-              {
-                "status": "open",
-                "by": "claude",
-                "note": "The added scenario opens Treated Lumber's TFC barrel recipe, which uses a TFC fluid ingredient and not an IE IngredientFluidStack. It never goes through the mixin's candidate list, and it shows no container cycling. The E2E still captures candidate cycling for only one IE amount (the 1000 mB drill lube recipe). AC-F022-004 asks for IE fluid-ingredient recipes with different required amounts, so the screenshots do not show candidates changing with the required amount.",
-                "at": "2026-11-25T07:28:38.891Z"
-              }
-            ]
-          },
-          {
-            "target": "src/main/java/net/claustra01/tfie/gametest/fluid/FluidGameTests.java:181-183",
-            "acId": "AC-F022-003",
-            "problem": "The test asserts that the invented recipe IDs `tfie:crafting/chemthrower_tfc` and `tfie:crafting/jerrycan_tfc` do not exist. Nothing in the mod or spec defines these IDs, so the check cannot fail and proves nothing.",
-            "reason": "Negative checks belong only where truly needed. A TFC-bucket replacement path would show up as a recipe matching the grid with the bucket swapped, and the loop above already rejects that grid against the fixed recipes. The hard-coded absent IDs are dead test code.",
-            "fix": "Remove the loop over the absent `tfie:` recipe IDs. If a check for any added replacement path is wanted, assert that the RecipeManager finds no crafting recipe matching the grid with the TFC bucket swapped in (e.g. `getRecipeFor(RecipeType.CRAFTING, replacedInput, level).isEmpty()`).",
-            "id": "CR-004",
-            "status": "resolved",
-            "history": [
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: 架空のtfieレシピID不在検査を削除しました。代わりにTFC Bucketへ置換した各入力についてRecipeManager全体で一致するクラフトレシピがないことを検証します。",
-                "at": "2026-11-25T07:28:17.159Z"
+                "note": "The single-use `filledContainer` helper has been fully removed (no remaining method in the file); capability lookup, fill, drain and `fluidIngredient.test` filtering are inlined directly in the `map` lambda inside `tfie$getTfcFluidContainers`, leaving no unguarded extra member in the target class.",
+                "at": "2026-11-26T07:46:36.634Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "The loop over invented `tfie:` recipe IDs is removed. In its place, the test checks that `RecipeManager.getRecipeFor(RecipeType.CRAFTING, ...)` finds no recipe for the grid with the TFC bucket swapped in.",
-                "at": "2026-11-25T07:28:38.891Z"
+                "note": "The single-use `filledContainer` helper is gone; capability lookup, fill, drain and `fluidIngredient.test` filtering are inlined in the `map` lambda of `tfie$getTfcFluidContainers`, leaving no unguarded extra member. The acceptance.json diff does not reintroduce it.",
+                "at": "2026-11-26T07:56:46.947Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The single-use `filledContainer` helper is still absent from IngredientFluidStackMixin.java. Capability lookup, `fill` with `Integer.MAX_VALUE`, `drain(..., SIMULATE)`, and the `fluidIngredient.test(content)` filter are all inlined in the `map` lambda inside `tfie$getTfcFluidContainers`, so no extra unguarded member is added to the target class. The build.gradle and acceptance.json changes do not reintroduce it.",
+                "at": "2026-11-26T08:05:47.503Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The single-use `filledContainer` helper remains absent from IngredientFluidStackMixin.java (a repo-wide grep finds no occurrence). Capability lookup, `fill` with `Integer.MAX_VALUE`, `drain(..., SIMULATE)` and the `fluidIngredient.test(content)` filter are inlined in the `map` lambda inside `tfie$getTfcFluidContainers`, so no extra unguarded member is added to the target class. The e2e test diff does not reintroduce it.",
+                "at": "2026-11-26T08:12:23.184Z"
               }
             ]
           }
         ]
       },
-      "codeReviewTree": "fa8bd3a609a699f04daa8e482e8a11bef91dc65a",
+      "codeReviewTree": "257191084c4e331a0387b79e9059088ce756571b",
       "e2eReview": null,
-      "failure": null,
+      "failure": {
+        "phase": "e2e",
+        "summary": "1 E2E scenario(s) failed",
+        "details": "tests/e2e/fluid-containers.mjs: Error: MC Pilot gui layout failed: \"GUI_NOT_OPEN\"\n    at mct (file://.harness/e2e/lib.mjs:21:37)\n    at file://.harness-state/runtime/worktrees/M06/tests/e2e/fluid-containers.mjs:16:27\n    at async scenario (file://.harness/e2e/lib.mjs:59:5)\n    at async file://.harness-state/runtime/worktrees/M06/tests/e2e/fluid-containers.mjs:3:1\nAC-F022-004 Expected Result: TFC空容器タグから、実際に対象流体と必要量を満たす容器だけを候補へ表示する。受入不可・容量不足の容器を表示せず、流体量と容器モデルが一致する。固定Bucket入力は固定Bucketとして表示する。詳細仕様第27章と第32章の表示条件も合否対象とする。検証方式はE2Eとする。",
+        "logs": [
+          ".harness-state/runs/2026-11-26T08-08-20-706Z-048-M06-e2e/runtime/server.log",
+          ".harness-state/runs/2026-11-26T08-08-20-706Z-048-M06-e2e/runtime/client-tfie-a.log",
+          ".harness-state/runs/2026-11-26T08-08-20-706Z-048-M06-e2e/scenarios/tests-e2e-fluid-containers.mjs/stdout.log",
+          ".harness-state/runs/2026-11-26T08-08-20-706Z-048-M06-e2e/scenarios/tests-e2e-fluid-containers.mjs/stderr.log"
+        ],
+        "screenshots": []
+      },
       "conflicts": [],
       "reviewConflicts": [],
-      "session": "01a21178-5828-7051-90fd-c2679c0211db"
+      "session": "01a216ab-e5f5-7983-a3cb-efd6c9e3f5ed"
     }
   ],
   "completed": [
     "M01",
     "M02",
     "M05",
-    "M03"
+    "M03",
+    "M07"
   ],
-  "lastCheckpoint": "11d39fdc9b7fa46c00529a0bf24d09e81c0a9782",
+  "lastCheckpoint": "29451492106f63275cfa7729b2c552b53e7cca00",
   "fatal": null
 }

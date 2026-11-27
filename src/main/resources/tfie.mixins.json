@@ -20,6 +20,7 @@
     "DynamoBlockEntityMixin",
     "FurnaceHandlerMixin",
     "FurnaceOutputSlotMixin",
+    "GeneratedListRecipeMixin",
     "IngredientFluidStackMixin",
     "MultiblockProcessMixin",
     "MultiblockProcessInMachineMixin",

@@ -4,7 +4,9 @@ import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
+import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
@@ -17,9 +19,11 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlock
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AdvBlastFurnaceLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AlloySmelterLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.BlastFurnaceLogic;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CrusherLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FurnaceHandler;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.NonMirrorableWithActiveBlock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.MetalPressLogic;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.sawmill.SawmillLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace.ArcFurnaceInputHandler;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace.ArcFurnaceLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace.ArcFurnaceProcess;
@@ -27,8 +31,10 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheater
 import blusunrize.immersiveengineering.common.blocks.multiblocks.AlloySmelterMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.ArcFurnaceMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.BlastFurnaceMultiblock;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.CrusherMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.ImprovedBlastfurnaceMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MetalPressMultiblock;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.SawmillMultiblock;
 import blusunrize.immersiveengineering.common.gui.ArcFurnaceMenu;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
@@ -42,6 +48,7 @@ import net.claustra01.tfie.common.arc.ArcFurnaceRecipeLookup;
 import net.claustra01.tfie.common.heat.FurnaceOutputCapacity;
 import net.claustra01.tfie.common.heat.FurnaceOutputHeat;
 import net.claustra01.tfie.common.recipes.ModeAwareArcFurnaceRecipe;
+import net.claustra01.tfie.gametest.ledger.RecipeLedgerGameTests;
 import net.dries007.tfc.common.component.heat.HeatCapability;
 import net.dries007.tfc.common.component.heat.IHeat;
 import net.dries007.tfc.common.blockentities.AnvilBlockEntity;
@@ -103,6 +110,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -347,6 +355,174 @@ public final class FurnaceGameTests
                     "A heated output must cool while it remains in the formed Arc inventory");
             helper.succeed();
         });
+    }
+
+    @GameTest(template = TEMPLATE, templateNamespace = TFIE.MOD_ID, timeoutTicks = 200)
+    public static void formed_crusher_and_arc_reject_removed_inputs(GameTestHelper helper)
+    {
+        FormedMachine<CrusherLogic.State> crusher = form(helper, new CrusherMultiblock(),
+                new BlockPos(1, 2, 1), new BlockPos(2, 1, 2), CrusherLogic.MASTER_OFFSET);
+        CrusherLogic.State crusherState = crusher.state();
+        crusherState.getEnergy().receiveEnergy(Integer.MAX_VALUE, false);
+        IItemHandler crusherInput = itemCapability(helper, crusher.origin().offset(2, 2, 1));
+        for(RecipeLedgerGameTests.CrusherLedgerInput ledger : RecipeLedgerGameTests.crusherLedgerInputs())
+        {
+            ItemStack input = ledger.input().copy();
+            if(input.isEmpty())
+                continue;
+            RecipeHolder<CrusherRecipe> selected = CrusherRecipe.findRecipe(helper.getLevel(), input);
+            ItemStack remainder = crusherInput.insertItem(0, input.copy(), false);
+            if(selected == null)
+                helper.assertTrue(remainder.getCount() == input.getCount()
+                                && crusherState.getProcessQueue().isEmpty(),
+                        "A formed Crusher accepted a removed ledger input: " + ledger.removedId());
+            else
+                helper.assertTrue(!selected.id().equals(ledger.removedId()) && remainder.isEmpty()
+                                && crusherState.getProcessQueue().size() == 1
+                                && crusherState.getProcessQueue().getFirst().getRecipeId().equals(selected.id()),
+                        "A formed Crusher selected the removed route instead of its surviving control: "
+                                + ledger.removedId());
+            if(!crusherState.getProcessQueue().isEmpty())
+            {
+                crusherState.getProcessQueue().getFirst().clearProcess = true;
+                crusher.helper().tickServer();
+                helper.assertTrue(crusherState.getProcessQueue().isEmpty(),
+                        "The formed Crusher did not clear its completed ledger probe");
+            }
+        }
+        for(ItemStack input : RecipeLedgerGameTests.crusherControlInputs())
+        {
+            ItemStack remainder = crusherInput.insertItem(0, input.copy(), false);
+            helper.assertTrue(remainder.isEmpty() && crusherState.getProcessQueue().size() == 1
+                            && crusherState.getProcessQueue().getFirst().getRecipeId().getNamespace().equals(TFIE.MOD_ID),
+                    "A formed Crusher did not start an adopted non-metal control for " + input);
+            crusherState.getProcessQueue().getFirst().clearProcess = true;
+            crusher.helper().tickServer();
+            helper.assertTrue(crusherState.getProcessQueue().isEmpty(),
+                    "The formed Crusher did not clear its completed non-metal probe");
+        }
+
+        FormedMachine<ArcFurnaceLogic.State> arc = form(helper, new ArcFurnaceMultiblock(),
+                new BlockPos(8, 2, 1), new BlockPos(2, 0, 4), new BlockPos(2, 1, 2));
+        ArcFurnaceLogic.State arcState = arc.state();
+        for(int slot = 23; slot <= 25; slot++)
+            arcState.getInventory().setStackInSlot(slot, item("immersiveengineering:graphite_electrode"));
+        arcState.getEnergy().receiveEnergy(ArcFurnaceLogic.ENERGY_CAPACITY, false);
+        for(ItemStack input : RecipeLedgerGameTests.arcRejectedInputs())
+        {
+            if(input.isEmpty())
+                continue;
+            arcState.getInventory().setStackInSlot(0, input.copy());
+            arc.helper().tickServer();
+            helper.assertTrue(arcState.getProcessQueue().isEmpty()
+                            && arcState.getInventory().getStackInSlot(0).getCount() == input.getCount(),
+                    "A formed Arc started a removed Ore, Raw Ore, Dust, Ancient Debris or recycling route: "
+                            + input);
+            arcState.getInventory().setStackInSlot(0, ItemStack.EMPTY);
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, templateNamespace = TFIE.MOD_ID, timeoutTicks = 200)
+    public static void formed_metal_press_and_sawmill_ledger_controls(GameTestHelper helper)
+    {
+        FormedMachine<MetalPressLogic.State> press = form(helper, new MetalPressMultiblock(),
+                new BlockPos(1, 2, 1), new BlockPos(1, 1, 0), new BlockPos(1, 1, 0));
+        MetalPressLogic.State pressState = press.state();
+        IItemHandler pressInput = itemCapability(helper, press.origin().offset(0, 1, 0));
+        Set<ResourceLocation> removed = RecipeLedgerGameTests.metalPressLedgerInputs().stream()
+                .map(RecipeLedgerGameTests.MetalPressLedgerInput::removedId)
+                .collect(java.util.stream.Collectors.toSet());
+        for(RecipeLedgerGameTests.MetalPressLedgerInput ledger : RecipeLedgerGameTests.metalPressLedgerInputs())
+        {
+            ItemStack input = ledger.input().copy();
+            if(input.isEmpty())
+                continue;
+            pressState.mold = ledger.mold().copy();
+            RecipeHolder<MetalPressRecipe> selected = MetalPressRecipe.findRecipe(
+                    pressState.mold, input, helper.getLevel());
+            ItemStack remainder = pressInput.insertItem(0, input.copy(), false);
+            if(selected == null)
+                helper.assertTrue(remainder.getCount() == input.getCount()
+                                && pressState.processor.getQueue().isEmpty(),
+                        "A formed Metal Press accepted a removed ledger input: " + ledger.removedId());
+            else
+            {
+                helper.assertTrue(remainder.isEmpty() && pressState.processor.getQueue().size() == 1
+                                && pressState.processor.getQueue().getFirst().getRecipeId().equals(selected.id())
+                                && !removed.contains(selected.id()),
+                        "A formed Metal Press selected a removed route: " + ledger.removedId());
+                pressState.processor.getQueue().getFirst().clearProcess = true;
+                press.helper().tickServer();
+                helper.assertTrue(pressState.processor.getQueue().isEmpty(),
+                        "The formed Metal Press did not clear its completed ledger probe");
+            }
+        }
+
+        List<RecipeHolder<MetalPressRecipe>> pressControls = MetalPressRecipe.STANDARD_RECIPES
+                .getRecipes(helper.getLevel()).stream()
+                .filter(holder -> holder.id().getNamespace().equals("immersiveengineering"))
+                .filter(holder -> holder.id().getPath().startsWith("metalpress/gear_")
+                        || List.of("metalpress/blaze_rod", "metalpress/bullet_casing", "metalpress/melon")
+                        .contains(holder.id().getPath()))
+                .sorted(java.util.Comparator.comparing(holder -> holder.id().toString()))
+                .toList();
+        helper.assertTrue(pressControls.stream().map(RecipeHolder::id)
+                        .map(ResourceLocation::getPath).toList().containsAll(List.of(
+                                "metalpress/gear_copper", "metalpress/blaze_rod",
+                                "metalpress/bullet_casing", "metalpress/melon")),
+                "The formed Metal Press controls must include Gear, Blaze Rod, Bullet Casing and Melon");
+        for(RecipeHolder<MetalPressRecipe> holder : pressControls)
+        {
+            MetalPressRecipe recipe = holder.value();
+            ItemStack input = recipe.getItemInputs().getFirst().getMatchingStacks()[0].copy();
+            pressState.mold = new ItemStack(recipe.mold);
+            helper.assertTrue(pressInput.insertItem(0, input, false).isEmpty()
+                            && pressState.processor.getQueue().size() == 1
+                            && pressState.processor.getQueue().getFirst().getRecipeId().equals(holder.id()),
+                    "A formed Metal Press did not start untouched control " + holder.id());
+            finishMetalPressProcess(helper, press, recipe.getActualItemOutputs().getFirst(), false);
+        }
+
+        runMetalPressControl(helper, press, pressInput, "tfie:metalpress/wire/copper",
+                "immersiveengineering:mold_wire", item("tfc:metal/ingot/copper"),
+                itemWithCount("tfcm:metal/wire/copper", 4));
+        runMetalPressControl(helper, press, pressInput, "tfie:metalpress/sheet/copper",
+                "tfie:mold_sheet", itemWithCount("tfc:metal/ingot/copper", 2),
+                item("tfc:metal/sheet/copper"));
+
+        FormedMachine<SawmillLogic.State> sawmill = form(helper, new SawmillMultiblock(),
+                new BlockPos(8, 2, 1), new BlockPos(2, 0, 2), new BlockPos(2, 1, 1));
+        SawmillLogic.State sawmillState = sawmill.state();
+        sawmillState.sawblade = item("immersiveengineering:sawblade");
+        IItemHandler sawmillInput = itemCapability(helper, sawmill.origin().offset(0, 1, 1));
+        List<RecipeHolder<SawmillRecipe>> sawmillControls = SawmillRecipe.RECIPES
+                .getRecipes(helper.getLevel()).stream()
+                .filter(holder -> holder.id().getNamespace().equals(TFIE.MOD_ID))
+                .toList();
+        helper.assertTrue(!sawmillControls.isEmpty(), "The formed Sawmill must have TFIE controls to process");
+        for(RecipeHolder<SawmillRecipe> holder : sawmillControls)
+            for(ItemStack matching : holder.value().input.getItems())
+            {
+                clearDroppedItems(helper, sawmill.origin(), 12);
+                sawmillState.getEnergy().receiveEnergy(32000, false);
+                ItemStack input = matching.copyWithCount(1);
+                helper.assertTrue(sawmillInput.insertItem(0, input, false).isEmpty()
+                                && sawmillState.sawmillProcessQueue.size() == 1
+                                && SawmillRecipe.findRecipe(helper.getLevel(), input) == holder.value(),
+                        "A formed Sawmill did not start untouched control " + holder.id() + " for " + input);
+                for(int tick = 0; tick <= holder.value().getTotalProcessTime(); tick++)
+                    sawmill.helper().tickServer();
+                ItemStack expected = holder.value().output.get();
+                boolean output = helper.getLevel().getEntitiesOfClass(ItemEntity.class,
+                                new AABB(sawmill.origin()).inflate(12)).stream()
+                        .map(ItemEntity::getItem)
+                        .anyMatch(stack -> ItemStack.isSameItemSameComponents(stack, expected)
+                                && stack.getCount() >= expected.getCount());
+                helper.assertTrue(sawmillState.sawmillProcessQueue.isEmpty() && output,
+                        "A formed Sawmill did not finish untouched control " + holder.id() + " for " + input);
+            }
+        helper.succeed();
     }
 
     @GameTest(template = TEMPLATE, templateNamespace = TFIE.MOD_ID)
@@ -906,6 +1082,8 @@ public final class FurnaceGameTests
         changedPacks.add(packId);
         whenDone(helper, server.reloadResources(changedPacks), () ->
         {
+            RecipeLedgerGameTests.assertReloadedLedger(helper);
+            RecipeLedgerGameTests.assertNamespaceControl(helper);
             ModeAwareArcFurnaceRecipe changed = recipe(helper,
                     "tfie:arcfurnace/briquet/magnetite", ModeAwareArcFurnaceRecipe.class);
             helper.assertTrue(changed.getTotalProcessTime() == 101
@@ -935,6 +1113,8 @@ public final class FurnaceGameTests
             disableReloadProbe(pack);
             whenDone(helper, server.reloadResources(changedPacks), () ->
             {
+                RecipeLedgerGameTests.assertReloadedLedger(helper);
+                RecipeLedgerGameTests.assertNamespaceControl(helper);
                 helper.assertTrue(optionalRecipe(helper, "tfie:arcfurnace/briquet/magnetite") == null,
                         "The datapack must actually remove the running process recipe");
                 reloaded.helper().tickServer();
@@ -948,6 +1128,8 @@ public final class FurnaceGameTests
                 server.getPackRepository().reload();
                 whenDone(helper, server.reloadResources(originalPacks), () ->
                 {
+                    RecipeLedgerGameTests.assertReloadedLedger(helper);
+                    RecipeLedgerGameTests.assertNamespaceControlRemoved(helper);
                     helper.assertTrue(((net.claustra01.tfie.common.arc.ArcFurnaceProcessSnapshotAccess)
                                     reloadedRunning).tfie$matchesCurrentRecipe(helper.getLevel())
                                     && ((net.claustra01.tfie.common.arc.ArcFurnaceProcessSnapshotAccess)
@@ -965,7 +1147,7 @@ public final class FurnaceGameTests
                     new ArcFurnaceLogic().dropExtraItems(reloaded.state(), stack ->
                             Block.popResource(helper.getLevel(), reloaded.master(), stack));
                     reloaded.helper().disassemble();
-                    helper.runAfterDelay(1, () ->
+                    helper.runAfterDelay(5, () ->
                     {
                         List<ItemStack> recovered = helper.getLevel().getEntitiesOfClass(ItemEntity.class,
                                         new AABB(reloaded.origin()).inflate(8)).stream()
@@ -1703,6 +1885,41 @@ public final class FurnaceGameTests
         return ResourceLocation.parse(value);
     }
 
+    private static void runMetalPressControl(GameTestHelper helper, FormedMachine<MetalPressLogic.State> press,
+                                             IItemHandler inputHandler, String recipeId, String moldId,
+                                             ItemStack input, ItemStack expected)
+    {
+        press.state().mold = item(moldId);
+        helper.assertTrue(inputHandler.insertItem(0, input.copy(), false).isEmpty()
+                        && press.state().processor.getQueue().size() == 1
+                        && press.state().processor.getQueue().getFirst().getRecipeId().equals(id(recipeId)),
+                "A formed Metal Press did not start control " + recipeId);
+        finishMetalPressProcess(helper, press, expected, true);
+    }
+
+    private static void finishMetalPressProcess(GameTestHelper helper, FormedMachine<MetalPressLogic.State> press,
+                                                ItemStack expected, boolean verifyDroppedOutput)
+    {
+        clearDroppedItems(helper, press.origin(), 8);
+        press.state().getEnergy().receiveEnergy(16000, false);
+        for(int tick = 0; tick < 65; tick++)
+            press.helper().tickServer();
+        boolean output = helper.getLevel().getEntitiesOfClass(ItemEntity.class,
+                        new AABB(press.origin()).inflate(8)).stream()
+                .map(ItemEntity::getItem)
+                .anyMatch(stack -> ItemStack.isSameItemSameComponents(stack, expected)
+                        && stack.getCount() >= expected.getCount());
+        helper.assertTrue(press.state().processor.getQueue().isEmpty()
+                        && (!verifyDroppedOutput || output),
+                "A formed Metal Press did not finish with " + expected);
+    }
+
+    private static void clearDroppedItems(GameTestHelper helper, BlockPos origin, double radius)
+    {
+        helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(origin).inflate(radius))
+                .forEach(ItemEntity::discard);
+    }
+
     private static BlockState blockState(String value)
     {
         return BuiltInRegistries.BLOCK.get(id(value)).defaultBlockState()
@@ -1764,6 +1981,8 @@ public final class FurnaceGameTests
         {
             Files.createDirectories(pack.resolve("data/tfie/recipe/arcfurnace/briquet"));
             Files.createDirectories(pack.resolve("data/tfie/recipe/arcfurnace/alloy"));
+            Files.createDirectories(pack.resolve("data/ledger_test/recipe/crusher"));
+            Files.createDirectories(pack.resolve("data/immersiveengineering/recipe"));
             Files.writeString(pack.resolve("pack.mcmeta"),
                     "{\"pack\":{\"pack_format\":48,\"description\":\"TFIE GameTest Arc reload\"}}",
                     StandardCharsets.UTF_8);
@@ -1778,6 +1997,15 @@ public final class FurnaceGameTests
                             + "\"energy\":256000,\"input\":{\"basePredicate\":{\"tag\":\"c:ingots/copper\"},"
                             + "\"count\":9},\"mode\":1,\"results\":[{\"count\":10,"
                             + "\"id\":\"tfc:metal/ingot/brass\"}],\"time\":500}",
+                    StandardCharsets.UTF_8);
+            Files.writeString(pack.resolve("data/ledger_test/recipe/crusher/wool.json"),
+                    "{\"type\":\"minecraft:crafting_shapeless\",\"category\":\"misc\","
+                            + "\"ingredients\":[{\"item\":\"minecraft:stone\"}],"
+                            + "\"result\":{\"id\":\"minecraft:cobblestone\",\"count\":1}}",
+                    StandardCharsets.UTF_8);
+            Files.writeString(pack.resolve("data/immersiveengineering/recipe/arc_recycling_list.json"),
+                    "{\"type\":\"immersiveengineering:generated_list\","
+                            + "\"generatorID\":\"immersiveengineering:arc_recycling_list\"}",
                     StandardCharsets.UTF_8);
         }
         catch(IOException exception)

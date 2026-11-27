@@ -165,7 +165,29 @@
     {"acId":"AC-F024-001","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"farmland_fertilizer_values"},
     {"acId":"AC-F024-002","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"farmland_modifiers_shift_and_consumption"},
     {"acId":"AC-F024-003","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"cloche_fertilizer_modifiers"},
-    {"acId":"AC-F024-004","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"shellfish_rot_and_hemp_top_fertilizing"}
+    {"acId":"AC-F024-004","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"shellfish_rot_and_hemp_top_fertilizing"},
+    {"acId":"AC-F027-001","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"crusher_ledger_and_processing_boundary"},
+    {"acId":"AC-F027-001","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"crusher_nonmetal_table"},
+    {"acId":"AC-F027-001","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"formed_crusher_and_arc_reject_removed_inputs"},
+    {"acId":"AC-F027-002","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"arc_static_and_recycling_ledger"},
+    {"acId":"AC-F027-002","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"formed_furnaces_and_metal_press_process_outputs"},
+    {"acId":"AC-F027-002","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"formed_crusher_and_arc_reject_removed_inputs"},
+    {"acId":"AC-F027-002","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"arc_block_entity_and_datapack_reload_lifecycle"},
+    {"acId":"AC-F027-003","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"furnace_and_alloy_replacement_ledger"},
+    {"acId":"AC-F027-003","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"formed_furnaces_and_metal_press_process_outputs"},
+    {"acId":"AC-F027-003","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"blast_furnace_recipe_fuel_and_refining_table"},
+    {"acId":"AC-F027-003","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"alloy_kiln_recipe_table_and_cache_boundary"},
+    {"acId":"AC-F027-003","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"furnace_multiblock_templates"},
+    {"acId":"AC-F027-004","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"shape_and_crafting_removal_ledger"},
+    {"acId":"AC-F027-004","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"formed_furnaces_and_metal_press_process_outputs"},
+    {"acId":"AC-F027-004","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"formed_metal_press_and_sawmill_ledger_controls"},
+    {"acId":"AC-F027-004","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"metal_press_recipe_table"},
+    {"acId":"AC-F027-005","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"arc_block_entity_and_datapack_reload_lifecycle"},
+    {"acId":"AC-F027-005","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"formed_metal_press_and_sawmill_ledger_controls"},
+    {"acId":"AC-F027-006","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"startup_controls_and_disabled_materials"},
+    {"acId":"AC-F027-006","report":"build/test-results/gametest/TEST-tfie.xml","classname":"tfie:gametest/empty_platform","name":"arc_block_entity_and_datapack_reload_lifecycle"},
+    {"acId":"AC-F027-006","report":"build/test-results/gametest/TEST-tfie-disabled-materials.xml","classname":"tfie:gametest/empty_platform","name":"startup_controls_and_disabled_materials"},
+    {"acId":"AC-F027-006","report":"build/test-results/gametest/TEST-tfie-disabled-materials.xml","classname":"tfie:gametest/empty_platform","name":"arc_block_entity_and_datapack_reload_lifecycle"}
   ],
   "e2e": [
     {"acId":"AC-F001-004","scenario":"tests/e2e/creative-tab.mjs"},
@@ -183,6 +205,7 @@
     {"acId":"AC-F006-013","scenario":"tests/e2e/furnace-screens.mjs"},
     {"acId":"AC-F007-005","scenario":"tests/e2e/furnace-screens.mjs"},
     {"acId":"AC-F008-004","scenario":"tests/e2e/furnace-screens.mjs"},
-    {"acId":"AC-F015-006","scenario":"tests/e2e/cloche-rendering.mjs"}
+    {"acId":"AC-F015-006","scenario":"tests/e2e/cloche-rendering.mjs"},
+    {"acId":"AC-F027-006","scenario":"tests/e2e/recipe-ledger.mjs"}
   ]
 }

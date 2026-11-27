@@ -33,6 +33,7 @@ public final class RecipeOverrides extends RecipeProvider
         disable(output, "arcfurnace/netherite_scrap");
         disable(output, "arcfurnace/steel");
         disable(output, "arcfurnace/insulating_glass");
+        disable(output, "arc_recycling_list");
         disable(output, "blastfurnace/steel");
         disable(output, "blastfurnace/steel_block");
         disable(output, "blastfurnace/fuel_coke_block");

@@ -1,6 +1,406 @@
 {
   "status": "running",
-  "active": [],
+  "active": [
+    {
+      "id": "M13",
+      "phase": "gametest",
+      "baseCommit": "1e74625312e7383baedc46a3d09f9b37f91b5f7a",
+      "failures": {
+        "build": 0,
+        "gametest": 1,
+        "e2e": 0
+      },
+      "recoveries": 0,
+      "codeReview": {
+        "kind": "code",
+        "issues": [
+          {
+            "target": "src/main/java/net/claustra01/tfie/gametest/furnace/FurnaceGameTests.java:941-951,1698-1712",
+            "acId": "AC-F028-001",
+            "problem": "The datapack override test reads the overridden recipe's FE/time values and asserts the final output counts, but `completeArcProcess` sets `processTick` to `maxTicks - 1` and only ticks once. It never measures the FE actually consumed, the elapsed process ticks, or the exact input amounts consumed by the new process.",
+            "reason": "AC-F028-001 requires measuring required materials, output, consumed FE and progress time after starting a new process. A process jumped to its final tick would still pass if the machine used the standard FE/time or consumed the wrong quantity.",
+            "fix": "Start the new process at tick 0, tick through its full duration, and assert the actual total FE drained and tick count against the overridden 51201 FE/101 ticks and 256001 FE/501 ticks, together with the exact consumed input stacks.",
+            "id": "CR-001",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Override tests now run from tick 0 through completion and assert exact elapsed ticks, FE drain, consumed inputs, and outputs. Arc processing also charges non-divisible FE remainders exactly.",
+                "at": "2026-11-26T23:22:22.733Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The override tests now run measureArcProcess from tick 0 through completion and assert exact elapsed ticks, FE drain, consumed main/additive counts and outputs for both 101/51201 and 501/256001. The mixin also charges the non-divisible FE remainder.",
+                "at": "2026-11-26T23:30:14.081Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The override tests now run measureArcProcess from tick 0 through completion and assert exact elapsed ticks, total FE drained, consumed main/additive counts and outputs for both 101 ticks/51201 FE and 501 ticks/256001 FE. The process mixin also charges the non-divisible FE remainder.",
+                "at": "2026-11-26T23:42:11.408Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "measureArcProcess now starts the process at tick 0, ticks until the queue is empty, and returns measured elapsed ticks, total FE drained, consumed main/additive counts, and resulting state. The override test asserts 101 ticks/51201 FE with 1 consumed main input and the expected output count, and 501 ticks/256001 FE with 9 main + 1 additive consumed. MultiblockProcessMixin also charges the division remainder, so the total is exact.",
+                "at": "2026-11-27T00:05:13.675Z"
+              }
+            ]
+          },
+          {
+            "target": "src/main/java/net/claustra01/tfie/gametest/furnace/FurnaceGameTests.java:958-964",
+            "acId": "AC-F028-001",
+            "problem": "The user-recipe count assertion is vacuous. It counts only `tfie:` recipes under `arcfurnace/`, compares that count with the same filtered count taken before the pack was added, and the added user recipe is `m13user:alloysmelter/custom_glass`. The assertion cannot detect whether TFIE's standard count mistakenly includes a user recipe.",
+            "reason": "The namespace/path filter exists only in the test assertion, not in production code, so the check would pass even if user-added recipes were treated as standard recipes.",
+            "fix": "Compare the complete TFIE standard recipe ID set/count before and after adding the user recipe and assert that set is unchanged, or add a user recipe in a path that would collide with the standard count and assert it is not counted. Do not make the namespace exclusion part of the assertion itself.",
+            "id": "CR-002",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The test compares the complete TFIE recipe ID set before and after reload and verifies that the sole globally added ID is the user recipe.",
+                "at": "2026-11-26T23:22:22.733Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The test compares the complete TFIE recipe-ID set before and after the reload and also asserts that the only globally added ID is m13user:alloysmelter/custom_glass.",
+                "at": "2026-11-26T23:30:14.081Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The reload test compares the complete TFIE recipe-ID set before and after adding the user pack, and separately asserts that the only globally added ID is m13user:alloysmelter/custom_glass.",
+                "at": "2026-11-26T23:42:11.408Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The test captures the complete tfie: recipe-ID set and the complete global set before adding the user pack, then after reload asserts the tfie: set is unchanged and the only globally added ID is m13user:alloysmelter/custom_glass. The assertion is no longer a same-filter count comparison.",
+                "at": "2026-11-27T00:05:13.675Z"
+              }
+            ]
+          },
+          {
+            "target": "src/main/java/net/claustra01/tfie/gametest/registry/RegistryGameTests.java:256-276",
+            "acId": "AC-F028-002",
+            "problem": "The conditional-loading GameTest only invokes `LoggedRecipeCondition.test` on synthetic `tfie:test/...` IDs in one server instance. It does not load a recipe whose item or fluid is missing, search the recipe manager, insert materials into a machine, or reload data.",
+            "reason": "AC-F028-002 requires independent configurations, a target recipe search, machine input, and a data reload, then verification that only the invalid integration is skipped and that missing inputs are not replaced with empty ingredients. The current test only proves that the logger helper writes a line.",
+            "fix": "Add a test datapack containing real conditional recipes that reference a missing item and a missing fluid. Assert after the initial load and after a resource reload that the recipe IDs are absent, that the log contains each recipe ID and reason, that no empty-ingredient recipe or missing-registry error is produced, and that a machine cannot start those recipes.",
+            "id": "CR-003",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: A real runtime datapack now supplies missing-item, missing-fluid, optional-mod, disabled-metal, and disabled-ore recipes. Initial load and reload verify recipe absence, logged reasons, no missing-registry decoding, and inability to start the Arc recipes.",
+                "at": "2026-11-26T23:22:22.733Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "A real conditional datapack with missing-item, missing-fluid, optional-mod, disabled-metal and disabled-ore recipes is loaded and reloaded; the test checks recipe absence, logged IDs/reasons, no decode errors, and that Arc selection cannot start the skipped recipes.",
+                "at": "2026-11-26T23:30:14.081Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "A real conditional datapack supplies missing-item, missing-fluid, optional-mod, disabled-metal and disabled-ore recipes. Initial load and reload verify recipe absence, logged recipe ID/reason, absence of missing-registry decode errors, and that Arc selection cannot start the skipped recipes.",
+                "at": "2026-11-26T23:42:11.408Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "A real conditional datapack supplies missing-item, missing-fluid, optional-mod, disabled-metal, and disabled-ore recipes. After both the initial load and a resource reload the test asserts the skipped recipe IDs are absent, the log contains each ID and reason, no missing-registry/empty-substitution errors appear, and Arc selection cannot start the skipped inputs.",
+                "at": "2026-11-27T00:05:13.675Z"
+              }
+            ]
+          },
+          {
+            "target": "src/main/java/net/claustra01/tfie/gametest/registry/RegistryGameTests.java:277-281",
+            "acId": "AC-F028-002",
+            "problem": "The loop asserting `ModLoadedCondition` for `tfc`, `immersiveengineering`, `tfcm` and `patchouli` tests NeoForge's condition implementation, not TFIE behavior. It also cannot verify the criterion that a missing required mod must not be treated as an optional skip, because the test cannot run without those mods.",
+            "reason": "Required dependencies are guaranteed by the loader before GameTests execute. The check is redundant, out of scope, and should not be requested as TFIE behavior.",
+            "fix": "Remove the loop. If the required/optional distinction needs coverage, verify the metadata dependency types in the existing `required_and_optional_dependencies` test only.",
+            "id": "CR-004",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Removed the redundant required-mod condition loop; required versus optional dependency types remain covered by the metadata test.",
+                "at": "2026-11-26T23:22:22.733Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The required-mod condition loop is removed. Required versus optional metadata is still covered by required_and_optional_dependencies.",
+                "at": "2026-11-26T23:30:14.081Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The redundant required-mod condition loop is gone. Required versus optional metadata remains covered by required_and_optional_dependencies.",
+                "at": "2026-11-26T23:42:11.408Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The required-mod condition loop for tfc/immersiveengineering/tfcm/patchouli has been removed. Required versus optional dependency types remain covered by required_and_optional_dependencies in RegistryGameTests.",
+                "at": "2026-11-27T00:05:13.675Z"
+              }
+            ]
+          },
+          {
+            "target": "tests/e2e/dedicated-server-state.mjs:81-85,100-105,119-123,137-139",
+            "acId": "AC-F028-003",
+            "problem": "The scenario reads item contents from `mct gui layout` slots, for example `contains(layout.slots.slice(16, 22), 'tfc:metal/ingot/brass')`, `contains(layout.slots[1], 'tfie:arc_furnace_mode')` and the chest item checks. Existing scenarios use `gui layout` only for slot geometry and `gui snapshot` for `slot.item` contents.",
+            "reason": "If `gui layout` does not carry item stacks, these waits never observe the outputs and the mold/mode checks are vacuous. If it is a one-time geometry snapshot, the checks also cannot observe processing changes. Either way, the dedicated-server evidence for AC-F028-003, AC-F028-004 and AC-F028-006 is not reliable.",
+            "fix": "Use `mct(client, 'gui', 'snapshot')` for item IDs and components, and keep `gui layout` for center coordinates. Read the Blueprint mode as a component value rather than searching the string substring `'5'`, as done in `creative-tab.mjs` and `fluid-containers.mjs`.",
+            "id": "CR-005",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: E2E uses GUI snapshots for stack contents and components, reserving GUI layout for coordinates. Blueprint mode is read as an exact component value.",
+                "at": "2026-11-26T23:22:22.733Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Item contents and components now come from gui snapshot, while gui layout is used only for coordinates. Blueprint mode is read as an exact component value instead of a substring.",
+                "at": "2026-11-26T23:30:14.081Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The E2E now reads item contents and components from gui snapshot and uses gui layout only for slot coordinates. Blueprint mode is compared as an exact component value.",
+                "at": "2026-11-26T23:42:11.408Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "Item contents and heat are read from gui snapshot, while gui layout is used only for slot center coordinates. Blueprint mode is read as an exact component value (Number(component(...)) === 5), not by substring searching.",
+                "at": "2026-11-27T00:05:13.675Z"
+              }
+            ]
+          },
+          {
+            "target": "tests/e2e/dedicated-server-state.mjs:67-85",
+            "acId": "AC-F028-003",
+            "problem": "The E2E starts the mode 1 alloy before switching the Blueprint to mode 5. It then only asserts that the already-started mode 1 process is retained; no new process is started with the switched Blueprint.",
+            "reason": "AC-F028-003's action is to switch the Blueprint and then start processing, with mode selection and processing determined server-side. The current sequence tests the AC-F028-005 retention case and leaves the new-mode path unverified.",
+            "fix": "After reinstalling the mode 5 Blueprint, insert an input that requires a mode 5 Arc recipe and assert the new process selection and output. Keep the retained mode 1 process assertion as the separate Blueprint-change case.",
+            "id": "CR-006",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: After retaining the running mode-1 Brass process, the scenario installs mode 5 and starts a new Copper/Nickel process, asserting Constantan output.",
+                "at": "2026-11-26T23:22:22.733Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The new mode-5 process is asserted against tfc:metal/ingot/constantan, but the Constantan Arc recipe outputs tfcm:metal/ingot/constantan. The wait never matches, so the switched-Blueprint process selection and output are not actually verified.",
+                "at": "2026-11-26T23:30:14.081Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: mode 5 Blueprint装着後の新規処理を正規出力ID `tfcm:metal/ingot/constantan` で待機し、2個の生成を検証するよう修正しました。",
+                "at": "2026-11-26T23:37:33.770Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "After retaining the running mode-1 process and installing the mode-5 Blueprint, the scenario starts a new copper/nickel process and waits for two tfcm:metal/ingot/constantan, so the switched-Blueprint selection and output are verified.",
+                "at": "2026-11-26T23:42:11.408Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "After retaining the running mode-1 Brass process, the scenario installs the mode-5 Blueprint, inserts copper and nickel, and waits for two tfcm:metal/ingot/constantan outputs. The switched-Blueprint new-process selection and output are therefore exercised.",
+                "at": "2026-11-27T00:05:13.675Z"
+              }
+            ]
+          },
+          {
+            "target": "tests/e2e/dedicated-server-state.mjs:80-129",
+            "acId": "AC-F028-003",
+            "problem": "The Arc and reconnect checks assert only that brass, cast iron and saltpeter item IDs are present and that the Blueprint has mode 5. They do not query the server state or compare exact input/output counts, progress, heat or recipe ID, and a duplication or loss would still pass.",
+            "reason": "AC-F028-003 requires comparing material counts, mode, progress, temperature and byproducts with server state and display, and ensuring no client-side duplication or material loss. Presence-only GUI checks do not establish that.",
+            "fix": "Query the server with `/execute if items block`, `/data get block` or the harness equivalent, assert exact consumed and produced counts and heat values, and repeat the same comparison after reconnect. Also assert the retained recipe ID.",
+            "id": "CR-007",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The scenario verifies exact input and output counts, mode, heat, recipe ID, progress, reservations, and FE using GUI state and server block NBT, then repeats the comparison after reconnect.",
+                "at": "2026-11-26T23:22:22.733Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The wrong constantan ID (tfc instead of tfcm) breaks the exact-count wait, and heat is only checked for component presence rather than an exact temperature value. The required server/display comparison for AC-F028-003 therefore still fails.",
+                "at": "2026-11-26T23:30:14.081Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: 誤ったConstantan IDを修正し、1125℃の生成温度とHeat Componentのcapacity・temperature・tickをサーバーNBTとGUI間で数値照合します。",
+                "at": "2026-11-26T23:37:33.770Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The scenario now asserts exact input/output counts, mode, server NBT recipe ID/progress/reservations/energy, and compares GUI heat capacity/temperature/tick against server NBT heat, including the 1125 degree Constantan output.",
+                "at": "2026-11-26T23:42:11.408Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The scenario asserts exact produced counts (brass 10, cast iron 1, constantan 2), emptied input slots, mode 5, and the 1125-degree Constantan heat, then compares GUI heat capacity/temperature/tick against server block NBT. The waiting server state also checks progress 99, reservations, energy, and the retained recipe ID, repeated after reconnect.",
+                "at": "2026-11-27T00:05:13.675Z"
+              }
+            ]
+          },
+          {
+            "target": "tests/e2e/dedicated-server-state.mjs:118-129",
+            "acId": "AC-F028-004",
+            "problem": "The reconnect portion only checks that two output item IDs and the mode component are visible. It does not compare the Inventory, recipe ID, reservations, progress or Heat Component before and after reconnect, nor does it free an output slot and verify that a waiting process resumes.",
+            "reason": "AC-F028-004 requires those states to be retained across save/reload/restart and requires resumption after freeing output space. The GameTest covers the details, but the E2E mapped to this criterion does not demonstrate them.",
+            "fix": "Capture the Arc state before disconnecting, including input and output counts, recipe ID, progress, input reservations and heat, then compare it after reconnect. Free an output slot and assert the waiting process resumes without additional input or FE consumption.",
+            "id": "CR-008",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The scenario records the complete Arc inventory signature and server process state before reconnect, compares them afterward, frees one output slot, and verifies exactly one waiting process resumes without duplication or extra loss.",
+                "at": "2026-11-26T23:22:22.733Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "Reconnect and resume checks use the wrong constantan ID. The inventory signature records only type and count, so the Heat Component is not compared across reconnect, and no FE comparison is made when the waiting process resumes.",
+                "at": "2026-11-26T23:30:14.081Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: Inventory署名にHeat Componentを含めて再接続前後で比較し、給電源を外した状態で出力枠を空け、待機中はFE不変、再開完了時は残り1 tick分の512 FEだけを消費することを検証します。",
+                "at": "2026-11-26T23:37:33.770Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The inventory signature includes type, count and Heat Component; server progress, reservations, energy and recipe ID are compared across reconnect, heat is compared before/after, and freeing an output slot verifies the waiting process resumes without duplication and consumes exactly the remaining 512 FE.",
+                "at": "2026-11-26T23:42:11.408Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The reconnect comparison covers server progress/reservations/energy/recipe ID and heat, plus a full inventory signature including type, count, and Heat Component. It frees an output slot, verifies the waiting process does not advance or spend FE while stopped, then resumes and consumes exactly the remaining 512 FE without duplication or loss.",
+                "at": "2026-11-27T00:05:13.675Z"
+              }
+            ]
+          },
+          {
+            "target": "src/main/java/net/claustra01/tfie/gametest/furnace/FurnaceGameTests.java:826-850,926-939",
+            "acId": "AC-F028-005",
+            "problem": "The Blueprint test only changes the mode in a fresh `ItemStackHandler` and checks recipe selection. It never removes the Blueprint from an in-progress formed Arc, never verifies that processing continues after Blueprint removal, and never starts a new process after a Blueprint swap. Input removal and the normal IE interruption are also untested.",
+            "reason": "AC-F028-005 explicitly requires Blueprint removal to be allowed and distinguished from removing the main input, while the changed Blueprint applies to new starts and existing processes keep their original selection.",
+            "fix": "Add a running formed-Arc process, remove slot 1 and tick to assert it continues. Remove the main input and assert the normal IE interruption. Then install a different-mode Blueprint and start a new process to assert the new mode is used.",
+            "id": "CR-009",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: A formed-Arc GameTest proves Blueprint removal preserves the running process, physical main-input removal applies IE cancellation, and a replacement mode-5 Blueprint controls the next process.",
+                "at": "2026-11-26T23:22:22.733Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "A formed-Arc GameTest now proves a running process survives Blueprint removal, main-input removal applies IE cancellation, and a replacement mode-5 Blueprint controls the next process.",
+                "at": "2026-11-26T23:30:14.081Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "arc_blueprint_change_preserves_started_process uses a formed Arc to show Blueprint removal preserves progress, main-input removal triggers IE cancellation, and a replacement mode-5 Blueprint selects Constantan for the next input.",
+                "at": "2026-11-26T23:42:11.408Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "arc_blueprint_change_preserves_started_process forms a real Arc, starts Brass, removes the Blueprint and asserts progress advances, removes the main input and asserts IE cancellation, then installs a mode-5 Blueprint and asserts the next process selects Constantan.",
+                "at": "2026-11-27T00:05:13.675Z"
+              }
+            ]
+          },
+          {
+            "target": "tests/e2e/dedicated-server-state.mjs:131-144",
+            "acId": "AC-F028-006",
+            "problem": "The new-world check fills a chest with the exact IDs it expects, then asserts that `tfie:mold_sheet` is present and `tfie:mold_block` is absent. The absence assertion is self-fulfilling because `mold_block` was never placed, and the test does not query the registry, use the Sheet mold, or verify the enabled recipe set or Blueprint component.",
+            "reason": "AC-F028-006 requires obtaining and using the registered content and verifying the new 0.1.0 registry and guide. A chest the test populated itself proves nothing about the world's registry or the retirement of `tfie:mold_block`.",
+            "fix": "Use a registry/command query or an item-crafting/use path to prove `tfie:mold_sheet` and the Blueprint work, and prove `tfie:mold_block` plus the three retired Block Press recipes are absent. Exercise the Sheet mold in an actual recipe and check the guide states that a new world is required.",
+            "id": "CR-010",
+            "status": "resolved",
+            "history": [
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The server must reject the retired mold and three retired recipe IDs, while the registered Sheet mold is installed in a formed Metal Press and used to produce an actual Copper Sheet. Registry GameTests also verify the current Blueprint component and retired-ID absence.",
+                "at": "2026-11-26T23:22:22.733Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The E2E rejects tfie:mold_block and the three retired recipe IDs, and drives the registered Sheet mold in a formed Metal Press to produce a Copper Sheet; registry GameTests also cover the retired IDs and Sheet mold recipe.",
+                "at": "2026-11-26T23:30:14.081Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The E2E rejects tfie:mold_block and the three retired recipe IDs server-side, then uses the registered Sheet mold in a formed Metal Press to produce a Copper Sheet. Registry/GameTests also verify the retired IDs are absent and the Blueprint component/registry contents.",
+                "at": "2026-11-26T23:42:11.408Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "The self-filled chest check is gone. The server rejects tfie:mold_block and the three retired recipe IDs, and the registered tfie:mold_sheet is installed in a formed Metal Press and used to produce an actual tfc:metal/sheet/copper. Registry/GameTests additionally cover the 0.1.0 registry contents, Blueprint component, and retired IDs.",
+                "at": "2026-11-27T00:05:13.675Z"
+              }
+            ]
+          }
+        ]
+      },
+      "codeReviewTree": "b427924f6543ea2abf90ab704c933ccf5e60dde6",
+      "e2eReview": null,
+      "failure": {
+        "phase": "gametest",
+        "summary": "2 GameTest testcase(s) did not pass",
+        "details": "AC-F028-002 tfie:gametest/empty_platform.conditional_loading_support: failed\nExpected Result: 成立しない連携だけを読み込まず、対象Recipe IDと不成立理由をログへ記録する。存在しない入力を空の材料へ置換せず、Missing Registryエラーや無材料出力を発生させない。代替製法とmode番号の詰め直しを行わない。必須Mod自体の不在をOptional連携の省略として扱わない。検証方式: GameTest。\nMessage: (-14299764, -60, -6379718) Could not remove the conditional recipe GameTest pack\n\nAC-F028-002 tfie:gametest/empty_platform.conditional_loading_support: failed\nExpected Result: 成立しない連携だけを読み込まず、対象Recipe IDと不成立理由をログへ記録する。存在しない入力を空の材料へ置換せず、Missing Registryエラーや無材料出力を発生させない。代替製法とmode番号の詰め直しを行わない。必須Mod自体の不在をOptional連携の省略として扱わない。検証方式: GameTest。\nMessage: (3192313, -60, 651118) Could not remove the conditional recipe GameTest pack\n\nGameTest task output:\nspongepowered/asm/mixin/injection/callback/CallbackInfoReturnable;)V does use it's CallbackInfoReturnable\n[08:51:02] [Server thread/INFO] [minecraft/GameTestServer]: [+]\n[08:51:02] [Server thread/INFO] [minecraft/GameTestServer]: ========= 1 GAME TESTS COMPLETE IN 811.2 ms ======================\n[08:51:02] [Server thread/INFO] [minecraft/GameTestServer]: All 1 required tests passed :)\n[08:51:02] [Server thread/INFO] [minecraft/GameTestServer]: ====================================================\n[08:51:02] [Server thread/INFO] [minecraft/MinecraftServer]: Stopping server\n[08:51:02] [Server thread/INFO] [minecraft/MinecraftServer]: Saving players\n[08:51:02] [Server thread/INFO] [minecraft/MinecraftServer]: Saving worlds\n[08:51:03] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[Test Level]'/minecraft:overworld\n[08:51:03] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[Test Level]'/minecraft:the_end\n[08:51:03] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[Test Level]'/minecraft:the_nether\n[08:51:03] [Server thread/DEBUG] [ne.ne.ne.co.CommonHooks/WP]: Gathered mod list to write to world save Test Level\n[08:51:03] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (world): All chunks are saved\n[08:51:03] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved\n[08:51:03] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved\n[08:51:03] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved\n[08:51:03] [Server thread/DEBUG] [ne.ne.fm.co.ConfigTracker/CONFIG]: Unloading configs type SERVER\n[08:51:03] [Server thread/INFO] [minecraft/GameTestServer]: Game test server shutting down\n40 actionable tasks: 11 executed, 29 up-to-date\nConfiguration cache entry reused.\n\n\nFAILURE: Build completed with 7 failures.\n\n1: Task failed with an exception.\n-----------\n* What went wrong:\nExecution failed for task ':runGameTestServer'.\n> Process 'command '/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java'' finished with non-zero exit value 1\n\n* Try:\n> Run with --stacktrace option to get the stack trace.\n> Run with --info or --debug option to get more log output.\n> Run with --scan to generate a Build Scan (powered by Develocity).\n> Get more help at https://help.gradle.org.\n==============================================================================\n\n2: Task failed with an exception.\n-----------\n* What went wrong:\nExecution failed for task ':runGameTestServerFirmalife'.\n> Process 'command '/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java'' finished with non-zero exit value 1\n\n* Try:\n> Run with --stacktrace option to get the stack trace.\n> Run with --info or --debug option to get more log output.\n> Run with --scan to generate a Build Scan (powered by Develocity).\n> Get more help at https://help.gradle.org.\n==============================================================================\n\n3: Task failed with an exception.\n-----------\n* What went wrong:\nExecution failed for task ':runGameTestServerAdvancedTfcTech'.\n> Process 'command '/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java'' finished with non-zero exit value 1\n\n* Try:\n> Run with --stacktrace option to get the stack trace.\n> Run with --info or --debug option to get more log output.\n> Run with --scan to generate a Build Scan (powered by Develocity).\n> Get more help at https://help.gradle.org.\n==============================================================================\n\n4: Task failed with an exception.\n-----------\n* What went wrong:\nExecution failed for task ':runGameTestServerAfc'.\n> Process 'command '/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java'' finished with non-zero exit value 1\n\n* Try:\n> Run with --stacktrace option to get the stack trace.\n> Run with --info or --debug option to get more log output.\n> Run with --scan to generate a Build Scan (powered by Develocity).\n> Get more help at https://help.gradle.org.\n==============================================================================\n\n5: Task failed with an exception.\n-----------\n* What went wrong:\nExecution failed for task ':runGameTestServerOverdims'.\n> Process 'command '/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java'' finished with non-zero exit value 1\n\n* Try:\n> Run with --stacktrace option to get the stack trace.\n> Run with --info or --debug option to get more log output.\n> Run with --scan to generate a Build Scan (powered by Develocity).\n> Get more help at https://help.gradle.org.\n==============================================================================\n\n6: Task failed with an exception.\n-----------\n* What went wrong:\nExecution failed for task ':runGameTestServerAll'.\n> Process 'command '/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java'' finished with non-zero exit value 1\n\n* Try:\n> Run with --stacktrace option to get the stack trace.\n> Run with --info or --debug option to get more log output.\n> Run with --scan to generate a Build Scan (powered by Develocity).\n> Get more help at https://help.gradle.org.\n==============================================================================\n\n7: Task failed with an exception.\n-----------\n* What went wrong:\nExecution failed for task ':runGameTestServerDisabledMaterials'.\n> Process 'command '/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java'' finished with non-zero exit value 1\n\n* Try:\n> Run with --stacktrace option to get the stack trace.\n> Run with --info or --debug option to get more log output.\n> Run with --scan to generate a Build Scan (powered by Develocity).\n> Get more help at https://help.gradle.org.\n==============================================================================\n\nBUILD FAILED in 8m 52s\n",
+        "logs": [
+          ".harness-state/runs/2026-11-26T23-42-11-410Z-072-M13-gametest/stdout.log",
+          ".harness-state/runs/2026-11-26T23-42-11-410Z-072-M13-gametest/stderr.log"
+        ],
+        "screenshots": []
+      },
+      "conflicts": [],
+      "reviewConflicts": [],
+      "session": "01a219ea-7af6-7bd2-87f7-31a0f5e4e104"
+    }
+  ],
   "completed": [
     "M01",
     "M02",
@@ -12,8 +412,9 @@
     "M04",
     "M10",
     "M09",
-    "M11"
+    "M11",
+    "M12"
   ],
-  "lastCheckpoint": "191580e967ad1e7e967b12b1c7cc26d11ab6d4ce",
+  "lastCheckpoint": "1e74625312e7383baedc46a3d09f9b37f91b5f7a",
   "fatal": null
 }

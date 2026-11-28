@@ -8,6 +8,8 @@ import net.claustra01.tfie.common.ModBlocks;
 import net.claustra01.tfie.common.ModCreativeTabs;
 import net.claustra01.tfie.common.ModDataComponents;
 import net.claustra01.tfie.common.ModItems;
+import net.claustra01.tfie.common.arc.ArcFurnaceRecipeLookup;
+import net.claustra01.tfie.common.arc.ArcFurnaceRecipeSelection;
 import net.claustra01.tfie.common.condition.FluidExistsCondition;
 import net.claustra01.tfie.common.condition.LoggedRecipeCondition;
 import net.claustra01.tfie.common.condition.TFIEConditions;
@@ -20,7 +22,12 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.storage.LevelResource;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.core.NonNullList;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.conditions.ItemExistsCondition;
 import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
@@ -32,9 +39,16 @@ import org.apache.logging.log4j.core.appender.WriterAppender;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import java.io.StringWriter;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @GameTestHolder(TFIE.MOD_ID)
@@ -269,6 +283,152 @@ public final class RegistryGameTests
             appender.stop();
         }
         helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, templateNamespace = TEMPLATE_NAMESPACE, timeoutTicks = 400)
+    public static void conditional_recipe_skipping_and_logging(GameTestHelper helper)
+    {
+        String expectedMod = System.getProperty("tfie.gametest.expectedMod", "");
+        boolean disabledMaterials = expectedMod.equals("disabled-materials");
+        StringWriter log = new StringWriter();
+        var logger = (org.apache.logging.log4j.core.Logger) LogManager.getLogger(TFIE.class);
+        var appender = WriterAppender.newBuilder().setName("tfie-gametest-skip-reasons")
+                .setTarget(log).setLayout(PatternLayout.createDefaultLayout()).build();
+        appender.start();
+        logger.addAppender(appender);
+        MinecraftServer server = helper.getLevel().getServer();
+        List<String> originalPacks = List.copyOf(server.getPackRepository().getSelectedIds());
+        Path pack = server.getWorldPath(LevelResource.DATAPACK_DIR).resolve("tfie-gametest-missing-content");
+        writeMissingContentPack(pack);
+        server.getPackRepository().reload();
+        String packId = server.getPackRepository().getAvailableIds().stream()
+                .filter(value -> value.contains("tfie-gametest-missing-content"))
+                .findFirst().orElseThrow();
+        List<String> changedPacks = new ArrayList<>(originalPacks);
+        changedPacks.add(packId);
+        whenDone(helper, server.reloadResources(changedPacks), () ->
+        {
+            if(disabledMaterials)
+            {
+                helper.assertTrue(helper.getLevel().getRecipeManager().byKey(
+                                ResourceLocation.parse("tfie:metalpress/plate/titanium")).isEmpty()
+                                && helper.getLevel().getRecipeManager().byKey(
+                                ResourceLocation.parse("tfie:arcfurnace/briquet/hematite")).isEmpty(),
+                        "Disabled TFCM materials must omit only their recipes");
+                helper.assertTrue(log.toString().contains("tfie:metalpress/plate/titanium")
+                                && log.toString().contains("plate shape for titanium is unavailable")
+                                && log.toString().contains("tfie:arcfurnace/briquet/hematite")
+                                && log.toString().contains("Arc Furnace materials are unavailable"),
+                        "Reload logging must use the shipped disabled-metal and disabled-ore reasons");
+            }
+            else
+            {
+                if(!ModList.get().isLoaded("firmalife"))
+                {
+                    helper.assertTrue(helper.getLevel().getRecipeManager().byKey(
+                                    ResourceLocation.parse("tfie:arcfurnace/alloy/hastelloy")).isEmpty(),
+                            "An absent optional mod must omit only its integration recipe");
+                    helper.assertTrue(log.toString().contains("tfie:arcfurnace/alloy/hastelloy")
+                                    && log.toString().contains("Arc Furnace materials are unavailable"),
+                            "Reload logging must use the shipped optional-integration reason");
+                }
+            }
+
+            for(String recipeId : List.of("example:arcfurnace/missing_item",
+                    "example:arcfurnace/missing_fluid"))
+                helper.assertTrue(helper.getLevel().getRecipeManager().byKey(
+                                ResourceLocation.parse(recipeId)).isEmpty(),
+                        recipeId + " must be skipped before its missing registry reference is decoded");
+            helper.assertTrue(log.toString().contains("example:arcfurnace/missing_item")
+                            && log.toString().contains("referenced item is absent")
+                            && log.toString().contains("example:arcfurnace/missing_fluid")
+                            && log.toString().contains("referenced fluid is absent"),
+                    "Reload logging must include each real test recipe ID and its data-defined reason");
+            ItemStackHandler inventory = new ItemStackHandler(26);
+            inventory.setStackInSlot(0, new ItemStack(Items.STONE));
+            helper.assertTrue(ArcFurnaceRecipeSelection.find(helper.getLevel(), new ItemStack(Items.STONE),
+                            NonNullList.withSize(4, ItemStack.EMPTY), inventory) == null
+                            && !ArcFurnaceRecipeLookup.isValidInput(helper.getLevel(), new ItemStack(Items.STONE))
+                            && ArcFurnaceRecipeLookup.recipes(helper.getLevel()).stream()
+                            .noneMatch(holder -> holder.value().input.test(ItemStack.EMPTY)),
+                    "Skipped recipes must not create a machine path or an empty Arc ingredient");
+
+            Set<String> required = ModList.get().getModContainerById(TFIE.MOD_ID).orElseThrow().getModInfo()
+                    .getDependencies().stream()
+                    .filter(dependency -> dependency.getType() == IModInfo.DependencyType.REQUIRED)
+                    .map(IModInfo.ModVersion::getModId).collect(Collectors.toSet());
+            helper.assertTrue(required.containsAll(Set.of("tfc", "immersiveengineering", "tfcm", "patchouli"))
+                            && required.stream().allMatch(mod -> ModList.get().isLoaded(mod)
+                            || Set.of("minecraft", "neoforge").contains(mod)),
+                    "Required mods must remain hard dependencies instead of optional recipe skips");
+
+            deletePack(pack);
+            server.getPackRepository().reload();
+            whenDone(helper, server.reloadResources(originalPacks), () ->
+            {
+                logger.removeAppender(appender);
+                appender.stop();
+                helper.succeed();
+            });
+        });
+    }
+
+    private static void writeMissingContentPack(Path pack)
+    {
+        try
+        {
+            Files.createDirectories(pack.resolve("data/example/recipe/arcfurnace"));
+            Files.writeString(pack.resolve("pack.mcmeta"),
+                    "{\"pack\":{\"pack_format\":48,\"description\":\"TFIE missing content GameTest\"}}",
+                    StandardCharsets.UTF_8);
+            Files.writeString(pack.resolve("data/example/recipe/arcfurnace/missing_item.json"),
+                    "{\"neoforge:conditions\":[{\"type\":\"tfie:logged_recipe\",\"conditions\":[{"
+                            + "\"type\":\"neoforge:item_exists\",\"item\":\"tfie:missing_item\"}],"
+                            + "\"reason\":\"referenced item is absent\",\"recipe\":"
+                            + "\"example:arcfurnace/missing_item\"}],\"type\":\"tfie:arc_furnace\","
+                            + "\"additives\":[],\"energy\":100,\"input\":{\"item\":\"minecraft:stone\"},"
+                            + "\"mode\":0,\"results\":[{\"id\":\"tfie:missing_item\"}],\"time\":10}",
+                    StandardCharsets.UTF_8);
+            Files.writeString(pack.resolve("data/example/recipe/arcfurnace/missing_fluid.json"),
+                    "{\"neoforge:conditions\":[{\"type\":\"tfie:logged_recipe\",\"conditions\":[{"
+                            + "\"type\":\"tfie:fluid_exists\",\"fluid\":\"tfie:missing_fluid\"}],"
+                            + "\"reason\":\"referenced fluid is absent\",\"recipe\":"
+                            + "\"example:arcfurnace/missing_fluid\"}],\"type\":\"tfie:arc_furnace\","
+                            + "\"additives\":[],\"energy\":100,\"input\":{\"item\":\"minecraft:dirt\"},"
+                            + "\"mode\":0,\"results\":[{\"id\":\"minecraft:clay\"}],\"time\":10}",
+                    StandardCharsets.UTF_8);
+        }
+        catch(IOException exception)
+        {
+            throw new IllegalStateException("Could not write the missing-content GameTest pack", exception);
+        }
+    }
+
+    private static void deletePack(Path pack)
+    {
+        try(var paths = Files.walk(pack))
+        {
+            for(Path path : paths.sorted(Comparator.reverseOrder()).toList())
+                Files.deleteIfExists(path);
+        }
+        catch(IOException exception)
+        {
+            throw new IllegalStateException("Could not remove the missing-content GameTest pack", exception);
+        }
+    }
+
+    private static void whenDone(GameTestHelper helper, CompletableFuture<?> future, Runnable then)
+    {
+        helper.runAfterDelay(1, () ->
+        {
+            if(future.isDone())
+            {
+                future.join();
+                then.run();
+            }
+            else
+                whenDone(helper, future, then);
+        });
     }
 
 }

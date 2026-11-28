@@ -29,9 +29,11 @@ public final class ArcFurnaceRecipeSelection
         RecipeHolder<ArcFurnaceRecipe> candidate = null;
         for(RecipeHolder<ArcFurnaceRecipe> holder : ArcFurnaceRecipeLookup.recipes(level))
         {
-            if(!(holder.value() instanceof ModeAwareArcFurnaceRecipe recipe) || !recipe.input.test(input))
+            ModeAwareArcFurnaceRecipe recipe = (ModeAwareArcFurnaceRecipe)holder.value();
+            if(!recipe.input.test(input))
                 continue;
-            if(recipe.mode() != 0 && (blueprint.count() != 1 || recipe.mode() != blueprint.mode()))
+            int requiredMode = recipe.mode();
+            if(requiredMode != 0 && (blueprint.count() != 1 || requiredMode != blueprint.mode()))
                 continue;
             if(candidate != null)
                 return null;
@@ -52,11 +54,14 @@ public final class ArcFurnaceRecipeSelection
                 continue;
             int candidates = 0;
             for(RecipeHolder<ArcFurnaceRecipe> holder : ArcFurnaceRecipeLookup.recipes(level))
-                if(holder.value() instanceof ModeAwareArcFurnaceRecipe recipe
-                        && recipe.input.test(input)
-                        && (recipe.mode() == 0 || blueprint.count() == 1 && recipe.mode() == blueprint.mode())
+            {
+                ModeAwareArcFurnaceRecipe recipe = (ModeAwareArcFurnaceRecipe)holder.value();
+                int requiredMode = recipe.mode();
+                if(recipe.input.test(input)
+                        && (requiredMode == 0 || blueprint.count() == 1 && requiredMode == blueprint.mode())
                         && ++candidates > 1)
                     return StopReason.DUPLICATE_RECIPE;
+            }
         }
         return StopReason.NONE;
     }

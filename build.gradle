@@ -144,6 +144,7 @@ neoForge {
         gameTestServerRestartPrepare {
             type = "gameTestServer"
             gameDirectory = project.file('run/restart')
+            jvmArgument '-XX:TieredStopAtLevel=1'
             systemProperty 'neoforge.enabledGameTestNamespaces', 'tfie_restart'
             systemProperty 'tfie.gametest.restartPhase', 'prepare'
             systemProperty 'tfie.gametest.report', project.file('build/test-results/gametest/TEST-tfie-restart-prepare.xml').absolutePath
@@ -152,6 +153,7 @@ neoForge {
         gameTestServerRestartVerify {
             type = "gameTestServer"
             gameDirectory = project.file('run/restart')
+            jvmArgument '-XX:TieredStopAtLevel=1'
             systemProperty 'neoforge.enabledGameTestNamespaces', 'tfie_restart'
             systemProperty 'tfie.gametest.restartPhase', 'verify'
             systemProperty 'tfie.gametest.report', project.file('build/test-results/gametest/TEST-tfie-restart.xml').absolutePath

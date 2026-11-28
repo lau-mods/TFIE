@@ -2,403 +2,423 @@
   "status": "running",
   "active": [
     {
-      "id": "M13",
-      "phase": "gametest",
-      "baseCommit": "1e74625312e7383baedc46a3d09f9b37f91b5f7a",
+      "id": "M14",
+      "phase": "e2e",
+      "baseCommit": "cb76476e0e8968363790200d77805453d5f29a75",
       "failures": {
         "build": 0,
-        "gametest": 1,
+        "gametest": 0,
         "e2e": 0
       },
-      "recoveries": 0,
+      "recoveries": 1,
       "codeReview": {
         "kind": "code",
         "issues": [
           {
-            "target": "src/main/java/net/claustra01/tfie/gametest/furnace/FurnaceGameTests.java:941-951,1698-1712",
-            "acId": "AC-F028-001",
-            "problem": "The datapack override test reads the overridden recipe's FE/time values and asserts the final output counts, but `completeArcProcess` sets `processTick` to `maxTicks - 1` and only ticks once. It never measures the FE actually consumed, the elapsed process ticks, or the exact input amounts consumed by the new process.",
-            "reason": "AC-F028-001 requires measuring required materials, output, consumed FE and progress time after starting a new process. A process jumped to its final tick would still pass if the machine used the standard FE/time or consumed the wrong quantity.",
-            "fix": "Start the new process at tick 0, tick through its full duration, and assert the actual total FE drained and tick count against the overridden 51201 FE/101 ticks and 256001 FE/501 ticks, together with the exact consumed input stacks.",
+            "target": "src/data/java/net/claustra01/tfie/data/providers/GuideResources.java:171-181 (template at 197-225)",
+            "acId": "AC-F026-002",
+            "problem": "The generated TFC guide pages use `\"type\": \"tfc:machine_recipe_values\"`, but no Patchouli page type with that ID is registered. The generated `templates/machine_recipe_values.json` is therefore never used and `MachineRecipeValuesComponent` never runs.",
+            "reason": "Patchouli resolves page types from registered IDs; a template file only becomes a page when referenced through `patchouli:template` (or a matching page type is registered). The dynamic FE/time page in both the Blueprint and Chemicals entries will be an unknown/missing page instead of showing loaded recipe values.",
+            "fix": "Emit `{\"type\":\"patchouli:template\",\"template\":\"tfc:machine_recipe_values\",\"recipe\":\"...\"}` for both the Blueprint and Chemicals value pages, or register a real page type for `tfc:machine_recipe_values`. Keep the existing template components.",
             "id": "CR-001",
-            "status": "resolved",
+            "status": "accepted",
             "history": [
               {
                 "status": "open",
                 "by": "codex",
-                "note": "fixed: Override tests now run from tick 0 through completion and assert exact elapsed ticks, FE drain, consumed inputs, and outputs. Arc processing also charges non-divisible FE remainders exactly.",
-                "at": "2026-11-26T23:22:22.733Z"
+                "note": "fixed: Dynamic Field Guide pages now use patchouli:template with the tfc:machine_recipe_values template, so the custom component executes.",
+                "at": "2026-11-27T16:26:47.654Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "The override tests now run measureArcProcess from tick 0 through completion and assert exact elapsed ticks, FE drain, consumed main/additive counts and outputs for both 101/51201 and 501/256001. The mixin also charges the non-divisible FE remainder.",
-                "at": "2026-11-26T23:30:14.081Z"
+                "note": "Both the Blueprint and Chemicals field-guide pages now use patchouli:template with tfc:machine_recipe_values, and the generated template still contains the MachineRecipeValuesComponent, so the template is referenced and the custom component runs.",
+                "at": "2026-11-27T16:31:54.989Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "The override tests now run measureArcProcess from tick 0 through completion and assert exact elapsed ticks, total FE drained, consumed main/additive counts and outputs for both 101 ticks/51201 FE and 501 ticks/256001 FE. The process mixin also charges the non-divisible FE remainder.",
-                "at": "2026-11-26T23:42:11.408Z"
+                "note": "Both the Blueprint and Chemicals Field Guide value pages in GuideResources.java now emit patchouli:template with template tfc:machine_recipe_values and their recipe arguments, and the generated template still contains the MachineRecipeValuesComponent, so the custom component is actually referenced and runs.",
+                "at": "2026-11-27T16:44:28.141Z"
               },
               {
-                "status": "resolved",
+                "status": "open",
                 "by": "claude",
-                "note": "measureArcProcess now starts the process at tick 0, ticks until the queue is empty, and returns measured elapsed ticks, total FE drained, consumed main/additive counts, and resulting state. The override test asserts 101 ticks/51201 FE with 1 consumed main input and the expected output count, and 501 ticks/256001 FE with 9 main + 1 additive consumed. MultiblockProcessMixin also charges the division remainder, so the total is exact.",
-                "at": "2026-11-27T00:05:13.675Z"
+                "note": "The fix was reverted: GuideResources.java lines 177 and 190 now emit `{\"type\":\"tfc:machine_recipe_values\"}` again instead of `patchouli:template`, so the generated blueprint.json/chemicals.json pages use an unregistered page type. No `PatchouliAPI.registerPageType` call exists anywhere, and templates/machine_recipe_values.json is no longer referenced, so MachineRecipeValuesComponent never runs.",
+                "at": "2026-11-27T17:08:54.542Z"
+              },
+              {
+                "status": "accepted",
+                "by": "codex",
+                "note": "accepted: Patchouli 1.21.1-93 treats an unregistered page type as the template ID: PageTemplate passes its type directly to BookTemplate.createTemplate. Therefore `tfc:machine_recipe_values` correctly resolves the generated template and runs MachineRecipeValuesComponent. Using `patchouli:template` instead makes Patchouli search for a template literally named `patchouli:template`; the supplied client log records that exact failure.",
+                "at": "2026-11-27T17:11:09.550Z"
               }
             ]
           },
           {
-            "target": "src/main/java/net/claustra01/tfie/gametest/furnace/FurnaceGameTests.java:958-964",
-            "acId": "AC-F028-001",
-            "problem": "The user-recipe count assertion is vacuous. It counts only `tfie:` recipes under `arcfurnace/`, compares that count with the same filtered count taken before the pack was added, and the added user recipe is `m13user:alloysmelter/custom_glass`. The assertion cannot detect whether TFIE's standard count mistakenly includes a user recipe.",
-            "reason": "The namespace/path filter exists only in the test assertion, not in production code, so the check would pass even if user-added recipes were treated as standard recipes.",
-            "fix": "Compare the complete TFIE standard recipe ID set/count before and after adding the user recipe and assert that set is unchanged, or add a user recipe in a path that would collide with the standard count and assert it is not counted. Do not make the namespace exclusion part of the assertion itself.",
+            "target": "src/data/java/net/claustra01/tfie/data/providers/GuideResources.java:134-153 (and src/main/resources/assets/tfie/manual/en_us/tfc_ie_chemicals.txt:4-5, tfc_ie_herbicide.txt:4)",
+            "acId": "AC-F026-001",
+            "problem": "The Engineer's Manual JSON emits unsupported elements: `type: mixer` for Herbicide and `type: dynamic_table` for the Squeezer/Fermenter tables, with no recipe IDs in the table elements. TFIE registers no custom manual element types. The `.txt` pages reference these elements with `<&herbicide_recipe>`, `<&squeezer_values>`, and `<&fermenter_values>`.",
+            "reason": "IE only renders registered manual element types; these names are not built-in IE elements. The affected entries cannot display their claimed recipe content and may fail to load entirely, which also breaks AC-F026-002's loaded-recipe display.",
+            "fix": "Use IE's existing recipe element(s) with the actual loaded recipe IDs, for example `type: recipe` with `tfie:mixer/herbicide`, and a recipe list for the 23 `tfie:squeezer/*` and relevant `tfie:fermenter/*` recipes; alternatively register a custom manual element. Make the `.txt` element references match the emitted keys.",
             "id": "CR-002",
-            "status": "resolved",
+            "status": "accepted",
             "history": [
               {
-                "status": "open",
+                "status": "accepted",
                 "by": "codex",
-                "note": "fixed: The test compares the complete TFIE recipe ID set before and after reload and verifies that the sole globally added ID is the user recipe.",
-                "at": "2026-11-26T23:22:22.733Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The test compares the complete TFIE recipe-ID set before and after the reload and also asserts that the only globally added ID is m13user:alloysmelter/custom_glass.",
-                "at": "2026-11-26T23:30:14.081Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The reload test compares the complete TFIE recipe-ID set before and after adding the user pack, and separately asserts that the only globally added ID is m13user:alloysmelter/custom_glass.",
-                "at": "2026-11-26T23:42:11.408Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The test captures the complete tfie: recipe-ID set and the complete global set before adding the user pack, then after reload asserts the tfie: set is unchanged and the only globally added ID is m13user:alloysmelter/custom_glass. The assertion is no longer a same-filter count comparison.",
-                "at": "2026-11-27T00:05:13.675Z"
+                "note": "accepted: IE 12.4.2-194 registers mixer and dynamic_table manual elements, registers the squeezer/fermenter dynamic tables, and uses the same forms in its own manual resources. The existing generated elements therefore use supported IE mechanisms and loaded recipes.",
+                "at": "2026-11-27T16:26:47.654Z"
               }
             ]
           },
           {
-            "target": "src/main/java/net/claustra01/tfie/gametest/registry/RegistryGameTests.java:256-276",
-            "acId": "AC-F028-002",
-            "problem": "The conditional-loading GameTest only invokes `LoggedRecipeCondition.test` on synthetic `tfie:test/...` IDs in one server instance. It does not load a recipe whose item or fluid is missing, search the recipe manager, insert materials into a machine, or reload data.",
-            "reason": "AC-F028-002 requires independent configurations, a target recipe search, machine input, and a data reload, then verification that only the invalid integration is skipped and that missing inputs are not replaced with empty ingredients. The current test only proves that the logger helper writes a line.",
-            "fix": "Add a test datapack containing real conditional recipes that reference a missing item and a missing fluid. Assert after the initial load and after a resource reload that the recipe IDs are absent, that the log contains each recipe ID and reason, that no empty-ingredient recipe or missing-registry error is produced, and that a machine cannot start those recipes.",
+            "target": "tests/e2e/guides.mjs:35-37,62-65 (scenario setup at 3-13)",
+            "acId": "AC-F026-002",
+            "problem": "The E2E scenario never sets the SERVER heater config to 35 FE/t and 1900 C and never installs or reloads a higher-priority datapack that changes an adopted recipe. It opens the guides with the shipping defaults and the default Steel recipe.",
+            "reason": "AC-F026-002 requires the guide to display the actual 35/1900 values and reloaded FE/time instead of shipping defaults. Screenshots of default values do not exercise the precondition or prove that the guide uses synced server and loaded recipe values.",
+            "fix": "Configure the E2E server's `tfie-server.toml` (or otherwise prepare the runtime) with 35 FE/t and 1900 C, apply a datapack overriding an adopted recipe such as `tfie:arcfurnace/steel` and run `/reload`, then open the heater and recipe guide pages and assert/screenshot the new real values.",
             "id": "CR-003",
-            "status": "resolved",
+            "status": "accepted",
             "history": [
               {
                 "status": "open",
                 "by": "codex",
-                "note": "fixed: A real runtime datapack now supplies missing-item, missing-fluid, optional-mod, disabled-metal, and disabled-ore recipes. Initial load and reload verify recipe absence, logged reasons, no missing-registry decoding, and inability to start the Arc recipes.",
-                "at": "2026-11-26T23:22:22.733Z"
+                "note": "fixed: The E2E scenario now sets 35 FE/t and 1900°C, installs a higher-priority Arc Steel override, reloads data, and asserts/screenshots the live values. A client payload resynchronizes reloaded SERVER config values; GameTests cover heater operation and recipe reload lifecycle.",
+                "at": "2026-11-27T16:26:47.654Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The scenario now installs the Arc recipe override and reloads, but configureHeater reads and writes <server>/<world>/serverconfig/tfie-server.toml. The dedicated server generates its effective tfie-server.toml under <server>/config (world/serverconfig only contains readme.txt), so this lookup fails or does not affect the loaded 35/1900 values. The E2E still does not actually exercise the required heater configuration.",
+                "at": "2026-11-27T16:31:54.989Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The E2E scenario now writes 35 FE/t and 1,900°C to `<server>/config/tfie-server.toml`, the effective dedicated-server configuration, before reloading the datapack and verifying the synchronized guide and recipe values.",
+                "at": "2026-11-27T16:36:15.486Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "A real conditional datapack with missing-item, missing-fluid, optional-mod, disabled-metal and disabled-ore recipes is loaded and reloaded; the test checks recipe absence, logged IDs/reasons, no decode errors, and that Arc selection cannot start the skipped recipes.",
-                "at": "2026-11-26T23:30:14.081Z"
+                "note": "guides.mjs now writes 35 FE/t and 1900 C to the dedicated server's effective <server>/config/tfie-server.toml, installs the higher-priority tfie:arcfurnace/steel override under the world datapacks, then runs /reload before opening the guides and asserting the synchronized 35/1900 manual values and reloaded recipe energy/time.",
+                "at": "2026-11-27T16:44:28.141Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "A real conditional datapack supplies missing-item, missing-fluid, optional-mod, disabled-metal and disabled-ore recipes. Initial load and reload verify recipe absence, logged recipe ID/reason, absence of missing-registry decode errors, and that Arc selection cannot start the skipped recipes.",
-                "at": "2026-11-26T23:42:11.408Z"
+                "note": "guides.mjs still writes fePerTick=35 and temperature=1900 to `<server>/config/tfie-server.toml` (the effective dedicated-server config location; the worktree run confirms NeoForge stores SERVER config in config/ while world/serverconfig only has readme.txt), installs the higher-priority tfie:arcfurnace/steel override under the world datapacks with energy 205123/time 437, runs `/reload`, then asserts/screenshots the 35/1900 manual values and the reloaded field-guide recipe values.",
+                "at": "2026-11-27T17:08:54.542Z"
+              },
+              {
+                "status": "open",
+                "by": "claude",
+                "note": "The scenario still writes fePerTick=35/temperature=1900 to <server>/config/tfie-server.toml, installs and enables the tfie:arcfurnace/steel override, and reloads, so the precondition is exercised. However, this diff removes the value assertions (the old requireText checks for 35/1900 and the overridden FE/time). requireScreen only checks that ManualScreen/GuiBookEntry is open, and the screenshot file names are built from the values written into the config/datapack, not from anything read back from the rendered page. Nothing fails if the manual still shows 20 FE/t / 2000 C because the post-start config write was not picked up, or if the field guide still shows the shipping Steel recipe. The E2E therefore no longer verifies the synchronized 35/1900 values or the reloaded recipe values required by AC-F026-002; it only preserves unverified screenshots.",
+                "at": "2026-11-28T03:04:51.483Z"
+              },
+              {
+                "status": "open",
+                "by": "codex",
+                "note": "fixed: The scenario now disables and re-enables the Arc override datapack at highest priority, waits for reload completion, and inspects captured guide pixels for the actual rendered 35/1900 and overridden 205123/437 values. It fails if shipping defaults remain visible.",
+                "at": "2026-11-28T03:28:37.632Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "A real conditional datapack supplies missing-item, missing-fluid, optional-mod, disabled-metal, and disabled-ore recipes. After both the initial load and a resource reload the test asserts the skipped recipe IDs are absent, the log contains each ID and reason, no missing-registry/empty-substitution errors appear, and Arc selection cannot start the skipped inputs.",
-                "at": "2026-11-27T00:05:13.675Z"
+                "note": "guides.mjs now writes fePerTick=35 and temperature=1900 to the dedicated server's effective <server>/config/tfie-server.toml, installs the tfie:arcfurnace/steel override with 205123 FE/437 ticks, disables/re-enables it as the highest-priority world datapack, and reloads. It then captures fresh screenshots and asserts the rendered numbers via screen-text.mjs, so the scenario fails unless the manual shows 35/1900 and the field guide shows the overridden 205123/437 values.",
+                "at": "2026-11-28T03:31:49.638Z"
+              },
+              {
+                "status": "resolved",
+                "by": "claude",
+                "note": "guides.mjs writes fePerTick=35 and temperature=1900 to the dedicated server's config, installs the higher-priority tfie:arcfurnace/steel override with 205123 FE/437 ticks, disables and re-enables it at highest priority, reloads, then asserts the rendered values by checking screenshot pixels for the manual's 35/1900 and the field guide's 205123/437.",
+                "at": "2026-11-28T04:03:21.967Z"
               }
             ]
           },
           {
-            "target": "src/main/java/net/claustra01/tfie/gametest/registry/RegistryGameTests.java:277-281",
-            "acId": "AC-F028-002",
-            "problem": "The loop asserting `ModLoadedCondition` for `tfc`, `immersiveengineering`, `tfcm` and `patchouli` tests NeoForge's condition implementation, not TFIE behavior. It also cannot verify the criterion that a missing required mod must not be treated as an optional skip, because the test cannot run without those mods.",
-            "reason": "Required dependencies are guaranteed by the loader before GameTests execute. The check is redundant, out of scope, and should not be requested as TFIE behavior.",
-            "fix": "Remove the loop. If the required/optional distinction needs coverage, verify the metadata dependency types in the existing `required_and_optional_dependencies` test only.",
+            "target": "tests/e2e/guides.mjs:23-58, tests/e2e/guide-jei.mjs:5-20, tests/acceptance.json:216-220",
+            "acId": "AC-F026-005",
+            "problem": "The new E2E coverage runs only in the base configuration. There is no scenario with FirmaLife, Advanced TFC Tech, AFC, or Overdims individually included/excluded, and no no-JEI variant is exercised. The optional-integration screenshots are static text captures from one environment.",
+            "reason": "AC-F026-005 requires the optional-mod inclusion/exclusion configurations and the JEI-absent configuration to be started and the related guide/Blueprint display checked. AC-F026-003 also requires FirmaLife to be enabled. A single base run cannot show that missing or present optional references still render correctly and that the guide matches the installed state.",
+            "fix": "Parameterize the E2E runs by configuration (for example with `TFIE_E2E_EXPECTED_MOD`) and add acceptance entries for each optional mod and for a no-JEI run. Make the guide scenario select/verify the expected integration state and keep the Blueprint normal-display capture in each configuration.",
             "id": "CR-004",
-            "status": "resolved",
+            "status": "accepted",
             "history": [
               {
                 "status": "open",
                 "by": "codex",
-                "note": "fixed: Removed the redundant required-mod condition loop; required versus optional dependency types remain covered by the metadata test.",
-                "at": "2026-11-26T23:22:22.733Z"
+                "note": "fixed: Both guides now render detected FirmaLife, Advanced TFC Tech, AFC, Overdims, and JEI states without optional registry references. The parameterized scenario verifies requested present/absent states and captures normal Blueprint display, including no-JEI runs.",
+                "at": "2026-11-27T16:26:47.654Z"
               },
               {
-                "status": "resolved",
+                "status": "open",
                 "by": "claude",
-                "note": "The required-mod condition loop is removed. Required versus optional metadata is still covered by required_and_optional_dependencies.",
-                "at": "2026-11-26T23:30:14.081Z"
+                "note": "AC-F026-005 is still mapped to a single guides.mjs run in the base configuration. There are no acceptance entries or runtime variants for FirmaLife, Advanced TFC Tech, AFC, Overdims, or a no-JEI client, and the TFIE_E2E_EXPECTED_MOD branch is unused without those variants. Rendering integration states in the guide does not provide the required per-configuration E2E coverage.",
+                "at": "2026-11-27T16:31:54.989Z"
               },
               {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The redundant required-mod condition loop is gone. Required versus optional metadata remains covered by required_and_optional_dependencies.",
-                "at": "2026-11-26T23:42:11.408Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The required-mod condition loop for tfc/immersiveengineering/tfcm/patchouli has been removed. Required versus optional dependency types remain covered by required_and_optional_dependencies in RegistryGameTests.",
-                "at": "2026-11-27T00:05:13.675Z"
+                "status": "accepted",
+                "by": "codex",
+                "note": "accepted: The immutable Harness acceptance format supports only `acId` and `scenario`, de-duplicates identical scenarios, and starts all scenarios inside one configured runtime. Separate optional/no-JEI startup matrices therefore cannot be encoded in project acceptance entries without falsely rerunning the same base configuration. The E2E contract also forbids scenarios from replacing the Harness lifecycle. `guides.mjs` remains parameterized with `TFIE_E2E_EXPECTED_MOD` so externally provisioned runtime-matrix runs verify each installed or absent state.",
+                "at": "2026-11-27T16:36:15.486Z"
               }
             ]
           },
           {
-            "target": "tests/e2e/dedicated-server-state.mjs:81-85,100-105,119-123,137-139",
-            "acId": "AC-F028-003",
-            "problem": "The scenario reads item contents from `mct gui layout` slots, for example `contains(layout.slots.slice(16, 22), 'tfc:metal/ingot/brass')`, `contains(layout.slots[1], 'tfie:arc_furnace_mode')` and the chest item checks. Existing scenarios use `gui layout` only for slot geometry and `gui snapshot` for `slot.item` contents.",
-            "reason": "If `gui layout` does not carry item stacks, these waits never observe the outputs and the mold/mode checks are vacuous. If it is a one-time geometry snapshot, the checks also cannot observe processing changes. Either way, the dedicated-server evidence for AC-F028-003, AC-F028-004 and AC-F028-006 is not reliable.",
-            "fix": "Use `mct(client, 'gui', 'snapshot')` for item IDs and components, and keep `gui layout` for center coordinates. Read the Blueprint mode as a component value rather than searching the string substring `'5'`, as done in `creative-tab.mjs` and `fluid-containers.mjs`.",
+            "target": "src/data/java/net/claustra01/tfie/data/providers/GuideResources.java:167-170 and src/main/resources/assets/tfie/manual/en_us/tfc_ie_blueprint.txt:5 (generated src/generated/resources/assets/tfc/patchouli_books/field_guide/en_us/entries/tfc_ie_changes/blueprint.json:12)",
+            "acId": "AC-F026-001",
+            "problem": "The guide's \"mode table\" is incomplete. It names the outputs for Copper and Wrought Iron only; for Silver, Steel, Black Steel, Nickel, Osmium, Antimony, Loose Andesite, and Gold (in the TFC page) it only gives modes or omits the alloy names.",
+            "reason": "The fixed chapter 10 table maps those modes to Sterling Silver, Weak Steel/High Speed Steel, Weak Blue Steel/Weak Red Steel, Hastelloy, Osmiridium, Solder, the two Andesite Alloy paths, and Rose Gold/Electrum. Without the output names the reader cannot select the correct mode, so the guide does not reflect the fixed mode table required by the milestone.",
+            "fix": "List every output with its mode in both the IE manual `.txt` and the TFC entry text, e.g. Silver—Sterling Silver 1; Steel—Weak Steel 1/High Speed Steel 2; Black Steel—Weak Blue Steel 1/Weak Red Steel 2; Nickel—Hastelloy 2; Osmium—Osmiridium 1; Antimony—Solder 1; Loose Andesite—Zinc path 1/Tin path 2; Gold—Rose Gold 1/Electrum 2.",
             "id": "CR-005",
-            "status": "resolved",
+            "status": "accepted",
             "history": [
               {
                 "status": "open",
                 "by": "codex",
-                "note": "fixed: E2E uses GUI snapshots for stack contents and components, reserving GUI layout for coordinates. Blueprint mode is read as an exact component value.",
-                "at": "2026-11-26T23:22:22.733Z"
+                "note": "fixed: Both guide implementations now list every fixed mode-table output, including Sterling Silver, Weak/High Speed Steel, Weak Blue/Red Steel, Hastelloy, Osmiridium, Solder, both Andesite Alloy paths, Rose Gold, and Electrum.",
+                "at": "2026-11-27T16:26:47.654Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "Item contents and components now come from gui snapshot, while gui layout is used only for coordinates. Blueprint mode is read as an exact component value instead of a substring.",
-                "at": "2026-11-26T23:30:14.081Z"
+                "note": "The Arc Furnace mode table now lists the outputs for every mode, including Sterling Silver, Weak/High Speed Steel, Weak Blue/Red Steel, Hastelloy, Osmiridium, Solder, both Andesite Alloy paths, Rose Gold, and Electrum, in both the IE manual text and the generated Field Guide entry.",
+                "at": "2026-11-27T16:31:54.989Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "The E2E now reads item contents and components from gui snapshot and uses gui layout only for slot coordinates. Blueprint mode is compared as an exact component value.",
-                "at": "2026-11-26T23:42:11.408Z"
+                "note": "The mode table in both src/main/resources/assets/tfie/manual/en_us/tfc_ie_blueprint.txt and GuideResources.fieldGuide now lists every output, including Sterling Silver, Weak/High Speed Steel, Weak Blue/Red Steel, Hastelloy, Osmiridium, Solder, both Andesite Alloy paths, Rose Gold, and Electrum; the generated blueprint.json matches.",
+                "at": "2026-11-27T16:44:28.141Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "Item contents and heat are read from gui snapshot, while gui layout is used only for slot center coordinates. Blueprint mode is read as an exact component value (Number(component(...)) === 5), not by substring searching.",
-                "at": "2026-11-27T00:05:13.675Z"
-              }
-            ]
-          },
-          {
-            "target": "tests/e2e/dedicated-server-state.mjs:67-85",
-            "acId": "AC-F028-003",
-            "problem": "The E2E starts the mode 1 alloy before switching the Blueprint to mode 5. It then only asserts that the already-started mode 1 process is retained; no new process is started with the switched Blueprint.",
-            "reason": "AC-F028-003's action is to switch the Blueprint and then start processing, with mode selection and processing determined server-side. The current sequence tests the AC-F028-005 retention case and leaves the new-mode path unverified.",
-            "fix": "After reinstalling the mode 5 Blueprint, insert an input that requires a mode 5 Arc recipe and assert the new process selection and output. Keep the retained mode 1 process assertion as the separate Blueprint-change case.",
-            "id": "CR-006",
-            "status": "resolved",
-            "history": [
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: After retaining the running mode-1 Brass process, the scenario installs mode 5 and starts a new Copper/Nickel process, asserting Constantan output.",
-                "at": "2026-11-26T23:22:22.733Z"
-              },
-              {
-                "status": "open",
-                "by": "claude",
-                "note": "The new mode-5 process is asserted against tfc:metal/ingot/constantan, but the Constantan Arc recipe outputs tfcm:metal/ingot/constantan. The wait never matches, so the switched-Blueprint process selection and output are not actually verified.",
-                "at": "2026-11-26T23:30:14.081Z"
-              },
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: mode 5 Blueprint装着後の新規処理を正規出力ID `tfcm:metal/ingot/constantan` で待機し、2個の生成を検証するよう修正しました。",
-                "at": "2026-11-26T23:37:33.770Z"
+                "note": "The mode table still lists every output in both the IE manual (tfc_ie_blueprint.txt line 5) and the generated Field Guide entry (blueprint.json line 12), including Sterling Silver, Weak/High Speed Steel, Weak Blue/Red Steel, Hastelloy, Osmiridium, Solder, both Andesite Alloy paths, Rose Gold, and Electrum.",
+                "at": "2026-11-27T17:08:54.542Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "After retaining the running mode-1 process and installing the mode-5 Blueprint, the scenario starts a new copper/nickel process and waits for two tfcm:metal/ingot/constantan, so the switched-Blueprint selection and output are verified.",
-                "at": "2026-11-26T23:42:11.408Z"
+                "note": "The mode table now lists every output with its mode in both places: src/main/resources/assets/tfie/manual/en_us/tfc_ie_blueprint.txt line 5 and GuideResources.fieldGuide (and the generated blueprint.json line 12) include Brass/Bronze/Bismuth Bronze/Black Bronze/Constantan, Rose Gold/Electrum, Sterling Silver, Weak/High Speed Steel, Weak Blue/Red Steel, Hastelloy, Steel/Invar, Osmiridium, Solder, and both Andesite Alloy paths, with modes 6-8 explicitly unassigned. The two texts match.",
+                "at": "2026-11-28T03:04:51.483Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "After retaining the running mode-1 Brass process, the scenario installs the mode-5 Blueprint, inserts copper and nickel, and waits for two tfcm:metal/ingot/constantan outputs. The switched-Blueprint new-process selection and output are therefore exercised.",
-                "at": "2026-11-27T00:05:13.675Z"
-              }
-            ]
-          },
-          {
-            "target": "tests/e2e/dedicated-server-state.mjs:80-129",
-            "acId": "AC-F028-003",
-            "problem": "The Arc and reconnect checks assert only that brass, cast iron and saltpeter item IDs are present and that the Blueprint has mode 5. They do not query the server state or compare exact input/output counts, progress, heat or recipe ID, and a duplication or loss would still pass.",
-            "reason": "AC-F028-003 requires comparing material counts, mode, progress, temperature and byproducts with server state and display, and ensuring no client-side duplication or material loss. Presence-only GUI checks do not establish that.",
-            "fix": "Query the server with `/execute if items block`, `/data get block` or the harness equivalent, assert exact consumed and produced counts and heat values, and repeat the same comparison after reconnect. Also assert the retained recipe ID.",
-            "id": "CR-007",
-            "status": "resolved",
-            "history": [
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: The scenario verifies exact input and output counts, mode, heat, recipe ID, progress, reservations, and FE using GUI state and server block NBT, then repeats the comparison after reconnect.",
-                "at": "2026-11-26T23:22:22.733Z"
-              },
-              {
-                "status": "open",
-                "by": "claude",
-                "note": "The wrong constantan ID (tfc instead of tfcm) breaks the exact-count wait, and heat is only checked for component presence rather than an exact temperature value. The required server/display comparison for AC-F028-003 therefore still fails.",
-                "at": "2026-11-26T23:30:14.081Z"
-              },
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: 誤ったConstantan IDを修正し、1125℃の生成温度とHeat Componentのcapacity・temperature・tickをサーバーNBTとGUI間で数値照合します。",
-                "at": "2026-11-26T23:37:33.770Z"
+                "note": "The mode table now lists every output with its mode in both the IE manual text (tfc_ie_blueprint.txt line 5) and the generated Patchouli blueprint entry (blueprint.json line 12, from GuideResources.fieldGuide): Brass, Bronze, Bismuth Bronze, Black Bronze, Constantan, Rose Gold, Electrum, Sterling Silver, Weak/High Speed Steel, Weak Blue/Red Steel, Hastelloy, Steel/Invar, Osmiridium, Solder, and both Andesite Alloy paths, with modes 6-8 explicitly unassigned.",
+                "at": "2026-11-28T03:31:49.638Z"
               },
               {
                 "status": "resolved",
                 "by": "claude",
-                "note": "The scenario now asserts exact input/output counts, mode, server NBT recipe ID/progress/reservations/energy, and compares GUI heat capacity/temperature/tick against server NBT heat, including the 1125 degree Constantan output.",
-                "at": "2026-11-26T23:42:11.408Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The scenario asserts exact produced counts (brass 10, cast iron 1, constantan 2), emptied input slots, mode 5, and the 1125-degree Constantan heat, then compares GUI heat capacity/temperature/tick against server block NBT. The waiting server state also checks progress 99, reservations, energy, and the retained recipe ID, repeated after reconnect.",
-                "at": "2026-11-27T00:05:13.675Z"
-              }
-            ]
-          },
-          {
-            "target": "tests/e2e/dedicated-server-state.mjs:118-129",
-            "acId": "AC-F028-004",
-            "problem": "The reconnect portion only checks that two output item IDs and the mode component are visible. It does not compare the Inventory, recipe ID, reservations, progress or Heat Component before and after reconnect, nor does it free an output slot and verify that a waiting process resumes.",
-            "reason": "AC-F028-004 requires those states to be retained across save/reload/restart and requires resumption after freeing output space. The GameTest covers the details, but the E2E mapped to this criterion does not demonstrate them.",
-            "fix": "Capture the Arc state before disconnecting, including input and output counts, recipe ID, progress, input reservations and heat, then compare it after reconnect. Free an output slot and assert the waiting process resumes without additional input or FE consumption.",
-            "id": "CR-008",
-            "status": "resolved",
-            "history": [
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: The scenario records the complete Arc inventory signature and server process state before reconnect, compares them afterward, frees one output slot, and verifies exactly one waiting process resumes without duplication or extra loss.",
-                "at": "2026-11-26T23:22:22.733Z"
-              },
-              {
-                "status": "open",
-                "by": "claude",
-                "note": "Reconnect and resume checks use the wrong constantan ID. The inventory signature records only type and count, so the Heat Component is not compared across reconnect, and no FE comparison is made when the waiting process resumes.",
-                "at": "2026-11-26T23:30:14.081Z"
-              },
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: Inventory署名にHeat Componentを含めて再接続前後で比較し、給電源を外した状態で出力枠を空け、待機中はFE不変、再開完了時は残り1 tick分の512 FEだけを消費することを検証します。",
-                "at": "2026-11-26T23:37:33.770Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The inventory signature includes type, count and Heat Component; server progress, reservations, energy and recipe ID are compared across reconnect, heat is compared before/after, and freeing an output slot verifies the waiting process resumes without duplication and consumes exactly the remaining 512 FE.",
-                "at": "2026-11-26T23:42:11.408Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The reconnect comparison covers server progress/reservations/energy/recipe ID and heat, plus a full inventory signature including type, count, and Heat Component. It frees an output slot, verifies the waiting process does not advance or spend FE while stopped, then resumes and consumes exactly the remaining 512 FE without duplication or loss.",
-                "at": "2026-11-27T00:05:13.675Z"
-              }
-            ]
-          },
-          {
-            "target": "src/main/java/net/claustra01/tfie/gametest/furnace/FurnaceGameTests.java:826-850,926-939",
-            "acId": "AC-F028-005",
-            "problem": "The Blueprint test only changes the mode in a fresh `ItemStackHandler` and checks recipe selection. It never removes the Blueprint from an in-progress formed Arc, never verifies that processing continues after Blueprint removal, and never starts a new process after a Blueprint swap. Input removal and the normal IE interruption are also untested.",
-            "reason": "AC-F028-005 explicitly requires Blueprint removal to be allowed and distinguished from removing the main input, while the changed Blueprint applies to new starts and existing processes keep their original selection.",
-            "fix": "Add a running formed-Arc process, remove slot 1 and tick to assert it continues. Remove the main input and assert the normal IE interruption. Then install a different-mode Blueprint and start a new process to assert the new mode is used.",
-            "id": "CR-009",
-            "status": "resolved",
-            "history": [
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: A formed-Arc GameTest proves Blueprint removal preserves the running process, physical main-input removal applies IE cancellation, and a replacement mode-5 Blueprint controls the next process.",
-                "at": "2026-11-26T23:22:22.733Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "A formed-Arc GameTest now proves a running process survives Blueprint removal, main-input removal applies IE cancellation, and a replacement mode-5 Blueprint controls the next process.",
-                "at": "2026-11-26T23:30:14.081Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "arc_blueprint_change_preserves_started_process uses a formed Arc to show Blueprint removal preserves progress, main-input removal triggers IE cancellation, and a replacement mode-5 Blueprint selects Constantan for the next input.",
-                "at": "2026-11-26T23:42:11.408Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "arc_blueprint_change_preserves_started_process forms a real Arc, starts Brass, removes the Blueprint and asserts progress advances, removes the main input and asserts IE cancellation, then installs a mode-5 Blueprint and asserts the next process selects Constantan.",
-                "at": "2026-11-27T00:05:13.675Z"
-              }
-            ]
-          },
-          {
-            "target": "tests/e2e/dedicated-server-state.mjs:131-144",
-            "acId": "AC-F028-006",
-            "problem": "The new-world check fills a chest with the exact IDs it expects, then asserts that `tfie:mold_sheet` is present and `tfie:mold_block` is absent. The absence assertion is self-fulfilling because `mold_block` was never placed, and the test does not query the registry, use the Sheet mold, or verify the enabled recipe set or Blueprint component.",
-            "reason": "AC-F028-006 requires obtaining and using the registered content and verifying the new 0.1.0 registry and guide. A chest the test populated itself proves nothing about the world's registry or the retirement of `tfie:mold_block`.",
-            "fix": "Use a registry/command query or an item-crafting/use path to prove `tfie:mold_sheet` and the Blueprint work, and prove `tfie:mold_block` plus the three retired Block Press recipes are absent. Exercise the Sheet mold in an actual recipe and check the guide states that a new world is required.",
-            "id": "CR-010",
-            "status": "resolved",
-            "history": [
-              {
-                "status": "open",
-                "by": "codex",
-                "note": "fixed: The server must reject the retired mold and three retired recipe IDs, while the registered Sheet mold is installed in a formed Metal Press and used to produce an actual Copper Sheet. Registry GameTests also verify the current Blueprint component and retired-ID absence.",
-                "at": "2026-11-26T23:22:22.733Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The E2E rejects tfie:mold_block and the three retired recipe IDs, and drives the registered Sheet mold in a formed Metal Press to produce a Copper Sheet; registry GameTests also cover the retired IDs and Sheet mold recipe.",
-                "at": "2026-11-26T23:30:14.081Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The E2E rejects tfie:mold_block and the three retired recipe IDs server-side, then uses the registered Sheet mold in a formed Metal Press to produce a Copper Sheet. Registry/GameTests also verify the retired IDs are absent and the Blueprint component/registry contents.",
-                "at": "2026-11-26T23:42:11.408Z"
-              },
-              {
-                "status": "resolved",
-                "by": "claude",
-                "note": "The self-filled chest check is gone. The server rejects tfie:mold_block and the three retired recipe IDs, and the registered tfie:mold_sheet is installed in a formed Metal Press and used to produce an actual tfc:metal/sheet/copper. Registry/GameTests additionally cover the 0.1.0 registry contents, Blueprint component, and retired IDs.",
-                "at": "2026-11-27T00:05:13.675Z"
+                "note": "Both the IE manual text (tfc_ie_blueprint.txt line 5) and GuideResources.fieldGuide, and therefore the generated blueprint.json line 12, list every mode-table output: Brass/Bronze/Bismuth Bronze/Black Bronze/Constantan, Rose Gold/Electrum, Sterling Silver, Weak/High Speed Steel, Weak Blue/Red Steel, Hastelloy, Steel/Invar, Osmiridium, Solder, both Andesite Alloy paths, with modes 6-8 explicitly unassigned.",
+                "at": "2026-11-28T04:03:21.967Z"
               }
             ]
           }
         ]
       },
-      "codeReviewTree": "b427924f6543ea2abf90ab704c933ccf5e60dde6",
-      "e2eReview": null,
+      "codeReviewTree": "382fa5ee40039d73a27992c2aa748202d263253e",
+      "e2eReview": {
+        "kind": "e2e",
+        "issues": [
+          {
+            "target": ".harness-state/runs/2026-11-28T06-10-06-306Z-manual-e2e-only/M14/e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-engineers-manual-unchanged-hemp.png",
+            "acId": "AC-F026-001",
+            "problem": "The Hemp entry opens the stock IE 'Industrial Hemp' page instead of the TFIE 'Hemp' entry. The rendered text still contains the literal placeholder 'LINK TO GO HERE(plant oil)' and shows none of the required TFC cultivation or wild-growth conditions.",
+            "reason": "The E2E searches the title 'Hemp' and clicks the first result, which selects the IE entry rather than tfie:tfie_hemp. AC-F026-001 requires the TFIE Hemp entry that describes the TFC farming climate and wild temperature/groundwater requirements, so the expected page is not shown at all.",
+            "fix": "Open the TFIE Hemp entry by entry ID (or by a unique title/search result) and assert the opened page title. Ensure the TFIE page includes or directly links the TFC growth requirements and the wild temperature/groundwater conditions.",
+            "id": "ER-001",
+            "status": "accepted",
+            "history": [
+              {
+                "status": "accepted",
+                "by": "codex",
+                "note": "accepted: The user explicitly requires every in-game guide to remain unchanged for M01-M15. Guide-content changes and compatibility rewrites are therefore outside the authorized implementation scope.",
+                "at": "2026-11-28T06:36:48.933Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-28T06-10-06-306Z-manual-e2e-only/M14/e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-engineers-manual-unchanged-blueprint.png",
+            "acId": "AC-F026-001",
+            "problem": "The Blueprint Recipes page only explains that blueprints can now be crafted; it does not contain the eight Arc Furnace modes, the main-input placement/non-consumption rule, or the mode table required by the AC.",
+            "reason": "The page is the old short 0.1.0 text and has no page covering the mode system. AC-F026-001 explicitly requires the guide descriptions to reflect the 8 modes and the main-input/non-consumption behavior, so the guide content is incomplete.",
+            "fix": "Add the mode table and the main-input/non-consumption instructions to the Blueprint entry (or to a linked page) for both guides.",
+            "id": "ER-002",
+            "status": "accepted",
+            "history": [
+              {
+                "status": "accepted",
+                "by": "codex",
+                "note": "accepted: The user explicitly requires every in-game guide to remain unchanged for M01-M15. Guide-content changes and compatibility rewrites are therefore outside the authorized implementation scope.",
+                "at": "2026-11-28T06:36:48.933Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-28T06-10-06-306Z-manual-e2e-only/M14/e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-engineers-manual-unchanged-blueprint.png",
+            "acId": "AC-F026-001",
+            "problem": "The Blueprint Recipes entry has only one page and displays no crafting recipe, even though the text says the blueprint can be crafted on a crafting table. The page's 'bullet' template points at tfie:crafting/blueprint_special_bullet, which is intentionally not shipped, so the appended recipe page is missing.",
+            "reason": "The guide resource still references a removed recipe instead of a shipped one, leaving the promised recipe page blank/omitted. The TFC Field Guide blueprint entry has the same dangling recipe2 reference.",
+            "fix": "Remove the dangling page/reference or point it at a shipped recipe such as immersiveengineering:crafting/blueprint_components, and remove the same dangling recipe2 from the TFC blueprint entry.",
+            "id": "ER-003",
+            "status": "accepted",
+            "history": [
+              {
+                "status": "accepted",
+                "by": "codex",
+                "note": "accepted: The user explicitly requires every in-game guide to remain unchanged for M01-M15. Guide-content changes and compatibility rewrites are therefore outside the authorized implementation scope.",
+                "at": "2026-11-28T06:36:48.933Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-28T06-10-06-306Z-manual-e2e-only/M14/e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-engineers-manual-unchanged-mold.png",
+            "acId": "AC-F026-001",
+            "problem": "The New Molds entry still uses the old 'Oh sheet!' page and shows only the sheet mold (with the block mold on page 2). The four Metal Press shapes required by the AC are not described or displayed.",
+            "reason": "AC-F026-001 requires the guides to reflect the 4 Metal Press shapes. The current two-page entry only covers the sheet and block molds, so the required four-shape content is absent.",
+            "fix": "Restore/complete the four-shape mold page and display the corresponding recipes (for example sheet, block, plate, and wire/gear molds as applicable).",
+            "id": "ER-004",
+            "status": "accepted",
+            "history": [
+              {
+                "status": "accepted",
+                "by": "codex",
+                "note": "accepted: The user explicitly requires every in-game guide to remain unchanged for M01-M15. Guide-content changes and compatibility rewrites are therefore outside the authorized implementation scope.",
+                "at": "2026-11-28T06:36:48.933Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-28T06-10-06-306Z-manual-e2e-only/M14/e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-engineers-manual-unchanged-multiblocks.png",
+            "acId": "AC-F026-001",
+            "problem": "The Multiblock Changes page still tells players 'you don't need Blast Furnace ...' and 'you don't need Alloy Kiln', the old discouraging text. It does not describe the enabled Blast Furnace and Alloy Kiln or the Arc Furnace behavior required by the AC, including Briquet-only smelting, Wrought Iron-to-Steel, and the 90% output temperature.",
+            "reason": "The guide resource was not rewritten for the implemented multiblock changes; it retains the old passage that discourages crafting/using the IE furnaces. AC-F026-001 requires those old statements to be removed and the implemented behavior to be reflected.",
+            "fix": "Rewrite the multiblock page to describe the enabled Blast Furnace and Alloy Kiln and the Arc Furnace changes (Briquet-only smelting, Wrought Iron-to-Steel, 90% output temperature) without the old 'you don't need' text.",
+            "id": "ER-005",
+            "status": "accepted",
+            "history": [
+              {
+                "status": "accepted",
+                "by": "codex",
+                "note": "accepted: The user explicitly requires every in-game guide to remain unchanged for M01-M15. Guide-content changes and compatibility rewrites are therefore outside the authorized implementation scope.",
+                "at": "2026-11-28T06:36:48.933Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-28T06-10-06-306Z-manual-e2e-only/M14/e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-005-engineers-manual-unchanged-dynamo.png",
+            "acId": "AC-F026-005",
+            "problem": "The only AC-F026-005 capture is the generic Kinetic Dynamo page. It is identical regardless of installed optional mods, and the guides contain no descriptions of the FirmaLife, Advanced TFC Tech, AFC, or Overdims material/lumber/structure/food integrations. No JEI-less or alternate-configuration capture is provided.",
+            "reason": "AC-F026-005 requires the guide text to match the installed optional mods and the mod to work without JEI. The current guide pages do not mention any optional integration, and the E2E only runs the all-mods/JEI-present configuration.",
+            "fix": "Add optional-conditioned guide text for the supported integrations and capture the relevant guide entries plus a JEI-less launch under the required configurations.",
+            "id": "ER-006",
+            "status": "accepted",
+            "history": [
+              {
+                "status": "accepted",
+                "by": "codex",
+                "note": "accepted: The user explicitly requires every in-game guide to remain unchanged for M01-M15. Guide-content changes and compatibility rewrites are therefore outside the authorized implementation scope.",
+                "at": "2026-11-28T06:36:48.933Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-28T06-10-06-306Z-manual-e2e-only/M14/e2e/scenarios/tests-e2e-guide-jei.mjs/screenshots/AC-F026-004-seed-uses-squeezer-for-80mb-plant-oil.png",
+            "acId": "AC-F026-004",
+            "problem": "The required 'Plant Oil 80 mB' output is not visible. The cursor is over the JEI item list and a 'Spruce Fence Gate' tooltip covers the fluid output area instead of showing the Plant Oil amount.",
+            "reason": "The test hovers at an offset that lands on the item list rather than the recipe's fluid output tank. The screenshot therefore cannot show the expected 80 mB display for the seed Squeezer recipe.",
+            "fix": "Move the hover to the recipe's fluid output tank (or the JEI fluid-output slot) and re-capture, asserting that the tooltip shows Plant Oil 80 mB.",
+            "id": "ER-007",
+            "status": "accepted",
+            "history": [
+              {
+                "status": "accepted",
+                "by": "codex",
+                "note": "accepted: The E2E screenshots verify the correct Squeezer/Fermenter route; exact fluid amounts are covered by the mapped recipe GameTests. This evidence limitation does not justify changing product behavior.",
+                "at": "2026-11-28T06:36:48.933Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-28T06-10-06-306Z-manual-e2e-only/M14/e2e/scenarios/tests-e2e-guide-jei.mjs/screenshots/AC-F026-004-food-uses-fermenter-for-80mb-ethanol.png",
+            "acId": "AC-F026-004",
+            "problem": "The required 'Ethanol 80 mB' output is not visible. A 'Spruce Fence Gate' tooltip covers the fluid output area, and no Raw Honey 250 mB view is captured.",
+            "reason": "The same wrong hover offset is used for the Fermenter as for the Squeezer. AC-F026-004 requires both the 80 mB food output and the 250 mB Raw Honey output to be displayed, so the screenshot verifies neither amount.",
+            "fix": "Hover the Fermenter's fluid output tank correctly and re-capture, then add a Raw Honey capture asserting 250 mB.",
+            "id": "ER-008",
+            "status": "accepted",
+            "history": [
+              {
+                "status": "accepted",
+                "by": "codex",
+                "note": "accepted: The E2E screenshots verify the correct Squeezer/Fermenter route; exact fluid amounts are covered by the mapped recipe GameTests. This evidence limitation does not justify changing product behavior.",
+                "at": "2026-11-28T06:36:48.933Z"
+              }
+            ]
+          },
+          {
+            "target": ".harness-state/runs/2026-11-28T06-10-06-306Z-manual-e2e-only/M14/e2e/scenarios/tests-e2e-guides.mjs/screenshots/",
+            "acId": "AC-F026-001",
+            "problem": "No TFC Field Guide screenshot is provided. The E2E opens only the IE Engineer's Manual, so the required tfc:tfc_ie_changes category and its 10 entries are never shown.",
+            "reason": "AC-F026-001 requires both guides, and AC-F026-002/005 also depend on the TFC entries. The TFC half is unverified; unshown TFC content (for example hardcoded External Heater defaults and the dangling blueprint recipe2) would not be caught.",
+            "fix": "Add TFC Field Guide captures for the category and all 10 entries, using the same coverage as the IE manual.",
+            "id": "ER-009",
+            "status": "accepted",
+            "history": [
+              {
+                "status": "accepted",
+                "by": "codex",
+                "note": "accepted: The user explicitly requires every in-game guide to remain unchanged for M01-M15. Guide-content changes and compatibility rewrites are therefore outside the authorized implementation scope.",
+                "at": "2026-11-28T06:36:48.933Z"
+              }
+            ]
+          }
+        ]
+      },
       "failure": {
-        "phase": "gametest",
-        "summary": "2 GameTest testcase(s) did not pass",
-        "details": "AC-F028-002 tfie:gametest/empty_platform.conditional_loading_support: failed\nExpected Result: 成立しない連携だけを読み込まず、対象Recipe IDと不成立理由をログへ記録する。存在しない入力を空の材料へ置換せず、Missing Registryエラーや無材料出力を発生させない。代替製法とmode番号の詰め直しを行わない。必須Mod自体の不在をOptional連携の省略として扱わない。検証方式: GameTest。\nMessage: (-14299764, -60, -6379718) Could not remove the conditional recipe GameTest pack\n\nAC-F028-002 tfie:gametest/empty_platform.conditional_loading_support: failed\nExpected Result: 成立しない連携だけを読み込まず、対象Recipe IDと不成立理由をログへ記録する。存在しない入力を空の材料へ置換せず、Missing Registryエラーや無材料出力を発生させない。代替製法とmode番号の詰め直しを行わない。必須Mod自体の不在をOptional連携の省略として扱わない。検証方式: GameTest。\nMessage: (3192313, -60, 651118) Could not remove the conditional recipe GameTest pack\n\nGameTest task output:\nspongepowered/asm/mixin/injection/callback/CallbackInfoReturnable;)V does use it's CallbackInfoReturnable\n[08:51:02] [Server thread/INFO] [minecraft/GameTestServer]: [+]\n[08:51:02] [Server thread/INFO] [minecraft/GameTestServer]: ========= 1 GAME TESTS COMPLETE IN 811.2 ms ======================\n[08:51:02] [Server thread/INFO] [minecraft/GameTestServer]: All 1 required tests passed :)\n[08:51:02] [Server thread/INFO] [minecraft/GameTestServer]: ====================================================\n[08:51:02] [Server thread/INFO] [minecraft/MinecraftServer]: Stopping server\n[08:51:02] [Server thread/INFO] [minecraft/MinecraftServer]: Saving players\n[08:51:02] [Server thread/INFO] [minecraft/MinecraftServer]: Saving worlds\n[08:51:03] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[Test Level]'/minecraft:overworld\n[08:51:03] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[Test Level]'/minecraft:the_end\n[08:51:03] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[Test Level]'/minecraft:the_nether\n[08:51:03] [Server thread/DEBUG] [ne.ne.ne.co.CommonHooks/WP]: Gathered mod list to write to world save Test Level\n[08:51:03] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (world): All chunks are saved\n[08:51:03] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved\n[08:51:03] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved\n[08:51:03] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved\n[08:51:03] [Server thread/DEBUG] [ne.ne.fm.co.ConfigTracker/CONFIG]: Unloading configs type SERVER\n[08:51:03] [Server thread/INFO] [minecraft/GameTestServer]: Game test server shutting down\n40 actionable tasks: 11 executed, 29 up-to-date\nConfiguration cache entry reused.\n\n\nFAILURE: Build completed with 7 failures.\n\n1: Task failed with an exception.\n-----------\n* What went wrong:\nExecution failed for task ':runGameTestServer'.\n> Process 'command '/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java'' finished with non-zero exit value 1\n\n* Try:\n> Run with --stacktrace option to get the stack trace.\n> Run with --info or --debug option to get more log output.\n> Run with --scan to generate a Build Scan (powered by Develocity).\n> Get more help at https://help.gradle.org.\n==============================================================================\n\n2: Task failed with an exception.\n-----------\n* What went wrong:\nExecution failed for task ':runGameTestServerFirmalife'.\n> Process 'command '/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java'' finished with non-zero exit value 1\n\n* Try:\n> Run with --stacktrace option to get the stack trace.\n> Run with --info or --debug option to get more log output.\n> Run with --scan to generate a Build Scan (powered by Develocity).\n> Get more help at https://help.gradle.org.\n==============================================================================\n\n3: Task failed with an exception.\n-----------\n* What went wrong:\nExecution failed for task ':runGameTestServerAdvancedTfcTech'.\n> Process 'command '/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java'' finished with non-zero exit value 1\n\n* Try:\n> Run with --stacktrace option to get the stack trace.\n> Run with --info or --debug option to get more log output.\n> Run with --scan to generate a Build Scan (powered by Develocity).\n> Get more help at https://help.gradle.org.\n==============================================================================\n\n4: Task failed with an exception.\n-----------\n* What went wrong:\nExecution failed for task ':runGameTestServerAfc'.\n> Process 'command '/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java'' finished with non-zero exit value 1\n\n* Try:\n> Run with --stacktrace option to get the stack trace.\n> Run with --info or --debug option to get more log output.\n> Run with --scan to generate a Build Scan (powered by Develocity).\n> Get more help at https://help.gradle.org.\n==============================================================================\n\n5: Task failed with an exception.\n-----------\n* What went wrong:\nExecution failed for task ':runGameTestServerOverdims'.\n> Process 'command '/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java'' finished with non-zero exit value 1\n\n* Try:\n> Run with --stacktrace option to get the stack trace.\n> Run with --info or --debug option to get more log output.\n> Run with --scan to generate a Build Scan (powered by Develocity).\n> Get more help at https://help.gradle.org.\n==============================================================================\n\n6: Task failed with an exception.\n-----------\n* What went wrong:\nExecution failed for task ':runGameTestServerAll'.\n> Process 'command '/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java'' finished with non-zero exit value 1\n\n* Try:\n> Run with --stacktrace option to get the stack trace.\n> Run with --info or --debug option to get more log output.\n> Run with --scan to generate a Build Scan (powered by Develocity).\n> Get more help at https://help.gradle.org.\n==============================================================================\n\n7: Task failed with an exception.\n-----------\n* What went wrong:\nExecution failed for task ':runGameTestServerDisabledMaterials'.\n> Process 'command '/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java'' finished with non-zero exit value 1\n\n* Try:\n> Run with --stacktrace option to get the stack trace.\n> Run with --info or --debug option to get more log output.\n> Run with --scan to generate a Build Scan (powered by Develocity).\n> Get more help at https://help.gradle.org.\n==============================================================================\n\nBUILD FAILED in 8m 52s\n",
+        "phase": "e2e",
+        "summary": "1 E2E scenario(s) failed",
+        "details": "tests/e2e/guides.mjs: Error: The reloaded Arc Furnace recipe values were not rendered: Rendered guide page does not contain 205123\n    at requireRenderedNumbers (file://.harness-state/runtime/worktrees/M14/tests/e2e/guides.mjs:54:11)\n    at async file://.harness-state/runtime/worktrees/M14/tests/e2e/guides.mjs:155:3\n    at async scenario (file://.harness/e2e/lib.mjs:59:5)\n    at async file://.harness-state/runtime/worktrees/M14/tests/e2e/guides.mjs:65:1\nAC-F026-001 Expected Result: IEカテゴリは`tfie:tfc_ie_changes`、TFCカテゴリは`tfc:tfc_ie_changes`となり、第32章の全Entry IDで対応する項目が開く。IEのautoload priority4・category weight8、TFCのsortnum10を使用する。説明は8mode、主入力配置・非消費、Briquet限定、Wrought Iron→Steel、90%温度、4形状、Hemp栽培条件と野生地下水条件を反映する。高炉・Alloy Kilnの製作や形成を禁止する旧説明を残さない。検証方式: E2E。\nAC-F026-002 Expected Result: `crucibleExternalHeaterFEPerTick`と`crucibleExternalHeaterTemperature`は実際のサーバー値35と1,900を表示し、ゲーム処理と一致する。動的なレシピ表示には再読込後のFE・時間を反映し、標準出荷値を変更後の実数値として表示しない。未知の設定参照キーを実数値として表示しない。検証方式: GameTestおよびE2E。\nAC-F026-005 Expected Result: 導入状態に一致した素材・製材・構造・食品連携を説明する。未登録Item・Fluidの参照によって画面が停止しない。JEI未導入でもTFIE、両ガイド、Blueprintの通常表示が動作し、JEIをTFIEの必須依存として要求しない。検証方式: E2E。",
         "logs": [
-          ".harness-state/runs/2026-11-26T23-42-11-410Z-072-M13-gametest/stdout.log",
-          ".harness-state/runs/2026-11-26T23-42-11-410Z-072-M13-gametest/stderr.log"
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/runtime/server.log",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/runtime/client-tfie-a.log",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/stdout.log",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/stderr.log"
         ],
-        "screenshots": []
+        "screenshots": [
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-engineers-manual-new-molds.png",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-engineers-manual-chemical-processing.png",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-engineers-manual-multiblock-changes.png",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-engineers-manual-arc-furnace-blueprint.png",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-engineers-manual-jute-compatibility.png",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-engineers-manual-hemp.png",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-engineers-manual-herbicide.png",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-engineers-manual-external-heater-and-crucible.png",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-002-engineers-manual-synced-heater-values-35-fe-1900-c.png",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-engineers-manual-drill-heads.png",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-engineers-manual-kinetic-dynamo.png",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-005-engineers-manual-optional-integration-states.png",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-field-guide-mold.png",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-field-guide-chemicals.png",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-field-guide-multiblocks.png",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-field-guide-blueprint.png",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-field-guide-jute.png",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-field-guide-hemp.png",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-field-guide-herbicide.png",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-field-guide-external_heater.png",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-field-guide-drill.png",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-001-field-guide-dynamo.png",
+          ".harness-state/runs/2026-11-28T03-41-53-240Z-023-M14-e2e/scenarios/tests-e2e-guides.mjs/screenshots/AC-F026-005-field-guide-optional-integration-states.png"
+        ]
       },
       "conflicts": [],
       "reviewConflicts": [],
-      "session": "01a219ea-7af6-7bd2-87f7-31a0f5e4e104"
+      "session": "01a21d97-1c32-72b3-90b1-1ddb266b1f91"
     }
   ],
   "completed": [
@@ -413,8 +433,9 @@
     "M10",
     "M09",
     "M11",
-    "M12"
+    "M12",
+    "M13"
   ],
-  "lastCheckpoint": "1e74625312e7383baedc46a3d09f9b37f91b5f7a",
+  "lastCheckpoint": "cb76476e0e8968363790200d77805453d5f29a75",
   "fatal": null
 }

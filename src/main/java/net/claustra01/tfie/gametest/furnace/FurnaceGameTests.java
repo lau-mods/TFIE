@@ -108,12 +108,14 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.concurrent.CompletableFuture;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @GameTestHolder(TFIE.MOD_ID)
 @PrefixGameTestTemplate(false)
@@ -988,7 +990,65 @@ public final class FurnaceGameTests
         helper.succeed();
     }
 
-    @GameTest(template = TEMPLATE, templateNamespace = TFIE.MOD_ID, timeoutTicks = 400)
+    @GameTest(template = TEMPLATE, templateNamespace = TFIE.MOD_ID)
+    public static void arc_blueprint_swap_keeps_started_recipe(GameTestHelper helper)
+    {
+        ArcFurnaceLogic logic = new ArcFurnaceLogic();
+        ArcFurnaceLogic.State state = logic.createInitialState(new TestInitialContext<>(helper.getLevel()));
+        TestMultiblockContext<ArcFurnaceLogic.State> context = context(state, helper.getLevel(),
+                Blocks.AIR.defaultBlockState());
+        state.getEnergy().receiveEnergy(ArcFurnaceLogic.ENERGY_CAPACITY, false);
+        state.getInventory().setStackInSlot(0, itemWithCount("tfc:metal/ingot/copper", 9));
+        ItemStack blueprint = ModItems.ARC_FURNACE_BLUEPRINT.toStack();
+        state.getInventory().setStackInSlot(1, blueprint);
+        state.getInventory().setStackInSlot(2, item("tfc:metal/ingot/copper"));
+        state.getInventory().setStackInSlot(12, item("tfc:metal/ingot/zinc"));
+        state.getInventory().setStackInSlot(13, item("tfc:metal/ingot/nickel"));
+        for(int slot = 23; slot <= 25; slot++)
+            state.getInventory().setStackInSlot(slot, item("immersiveengineering:graphite_electrode"));
+
+        logic.tickServer(context);
+        helper.assertTrue(state.getProcessQueue().size() == 1,
+                "Mode 1 must start one Brass process before the Blueprint is changed");
+        ArcFurnaceProcess brass = (ArcFurnaceProcess)state.getProcessQueue().getFirst();
+        helper.assertTrue(brass.getRecipe(helper.getLevel())
+                        == recipe(helper, "tfie:arcfurnace/alloy/brass", ModeAwareArcFurnaceRecipe.class)
+                        && brass.getInputAmounts()[0] == 9 && brass.getInputAmounts()[1] == 1,
+                "The started Brass process must snapshot its recipe and reservations");
+        int brassProgress = brass.processTick;
+
+        blueprint.set(ModDataComponents.ARC_FURNACE_MODE, 5);
+        logic.tickServer(context);
+        helper.assertTrue(state.getProcessQueue().size() == 2 && brass.processTick > brassProgress,
+                "Changing the Blueprint must keep the started process and allow a new-mode process");
+        ArcFurnaceProcess constantan = (ArcFurnaceProcess)state.getProcessQueue().get(1);
+        helper.assertTrue(brass.getRecipe(helper.getLevel())
+                        == recipe(helper, "tfie:arcfurnace/alloy/brass", ModeAwareArcFurnaceRecipe.class)
+                        && constantan.getRecipe(helper.getLevel())
+                        == recipe(helper, "tfie:arcfurnace/alloy/constantan", ModeAwareArcFurnaceRecipe.class)
+                        && constantan.getInputAmounts()[0] == 1 && constantan.getInputAmounts()[2] == 1,
+                "The old process must remain Brass while the new process uses mode 5 Constantan");
+
+        state.getInventory().setStackInSlot(1, ItemStack.EMPTY);
+        int brassBeforeRemoval = brass.processTick;
+        int constantanBeforeRemoval = constantan.processTick;
+        logic.tickServer(context);
+        helper.assertTrue(state.getProcessQueue().contains(brass)
+                        && state.getProcessQueue().contains(constantan)
+                        && brass.processTick > brassBeforeRemoval
+                        && constantan.processTick > constantanBeforeRemoval,
+                "Removing only the Blueprint must not interrupt either started process");
+
+        state.getInventory().setStackInSlot(0, ItemStack.EMPTY);
+        logic.tickServer(context);
+        helper.assertTrue(!state.getProcessQueue().contains(brass)
+                        && state.getProcessQueue().contains(constantan)
+                        && state.getInventory().getStackInSlot(12).is(item("tfc:metal/ingot/zinc").getItem()),
+                "Removing real material must apply IE interruption without consuming the reserved additive");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, templateNamespace = TFIE.MOD_ID, timeoutTicks = 600)
     public static void arc_block_entity_and_datapack_reload_lifecycle(GameTestHelper helper)
     {
         FormedMachine<ArcFurnaceLogic.State> formed = form(helper, new ArcFurnaceMultiblock(),
@@ -996,28 +1056,28 @@ public final class FurnaceGameTests
         ChunkPos formedChunk = new ChunkPos(formed.master());
         helper.getLevel().setChunkForced(formedChunk.x, formedChunk.z, true);
         ArcFurnaceLogic.State state = formed.state();
-        ItemStack input = item("tfcm:ore_processing/briquet/magnetite");
+        ItemStack input = itemWithCount("tfc:metal/ingot/copper", 9);
         state.getInventory().setStackInSlot(0, input.copy());
         state.getInventory().setStackInSlot(2, input.copy());
         ItemStack blueprint = ModItems.ARC_FURNACE_BLUEPRINT.toStack();
-        blueprint.set(ModDataComponents.ARC_FURNACE_MODE, 8);
         state.getInventory().setStackInSlot(1, blueprint);
+        state.getInventory().setStackInSlot(12, itemWithCount("tfc:metal/ingot/zinc", 2));
         for(int slot = 23; slot <= 25; slot++)
             state.getInventory().setStackInSlot(slot, item("immersiveengineering:graphite_electrode"));
         state.getEnergy().receiveEnergy(ArcFurnaceLogic.ENERGY_CAPACITY, false);
-        ItemStack hotOutput = item("tfc:metal/ingot/copper");
+        ItemStack hotOutput = item("tfc:metal/ingot/brass");
         HeatCapability.setTemperature(hotOutput, 900);
         state.getInventory().setStackInSlot(16, hotOutput);
         for(int slot = 17; slot <= 21; slot++)
             state.getInventory().setStackInSlot(slot, itemWithCount("minecraft:cobblestone", 64));
         ArcFurnaceProcess running = new ArcFurnaceProcess(
-                arcRecipeHolder(helper, "tfie:arcfurnace/briquet/magnetite"), 17L, 0, 12, 13, 14, 15);
+                arcRecipeHolder(helper, "tfie:arcfurnace/alloy/brass"), 17L, 0, 12, 13, 14, 15);
         running.processTick = 37;
-        running.setInputAmounts(1, 0, 0, 0, 0);
+        running.setInputAmounts(9, 1, 0, 0, 0);
         ArcFurnaceProcess outputWaiting = new ArcFurnaceProcess(
-                arcRecipeHolder(helper, "tfie:arcfurnace/briquet/magnetite"), 18L, 2, 12, 13, 14, 15);
+                arcRecipeHolder(helper, "tfie:arcfurnace/alloy/brass"), 18L, 2, 12, 13, 14, 15);
         outputWaiting.processTick = outputWaiting.getMaxTicks(helper.getLevel()) - 1;
-        outputWaiting.setInputAmounts(1, 0, 0, 0, 0);
+        outputWaiting.setInputAmounts(9, 1, 0, 0, 0);
         CompoundTag stateTag = new CompoundTag();
         state.writeSaveNBT(stateTag, helper.getLevel().registryAccess());
         ListTag processTags = processList(running, helper);
@@ -1035,7 +1095,8 @@ public final class FurnaceGameTests
                 / savedRunning.getMaxTicks(helper.getLevel());
         helper.assertTrue(savedWaiting.processTick == waitingProgress
                         && energyBeforeWaitingTick - state.getEnergy().getEnergyStored() == processEnergy
-                        && state.getInventory().getStackInSlot(2).getCount() == 1,
+                        && state.getInventory().getStackInSlot(2).getCount() == 9
+                        && state.getInventory().getStackInSlot(12).getCount() == 2,
                 "The full-output Arc process must wait without progress, FE or reserved-input consumption");
         server.saveEverything(false, true, false);
         helper.getLevel().setChunkForced(formedChunk.x, formedChunk.z, false);
@@ -1052,12 +1113,15 @@ public final class FurnaceGameTests
             ArcFurnaceProcess reloadedWaiting = (ArcFurnaceProcess)reloaded.state().getProcessQueue().get(1);
             helper.assertTrue(reloadedRunning.processTick == runningProgress
                             && reloadedWaiting.processTick == waitingProgress
-                            && reloadedRunning.getInputAmounts()[0] == 1
-                            && reloadedWaiting.getInputAmounts()[0] == 1
-                            && reloaded.state().getInventory().getStackInSlot(0).getCount() == 1
-                            && reloaded.state().getInventory().getStackInSlot(2).getCount() == 1
+                            && reloadedRunning.getInputAmounts()[0] == 9
+                            && reloadedRunning.getInputAmounts()[1] == 1
+                            && reloadedWaiting.getInputAmounts()[0] == 9
+                            && reloadedWaiting.getInputAmounts()[1] == 1
+                            && reloaded.state().getInventory().getStackInSlot(0).getCount() == 9
+                            && reloaded.state().getInventory().getStackInSlot(2).getCount() == 9
+                            && reloaded.state().getInventory().getStackInSlot(12).getCount() == 2
                             && reloaded.state().getInventory().getStackInSlot(1)
-                            .get(ModDataComponents.ARC_FURNACE_MODE) == 8
+                            .get(ModDataComponents.ARC_FURNACE_MODE) == 1
                             && HeatCapability.getTemperature(
                             reloaded.state().getInventory().getStackInSlot(16)) > 0,
                     "A real chunk unload and disk reload must retain running and output-waiting processes, "
@@ -1067,101 +1131,168 @@ public final class FurnaceGameTests
             helper.assertTrue(reloadedWaiting.processTick == waitingProgress
                             && energyBeforeReloadedTick - reloaded.state().getEnergy().getEnergyStored()
                             == processEnergy
-                            && reloaded.state().getInventory().getStackInSlot(2).getCount() == 1,
+                            && reloaded.state().getInventory().getStackInSlot(2).getCount() == 9
+                            && reloaded.state().getInventory().getStackInSlot(12).getCount() == 2,
                     "The reloaded output-waiting process must not consume extra FE or input");
             reloaded.state().getInventory().setStackInSlot(21, ItemStack.EMPTY);
 
-        List<String> originalPacks = List.copyOf(server.getPackRepository().getSelectedIds());
-        Path pack = server.getWorldPath(LevelResource.DATAPACK_DIR).resolve("tfie-gametest-arc-reload");
-        writeArcReloadPack(pack, false);
-        server.getPackRepository().reload();
-        String packId = server.getPackRepository().getAvailableIds().stream()
-                .filter(value -> value.contains("tfie-gametest-arc-reload"))
-                .findFirst().orElseThrow();
-        List<String> changedPacks = new ArrayList<>(originalPacks);
-        changedPacks.add(packId);
-        whenDone(helper, server.reloadResources(changedPacks), () ->
-        {
-            RecipeLedgerGameTests.assertReloadedLedger(helper);
-            RecipeLedgerGameTests.assertNamespaceControl(helper);
-            ModeAwareArcFurnaceRecipe changed = recipe(helper,
-                    "tfie:arcfurnace/briquet/magnetite", ModeAwareArcFurnaceRecipe.class);
-            helper.assertTrue(changed.getTotalProcessTime() == 101
-                            && changed.getTotalProcessEnergy() == 51201
-                            && changed.getBaseOutputs().getFirst().getCount() == 2,
-                    "The higher-priority datapack must actually replace the Arc recipe definition");
-            int runningReloadProgress = reloadedRunning.processTick;
-            int waitingReloadProgress = reloadedWaiting.processTick;
-            int energy = reloaded.state().getEnergy().getEnergyStored();
-            reloaded.helper().tickServer();
-            helper.assertTrue(reloadedRunning.processTick == runningReloadProgress
-                            && reloadedWaiting.processTick == waitingReloadProgress
-                            && reloaded.state().getEnergy().getEnergyStored() == energy
-                            && reloaded.state().getInventory().getStackInSlot(0).getCount() == 1
-                            && reloaded.state().getInventory().getStackInSlot(2).getCount() == 1,
-                    "A changed datapack recipe must leave the old formed-Arc process waiting without consumption");
-            ItemStackHandler duplicateInventory = new ItemStackHandler(26);
-            duplicateInventory.setStackInSlot(0, itemWithCount("tfc:metal/ingot/copper", 9));
-            ItemStack modeOne = ModItems.ARC_FURNACE_BLUEPRINT.toStack();
-            duplicateInventory.setStackInSlot(1, modeOne);
-            NonNullList<ItemStack> zinc = NonNullList.withSize(4, ItemStack.EMPTY);
-            zinc.set(0, item("tfc:metal/ingot/zinc"));
-            helper.assertTrue(ArcFurnaceRecipeSelection.find(helper.getLevel(),
-                            duplicateInventory.getStackInSlot(0), zinc, duplicateInventory) == null,
-                    "A datapack duplicate with the same mode and main input must stop selection");
-
-            disableReloadProbe(pack);
+            Set<ResourceLocation> standardArcRecipes = ArcFurnaceRecipeLookup.recipes(helper.getLevel()).stream()
+                    .map(RecipeHolder::id).collect(Collectors.toSet());
+            List<String> originalPacks = List.copyOf(server.getPackRepository().getSelectedIds());
+            Path pack = server.getWorldPath(LevelResource.DATAPACK_DIR).resolve("tfie-gametest-arc-reload");
+            writeArcReloadPack(pack, false, false);
+            server.getPackRepository().reload();
+            String packId = server.getPackRepository().getAvailableIds().stream()
+                    .filter(value -> value.contains("tfie-gametest-arc-reload"))
+                    .findFirst().orElseThrow();
+            List<String> changedPacks = new ArrayList<>(originalPacks);
+            changedPacks.add(packId);
             whenDone(helper, server.reloadResources(changedPacks), () ->
             {
                 RecipeLedgerGameTests.assertReloadedLedger(helper);
                 RecipeLedgerGameTests.assertNamespaceControl(helper);
-                helper.assertTrue(optionalRecipe(helper, "tfie:arcfurnace/briquet/magnetite") == null,
-                        "The datapack must actually remove the running process recipe");
+                ModeAwareArcFurnaceRecipe changed = recipe(helper,
+                        "tfie:arcfurnace/briquet/magnetite", ModeAwareArcFurnaceRecipe.class);
+                helper.assertTrue(changed.getTotalProcessTime() == 101
+                                && changed.getTotalProcessEnergy() == 51201
+                                && changed.getBaseOutputs().getFirst().getCount() == 2,
+                        "The higher-priority datapack must actually replace the Arc recipe definition");
+                ModeAwareArcFurnaceRecipe brass = recipe(helper,
+                        "tfie:arcfurnace/alloy/brass", ModeAwareArcFurnaceRecipe.class);
+                helper.assertTrue(brass.mode() == 1 && brass.getTotalProcessTime() == 77
+                                && brass.getTotalProcessEnergy() == 77000
+                                && brass.getBaseOutputs().getFirst().getCount() == 10,
+                        "An overridden Arc recipe must retain its fixed mode and use datapack FE and time");
+                ItemStackHandler brassInventory = new ItemStackHandler(26);
+                ItemStack copper = itemWithCount("tfc:metal/ingot/copper", 9);
+                brassInventory.setStackInSlot(0, copper.copy());
+                ItemStack modeOne = ModItems.ARC_FURNACE_BLUEPRINT.toStack();
+                brassInventory.setStackInSlot(1, modeOne);
+                NonNullList<ItemStack> zinc = NonNullList.withSize(4, ItemStack.EMPTY);
+                zinc.set(0, item("tfc:metal/ingot/zinc"));
+                RecipeHolder<ArcFurnaceRecipe> selectedBrass = ArcFurnaceRecipeSelection.find(
+                        helper.getLevel(), copper, zinc, brassInventory);
+                helper.assertTrue(selectedBrass != null
+                                && selectedBrass.id().equals(id("tfie:arcfurnace/alloy/brass")),
+                        "The overridden mode-1 Brass recipe must be selected through the machine lookup");
+                ItemStack modeTwo = ModItems.ARC_FURNACE_BLUEPRINT.toStack();
+                modeTwo.set(ModDataComponents.ARC_FURNACE_MODE, 2);
+                brassInventory.setStackInSlot(1, modeTwo);
+                helper.assertTrue(ArcFurnaceRecipeSelection.find(helper.getLevel(), copper, zinc,
+                                brassInventory) == null,
+                        "The overridden Brass recipe must retain mode 1 and reject mode 2");
+                ArcFurnaceLogic.State processedBrass = completeArcProcess(helper, selectedBrass, 1,
+                        copper, List.of(item("tfc:metal/ingot/zinc")));
+                helper.assertTrue(processedBrass.getInventory().getStackInSlot(16).getCount() == 10
+                                && processedBrass.getEnergy().getEnergyStored()
+                                == ArcFurnaceLogic.ENERGY_CAPACITY - 1000,
+                        "A new Arc process must use the overridden output, FE and duration values");
+                ItemStack overriddenAlloy = completeAlloyProcess(helper,
+                        new AlloyExpected("constantan", "tfc:metal/ingot/copper", 1,
+                                "tfc:metal/ingot/nickel", 1, "tfcm:metal/ingot/constantan", 7));
+                helper.assertTrue(overriddenAlloy.getCount() == 7,
+                        "A new Alloy Kiln process must use the overridden output quantity");
+                ItemStackHandler userInventory = new ItemStackHandler(26);
+                ItemStack stone = item("minecraft:stone");
+                userInventory.setStackInSlot(0, stone.copy());
+                RecipeHolder<ArcFurnaceRecipe> userRecipe = ArcFurnaceRecipeSelection.find(helper.getLevel(),
+                        stone, NonNullList.withSize(4, ItemStack.EMPTY), userInventory);
+                helper.assertTrue(userRecipe != null
+                                && userRecipe.id().equals(id("example:arcfurnace/user_stone")),
+                        "A user tfie:arc_furnace recipe must be selected through the machine lookup");
+                ArcFurnaceLogic.State userProcess = completeArcProcess(helper, userRecipe, 0,
+                        stone, List.of());
+                Set<ResourceLocation> reloadedArcRecipes = ArcFurnaceRecipeLookup.recipes(helper.getLevel())
+                        .stream().map(RecipeHolder::id).collect(Collectors.toSet());
+                Set<ResourceLocation> addedRecipes = new HashSet<>(reloadedArcRecipes);
+                addedRecipes.removeAll(standardArcRecipes);
+                helper.assertTrue(userProcess.getInventory().getStackInSlot(16).is(Items.COBBLESTONE)
+                                && reloadedArcRecipes.containsAll(standardArcRecipes)
+                                && addedRecipes.equals(Set.of(id("example:arcfurnace/user_stone"))),
+                        "The user recipe must run while the pre-pack standard recipe set remains unchanged");
+                int runningReloadProgress = reloadedRunning.processTick;
+                int waitingReloadProgress = reloadedWaiting.processTick;
+                int energy = reloaded.state().getEnergy().getEnergyStored();
                 reloaded.helper().tickServer();
                 helper.assertTrue(reloadedRunning.processTick == runningReloadProgress
                                 && reloadedWaiting.processTick == waitingReloadProgress
-                                && reloaded.state().getInventory().getStackInSlot(0).getCount() == 1
-                                && reloaded.state().getInventory().getStackInSlot(2).getCount() == 1,
-                        "A removed datapack recipe must preserve the old process and reserved input");
-
-                deletePack(pack);
-                server.getPackRepository().reload();
-                whenDone(helper, server.reloadResources(originalPacks), () ->
+                                && reloaded.state().getEnergy().getEnergyStored() == energy
+                                && reloaded.state().getInventory().getStackInSlot(0).getCount() == 9
+                                && reloaded.state().getInventory().getStackInSlot(2).getCount() == 9
+                                && reloaded.state().getInventory().getStackInSlot(12).getCount() == 2,
+                        "A changed datapack recipe must leave the old formed-Arc process waiting without consumption");
+                writeArcReloadPack(pack, false, true);
+                whenDone(helper, server.reloadResources(changedPacks), () ->
                 {
                     RecipeLedgerGameTests.assertReloadedLedger(helper);
-                    RecipeLedgerGameTests.assertNamespaceControlRemoved(helper);
-                    helper.assertTrue(((net.claustra01.tfie.common.arc.ArcFurnaceProcessSnapshotAccess)
-                                    reloadedRunning).tfie$matchesCurrentRecipe(helper.getLevel())
-                                    && ((net.claustra01.tfie.common.arc.ArcFurnaceProcessSnapshotAccess)
-                                    reloadedWaiting).tfie$matchesCurrentRecipe(helper.getLevel()),
-                            "Restoring the original datapack definition must resume the saved Arc process");
-                    reloaded.helper().tickServer();
-                    reloaded.helper().tickServer();
-                    helper.assertTrue(!reloaded.state().getInventory().getStackInSlot(21).isEmpty()
-                                    && reloaded.state().getInventory().getStackInSlot(2).isEmpty(),
-                            "Restoring the original definition must resume and commit the waiting process: output="
-                                    + reloaded.state().getInventory().getStackInSlot(21) + ", input="
-                                    + reloaded.state().getInventory().getStackInSlot(2) + ", progress="
-                                    + reloadedWaiting.processTick + ", queue="
-                                    + reloaded.state().getProcessQueue().size());
-                    new ArcFurnaceLogic().dropExtraItems(reloaded.state(), stack ->
-                            Block.popResource(helper.getLevel(), reloaded.master(), stack));
-                    reloaded.helper().disassemble();
-                    helper.runAfterDelay(5, () ->
+                    RecipeLedgerGameTests.assertNamespaceControl(helper);
+                    ItemStackHandler duplicateInventory = new ItemStackHandler(26);
+                    duplicateInventory.setStackInSlot(0, itemWithCount("tfc:metal/ingot/copper", 9));
+                    ItemStack duplicateModeOne = ModItems.ARC_FURNACE_BLUEPRINT.toStack();
+                    duplicateInventory.setStackInSlot(1, duplicateModeOne);
+                    NonNullList<ItemStack> duplicateZinc = NonNullList.withSize(4, ItemStack.EMPTY);
+                    duplicateZinc.set(0, item("tfc:metal/ingot/zinc"));
+                    helper.assertTrue(ArcFurnaceRecipeSelection.find(helper.getLevel(),
+                                    duplicateInventory.getStackInSlot(0), duplicateZinc,
+                                    duplicateInventory) == null,
+                            "A datapack duplicate with the same mode and main input must stop selection");
+
+                    disableReloadProbe(pack);
+                    whenDone(helper, server.reloadResources(changedPacks), () ->
                     {
-                        List<ItemStack> recovered = helper.getLevel().getEntitiesOfClass(ItemEntity.class,
-                                        new AABB(reloaded.origin()).inflate(8)).stream()
-                                .map(ItemEntity::getItem).toList();
-                        helper.assertTrue(recovered.stream().anyMatch(stack -> stack.is(input.getItem()))
-                                        && recovered.stream().anyMatch(stack -> stack.is(
-                                        ModItems.ARC_FURNACE_BLUEPRINT.get())),
-                                "Dismantling the restored formed Arc must recover its input and Blueprint");
-                        helper.getLevel().setChunkForced(formedChunk.x, formedChunk.z, false);
-                        helper.succeed();
+                        RecipeLedgerGameTests.assertReloadedLedger(helper);
+                        RecipeLedgerGameTests.assertNamespaceControl(helper);
+                        helper.assertTrue(optionalRecipe(helper, "tfie:arcfurnace/briquet/magnetite") == null,
+                                "The datapack must actually remove the running process recipe");
+                        reloaded.helper().tickServer();
+                        helper.assertTrue(reloadedRunning.processTick == runningReloadProgress
+                                        && reloadedWaiting.processTick == waitingReloadProgress
+                                        && reloaded.state().getInventory().getStackInSlot(0).getCount() == 9
+                                        && reloaded.state().getInventory().getStackInSlot(2).getCount() == 9
+                                        && reloaded.state().getInventory().getStackInSlot(12).getCount() == 2,
+                                "A removed datapack recipe must preserve the old process and reserved input");
+
+                        deletePack(pack);
+                        server.getPackRepository().reload();
+                        whenDone(helper, server.reloadResources(originalPacks), () ->
+                        {
+                            RecipeLedgerGameTests.assertReloadedLedger(helper);
+                            RecipeLedgerGameTests.assertNamespaceControlRemoved(helper);
+                            helper.assertTrue(((net.claustra01.tfie.common.arc.ArcFurnaceProcessSnapshotAccess)
+                                            reloadedRunning).tfie$matchesCurrentRecipe(helper.getLevel())
+                                            && ((net.claustra01.tfie.common.arc.ArcFurnaceProcessSnapshotAccess)
+                                            reloadedWaiting).tfie$matchesCurrentRecipe(helper.getLevel()),
+                                    "Restoring the original datapack definition must resume the saved Arc process");
+                            reloaded.helper().tickServer();
+                            reloaded.helper().tickServer();
+                            helper.assertTrue(!reloaded.state().getInventory().getStackInSlot(21).isEmpty()
+                                            && reloaded.state().getInventory().getStackInSlot(2).isEmpty()
+                                            && reloaded.state().getInventory().getStackInSlot(12).getCount() == 1
+                                            && reloaded.state().getInventory().getStackInSlot(16).getCount() == 1
+                                            && HeatCapability.getTemperature(
+                                            reloaded.state().getInventory().getStackInSlot(16)) <= 900
+                                            && Math.abs(HeatCapability.getTemperature(
+                                            reloaded.state().getInventory().getStackInSlot(16))
+                                            - HeatCapability.getTemperature(
+                                            reloaded.state().getInventory().getStackInSlot(21))) > 0.01f,
+                                    "Restoring the original definition must resume and commit the waiting process: output="
+                                            + reloaded.state().getInventory().getStackInSlot(21) + ", input="
+                                            + reloaded.state().getInventory().getStackInSlot(2) + ", progress="
+                                            + reloadedWaiting.processTick + ", queue="
+                                            + reloaded.state().getProcessQueue().size());
+                            List<ItemStack> recovered = new ArrayList<>();
+                            new ArcFurnaceLogic().dropExtraItems(reloaded.state(), recovered::add);
+                            reloaded.helper().disassemble();
+                            helper.assertTrue(recovered.stream().anyMatch(stack -> stack.is(input.getItem()))
+                                            && recovered.stream().anyMatch(stack -> stack.is(
+                                            ModItems.ARC_FURNACE_BLUEPRINT.get())),
+                                    "Dismantling the restored formed Arc must recover its input and Blueprint");
+                            helper.getLevel().setChunkForced(formedChunk.x, formedChunk.z, false);
+                            helper.succeed();
+                        });
                     });
                 });
             });
-        });
         });
     }
 
@@ -1181,28 +1312,28 @@ public final class FurnaceGameTests
         FormedMachine<ArcFurnaceLogic.State> formed = form(helper, new ArcFurnaceMultiblock(),
                 ARC_RESTART_ORIGIN.subtract(testOrigin), new BlockPos(2, 0, 4), new BlockPos(2, 1, 2));
         ArcFurnaceLogic.State state = formed.state();
-        ItemStack input = item("tfcm:ore_processing/briquet/magnetite");
+        ItemStack input = itemWithCount("tfc:metal/ingot/copper", 9);
         state.getInventory().setStackInSlot(0, input.copy());
         state.getInventory().setStackInSlot(2, input.copy());
         ItemStack blueprint = ModItems.ARC_FURNACE_BLUEPRINT.toStack();
-        blueprint.set(ModDataComponents.ARC_FURNACE_MODE, 8);
         state.getInventory().setStackInSlot(1, blueprint);
+        state.getInventory().setStackInSlot(12, itemWithCount("tfc:metal/ingot/zinc", 2));
         for(int slot = 23; slot <= 25; slot++)
             state.getInventory().setStackInSlot(slot, item("immersiveengineering:graphite_electrode"));
         state.getEnergy().receiveEnergy(ArcFurnaceLogic.ENERGY_CAPACITY, false);
-        ItemStack hotOutput = item("tfc:metal/ingot/copper");
+        ItemStack hotOutput = item("tfc:metal/ingot/brass");
         HeatCapability.setTemperature(hotOutput, 900);
         state.getInventory().setStackInSlot(16, hotOutput);
         for(int slot = 17; slot <= 21; slot++)
             state.getInventory().setStackInSlot(slot, itemWithCount("minecraft:cobblestone", 64));
         ArcFurnaceProcess running = new ArcFurnaceProcess(
-                arcRecipeHolder(helper, "tfie:arcfurnace/briquet/magnetite"), 27L, 0, 12, 13, 14, 15);
+                arcRecipeHolder(helper, "tfie:arcfurnace/alloy/brass"), 27L, 0, 12, 13, 14, 15);
         running.processTick = 37;
-        running.setInputAmounts(1, 0, 0, 0, 0);
+        running.setInputAmounts(9, 1, 0, 0, 0);
         ArcFurnaceProcess outputWaiting = new ArcFurnaceProcess(
-                arcRecipeHolder(helper, "tfie:arcfurnace/briquet/magnetite"), 28L, 2, 12, 13, 14, 15);
+                arcRecipeHolder(helper, "tfie:arcfurnace/alloy/brass"), 28L, 2, 12, 13, 14, 15);
         outputWaiting.processTick = outputWaiting.getMaxTicks(helper.getLevel()) - 1;
-        outputWaiting.setInputAmounts(1, 0, 0, 0, 0);
+        outputWaiting.setInputAmounts(9, 1, 0, 0, 0);
         CompoundTag stateTag = new CompoundTag();
         state.writeSaveNBT(stateTag, helper.getLevel().registryAccess());
         ListTag processTags = processList(running, helper);
@@ -1261,13 +1392,16 @@ public final class FurnaceGameTests
         int waitingProgress = outputWaiting.getMaxTicks(helper.getLevel()) - 1;
         helper.assertTrue(running.processTick == 37
                         && outputWaiting.processTick == waitingProgress
-                        && running.getInputAmounts()[0] == 1
-                        && outputWaiting.getInputAmounts()[0] == 1
-                        && state.getInventory().getStackInSlot(0).getCount() == 1
-                        && state.getInventory().getStackInSlot(2).getCount() == 1
+                        && running.getInputAmounts()[0] == 9
+                        && running.getInputAmounts()[1] == 1
+                        && outputWaiting.getInputAmounts()[0] == 9
+                        && outputWaiting.getInputAmounts()[1] == 1
+                        && state.getInventory().getStackInSlot(0).getCount() == 9
+                        && state.getInventory().getStackInSlot(2).getCount() == 9
+                        && state.getInventory().getStackInSlot(12).getCount() == 2
                         && state.getInventory().getStackInSlot(1).is(ModItems.ARC_FURNACE_BLUEPRINT.get())
                         && state.getInventory().getStackInSlot(1)
-                        .get(ModDataComponents.ARC_FURNACE_MODE) == 8
+                        .get(ModDataComponents.ARC_FURNACE_MODE) == 1
                         && HeatCapability.getTemperature(state.getInventory().getStackInSlot(16)) > 0,
                 "A server restart must retain Arc recipes, progress, reservations, inventory, Blueprint mode, "
                         + "waiting state and normally cooling Heat");
@@ -1285,9 +1419,23 @@ public final class FurnaceGameTests
         helper.assertTrue(running.processTick == 38
                         && outputWaiting.processTick == waitingProgress
                         && energy - state.getEnergy().getEnergyStored() == processEnergy
-                        && state.getInventory().getStackInSlot(2).getCount() == 1,
+                        && state.getInventory().getStackInSlot(2).getCount() == 9
+                        && state.getInventory().getStackInSlot(12).getCount() == 2,
                 "After restart, the running process must resume while the full-output process waits without "
                         + "extra FE or input consumption");
+        state.getInventory().setStackInSlot(21, ItemStack.EMPTY);
+        formed.helper().tickServer();
+        helper.assertTrue(state.getInventory().getStackInSlot(2).isEmpty()
+                        && state.getInventory().getStackInSlot(12).getCount() == 1
+                        && state.getInventory().getStackInSlot(16).getCount() == 1
+                        && HeatCapability.getTemperature(state.getInventory().getStackInSlot(16)) > 0
+                        && HeatCapability.getTemperature(state.getInventory().getStackInSlot(16)) <= 900
+                        && state.getInventory().getStackInSlot(21).is(item("tfc:metal/ingot/brass").getItem())
+                        && state.getInventory().getStackInSlot(21).getCount() == 10
+                        && Math.abs(HeatCapability.getTemperature(state.getInventory().getStackInSlot(16))
+                        - HeatCapability.getTemperature(state.getInventory().getStackInSlot(21))) > 0.01f,
+                "Freeing one slot after restart must consume one reservation and preserve the differently heated "
+                        + "existing output without merging or reheating it");
         helper.getLevel().setChunkForced(chunk.x, chunk.z, false);
         helper.succeed();
     }
@@ -1975,12 +2123,14 @@ public final class FurnaceGameTests
         throw new IllegalStateException("No item capability at " + position);
     }
 
-    private static void writeArcReloadPack(Path pack, boolean disabled)
+    private static void writeArcReloadPack(Path pack, boolean disabled, boolean duplicate)
     {
         try
         {
             Files.createDirectories(pack.resolve("data/tfie/recipe/arcfurnace/briquet"));
             Files.createDirectories(pack.resolve("data/tfie/recipe/arcfurnace/alloy"));
+            Files.createDirectories(pack.resolve("data/tfie/recipe/alloysmelter"));
+            Files.createDirectories(pack.resolve("data/example/recipe/arcfurnace"));
             Files.createDirectories(pack.resolve("data/ledger_test/recipe/crusher"));
             Files.createDirectories(pack.resolve("data/immersiveengineering/recipe"));
             Files.writeString(pack.resolve("pack.mcmeta"),
@@ -1992,12 +2142,31 @@ public final class FurnaceGameTests
                             + "\"input\":{\"item\":\"tfcm:ore_processing/briquet/magnetite\"},"
                             + "\"results\":[{\"count\":2,\"id\":\"tfc:metal/ingot/cast_iron\"}],\"time\":101}",
                     StandardCharsets.UTF_8);
-            Files.writeString(pack.resolve("data/tfie/recipe/arcfurnace/alloy/duplicate_brass.json"),
+            Files.writeString(pack.resolve("data/tfie/recipe/arcfurnace/alloy/brass.json"),
                     "{\"type\":\"tfie:arc_furnace\",\"additives\":[{\"tag\":\"c:ingots/zinc\"}],"
-                            + "\"energy\":256000,\"input\":{\"basePredicate\":{\"tag\":\"c:ingots/copper\"},"
+                            + "\"energy\":77000,\"input\":{\"basePredicate\":{\"tag\":\"c:ingots/copper\"},"
                             + "\"count\":9},\"mode\":1,\"results\":[{\"count\":10,"
-                            + "\"id\":\"tfc:metal/ingot/brass\"}],\"time\":500}",
+                            + "\"id\":\"tfc:metal/ingot/brass\"}],\"time\":77}",
                     StandardCharsets.UTF_8);
+            Files.writeString(pack.resolve("data/tfie/recipe/alloysmelter/constantan.json"),
+                    "{\"type\":\"immersiveengineering:alloy\",\"input0\":{\"tag\":\"c:ingots/copper\"},"
+                            + "\"input1\":{\"tag\":\"c:ingots/nickel\"},\"result\":{\"count\":7,"
+                            + "\"id\":\"tfcm:metal/ingot/constantan\"}}",
+                    StandardCharsets.UTF_8);
+            Files.writeString(pack.resolve("data/example/recipe/arcfurnace/user_stone.json"),
+                    "{\"type\":\"tfie:arc_furnace\",\"additives\":[],\"energy\":100,\"mode\":0,"
+                            + "\"input\":{\"item\":\"minecraft:stone\"},\"results\":[{\"id\":"
+                            + "\"minecraft:cobblestone\"}],\"time\":10}", StandardCharsets.UTF_8);
+            Path duplicateRecipe = pack.resolve("data/tfie/recipe/arcfurnace/alloy/duplicate_brass.json");
+            if(duplicate)
+                Files.writeString(duplicateRecipe,
+                        "{\"type\":\"tfie:arc_furnace\",\"additives\":[{\"tag\":\"c:ingots/zinc\"}],"
+                                + "\"energy\":256000,\"input\":{\"basePredicate\":{\"tag\":\"c:ingots/copper\"},"
+                                + "\"count\":9},\"mode\":1,\"results\":[{\"count\":10,"
+                                + "\"id\":\"tfc:metal/ingot/brass\"}],\"time\":500}",
+                        StandardCharsets.UTF_8);
+            else
+                Files.deleteIfExists(duplicateRecipe);
             Files.writeString(pack.resolve("data/ledger_test/recipe/crusher/wool.json"),
                     "{\"type\":\"minecraft:crafting_shapeless\",\"category\":\"misc\","
                             + "\"ingredients\":[{\"item\":\"minecraft:stone\"}],"
@@ -2016,7 +2185,7 @@ public final class FurnaceGameTests
 
     private static void disableReloadProbe(Path pack)
     {
-        writeArcReloadPack(pack, true);
+        writeArcReloadPack(pack, true, true);
     }
 
     private static void deletePack(Path pack)

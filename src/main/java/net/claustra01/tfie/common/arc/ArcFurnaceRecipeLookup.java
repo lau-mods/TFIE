@@ -29,7 +29,7 @@ public final class ArcFurnaceRecipeLookup
     {
         return level.getRecipeManager().byKey(id).map(RecipeHolder::value)
                 .filter(ModeAwareArcFurnaceRecipe.class::isInstance)
-                .map(ArcFurnaceRecipe.class::cast).orElse(null);
+                .map(ModeAwareArcFurnaceRecipe.class::cast).orElse(null);
     }
 
     public static boolean isValidInput(Level level, ItemStack stack)

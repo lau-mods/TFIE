@@ -579,7 +579,7 @@ Action:
 Brass、Bronze、Constantan、Electrum、Invar、Andesite AlloyのZinc経路・Tin経路を各1回加工する。
 
 Expected Result:
-Copper9+Zinc1→Brass10、Copper9+Tin1→Bronze10、Copper1+Nickel1→Constantan2、Gold1+Silver1→Electrum2、Wrought Iron2+Nickel1→Invar3、Loose Andesite10+ZincまたはTin1→Andesite Alloy10となる。各200ticks、Blueprint不要、金属出力は融点×0.9となる。 詳細仕様第12章の該当する全表行・条件も合否対象とする。検証方式はGameTestとする。
+Copper9+Zinc1→Brass10、Copper9+Tin1→Bronze10、Copper1+Nickel1→Constantan2、Gold1+Silver1→Electrum2、Wrought Iron2+Nickel1→Invar3、Loose Andesite1+ZincまたはTin Nugget1→Andesite Alloy1となる。各200ticks、Blueprint不要、金属出力は融点×0.9となる。 詳細仕様第12章の該当する全表行・条件も合否対象とする。検証方式はGameTestとする。
 
 ##### AC-F008-002: Insulating Glassと旧配合の排除
 
@@ -2463,12 +2463,12 @@ TFCMのPowder 4個からPellet 1個、Pellet 5個からBriquet 1個という既�
 | Solder | 1 | Antimony 2個 | Bismuth 1個、Tin 1個 | 4 | 102,400 | 200 |
 | Hastelloy | 2 | Nickel 7個 | Chromium 3個、Molybdenum 2個、Wrought Iron 1個、Tungsten 1個 | 14 | 358,400 | 700 |
 | High Speed Steel | 2 | Steel 10個 | Tungsten 1個、Vanadium 1個、Molybdenum 1個、Manganese 1個 | 14 | 358,400 | 700 |
-| Andesite AlloyのZinc経路 | 1 | Loose Andesite 10個 | Zinc 1個 | 10 | 256,000 | 500 |
-| Andesite AlloyのTin経路 | 2 | Loose Andesite 10個 | Tin 1個 | 10 | 256,000 | 500 |
+| Andesite AlloyのZinc経路 | 1 | Loose Andesite 1個 | Zinc Nugget 1個 | 1 | 25,600 | 50 |
+| Andesite AlloyのTin経路 | 2 | Loose Andesite 1個 | Tin Nugget 1個 | 1 | 25,600 | 50 |
 
 金属合金は16種類、Andesite Alloyは2経路とする。HastelloyはFirmaLifeのChromiumを使用するため、FirmaLife導入時だけ有効にする。各配合に追加のFlux、炭素材、Slag、確率副産物を設けない。出力には共通の90%温度を付与する。
 
-Loose AndesiteはTFCMにおける金属換算量90mBを用いる。10個と金属Ingot 1個で1,000mBとなり、Andesite Alloy 10個の配合比率は90:10となる。Tungsten Steel、Netherite、Signalum等について、上表にない合金製法をTFIEから追加しない。
+Andesite AlloyはLoose Andesite 1個とZincまたはTin Nugget 1個からIngot 1個を生成する。Tungsten Steel、Netherite、Signalum等について、上表にない合金製法をTFIEから追加しない。
 
 正規レシピIDは`tfie:arcfurnace/alloy/M`とする。`M`は各出力合金の末尾IDであり、Andesite Alloyだけは`andesite_alloy_from_zinc`と`andesite_alloy_from_tin`を使用する。Briquetは`tfie:arcfurnace/briquet/S`とし、`S`へ全33系列の系列IDを代入する。
 
@@ -2591,8 +2591,8 @@ Coke Block、Charcoal Blockおよびその他の燃料をIE高炉へ追加しな
 | Constantan | Copper Ingot1個 | Nickel Ingot1個 | 2 |
 | Electrum | Gold Ingot1個 | Silver Ingot1個 | 2 |
 | Invar | Wrought Iron Ingot2個 | Nickel Ingot1個 | 3 |
-| Andesite Alloy | Loose Andesite10個 | Zinc Ingot1個 | 10 |
-| Andesite Alloy | Loose Andesite10個 | Tin Ingot1個 | 10 |
+| Andesite Alloy | Loose Andesite1個 | Zinc Nugget1個 | 1 |
+| Andesite Alloy | Loose Andesite1個 | Tin Nugget1個 | 1 |
 
 正規Recipe IDは`tfie:alloysmelter/M`とする。Andesite Alloyの末尾は`andesite_alloy_from_zinc`と`andesite_alloy_from_tin`に分ける。金属主出力へ融点の90%を付与し、通常冷却と異温度非合流を適用する。
 
@@ -3855,7 +3855,7 @@ Alloy Kilnのレシピ型は `immersiveengineering:alloy`、IE標準レシピID�
 | `immersiveengineering:alloysmelter/manyullyn` | 削除する。代替レシピを追加しない。 |
 | `immersiveengineering:alloysmelter/insulating_glass` | Glass Block 2個とTFCM Wrought Iron Dust 1個からInsulating Glass 2個を得る配合へ置換する。 |
 
-上記の採用6件に、Loose Andesite 10個とZinc 1個からAndesite Alloy 10個を得る配合、およびLoose Andesite 10個とTin 1個から同量を得る配合を追加する。採用8配合はすべて200 ticksとする。Sterling Silver、Osmiridium、3成分以上の合金を追加しない。Rose GoldのAlloy Kilnでの禁止は、採用済みArc配合の禁止へ拡張しない。[IE標準の合金生成](https://github.com/BluSunrize/ImmersiveEngineering/blob/583a182549d284a35c813b55ac2a0d1fddcf945a/src/datagen/java/blusunrize/immersiveengineering/data/recipes/OreRecipes.java)、[Rose Gold](https://github.com/BluSunrize/ImmersiveEngineering/blob/583a182549d284a35c813b55ac2a0d1fddcf945a/src/generated/resources/data/immersiveengineering/recipe/alloysmelter/rose_gold.json)、[Manyullyn](https://github.com/BluSunrize/ImmersiveEngineering/blob/583a182549d284a35c813b55ac2a0d1fddcf945a/src/generated/resources/data/immersiveengineering/recipe/alloysmelter/manyullyn.json)
+上記の採用6件に、Loose Andesite 1個とZinc Nugget 1個からAndesite Alloy 1個を得る配合、およびLoose Andesite 1個とTin Nugget 1個から同量を得る配合を追加する。採用8配合はすべて200 ticksとする。Sterling Silver、Osmiridium、3成分以上の合金を追加しない。Rose GoldのAlloy Kilnでの禁止は、採用済みArc配合の禁止へ拡張しない。[IE標準の合金生成](https://github.com/BluSunrize/ImmersiveEngineering/blob/583a182549d284a35c813b55ac2a0d1fddcf945a/src/datagen/java/blusunrize/immersiveengineering/data/recipes/OreRecipes.java)、[Rose Gold](https://github.com/BluSunrize/ImmersiveEngineering/blob/583a182549d284a35c813b55ac2a0d1fddcf945a/src/generated/resources/data/immersiveengineering/recipe/alloysmelter/rose_gold.json)、[Manyullyn](https://github.com/BluSunrize/ImmersiveEngineering/blob/583a182549d284a35c813b55ac2a0d1fddcf945a/src/generated/resources/data/immersiveengineering/recipe/alloysmelter/manyullyn.json)
 
 #### Metal Pressの標準配合との競合除去
 

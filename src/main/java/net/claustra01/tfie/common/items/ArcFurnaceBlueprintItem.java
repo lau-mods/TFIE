@@ -41,6 +41,8 @@ public final class ArcFurnaceBlueprintItem extends Item
                                 TooltipFlag flag)
     {
         int mode = stack.getOrDefault(ModDataComponents.ARC_FURNACE_MODE, 1);
+        tooltip.add(Component.translatable("tooltip.tfie.arc_furnace_blueprint.category")
+                .withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable("tooltip.tfie.arc_furnace_blueprint.mode", mode)
                 .withStyle(mode >= 1 && mode <= 8 ? ChatFormatting.BLUE : ChatFormatting.RED));
         tooltip.add(Component.translatable("tooltip.tfie.arc_furnace_blueprint.use")

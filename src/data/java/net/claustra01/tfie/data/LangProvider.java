@@ -19,7 +19,8 @@ public final class LangProvider extends LanguageProvider
         addItem(ModItems.IE_HAMMER_HEAD, "Engineer's Hammer Head");
         addItem(ModItems.WIRECUTTER_HEAD, "Wirecutter Head");
         addItem(ModItems.MOLD_SHEET, "Sheet Mold");
-        addItem(ModItems.ARC_FURNACE_BLUEPRINT, "Arc Furnace Blueprint");
+        addItem(ModItems.ARC_FURNACE_BLUEPRINT, "Engineer's Blueprint");
+        add("tooltip.tfie.arc_furnace_blueprint.category", "Arc Furnace");
         add("tooltip.tfie.arc_furnace_blueprint.mode", "Mode %s");
         add("tooltip.tfie.arc_furnace_blueprint.use", "Use in the main hand to change mode");
         add("message.tfie.arc_furnace_blueprint.mode", "Arc Furnace mode: %s");

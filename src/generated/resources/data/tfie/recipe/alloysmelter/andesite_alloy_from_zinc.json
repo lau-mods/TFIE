@@ -22,16 +22,12 @@
   ],
   "type": "immersiveengineering:alloy",
   "input0": {
-    "basePredicate": {
-      "item": "tfc:rock/loose/andesite"
-    },
-    "count": 10
+    "item": "tfc:rock/loose/andesite"
   },
   "input1": {
-    "tag": "c:ingots/zinc"
+    "tag": "c:nuggets/zinc"
   },
   "result": {
-    "count": 10,
     "id": "tfcm:metal/ingot/andesite_alloy"
   }
 }

@@ -1,0 +1,9 @@
+immersiveengineering/drill_iron.png = Immersive Engineering 12.4.2-194 assets/immersiveengineering/textures/item/drill_iron.png
+immersiveengineering/drillhead_iron.png = Immersive Engineering 12.4.2-194 assets/immersiveengineering/textures/item/drillhead_iron.png
+ingot/black_steel.png = TerraFirmaCraft 4.2.16 assets/tfc/textures/item/metal/ingot/black_steel.png
+ingot/blue_steel.png = TerraFirmaCraft 4.2.16 assets/tfc/textures/item/metal/ingot/blue_steel.png
+ingot/red_steel.png = TerraFirmaCraft 4.2.16 assets/tfc/textures/item/metal/ingot/red_steel.png
+ingot/invar.png = TFC Metallum Overhaul 2.2.1 assets/tfcm/textures/item/metal/ingot/invar.png
+ingot/netherite.png = TFC Metallum Overhaul 2.2.1 assets/tfcm/textures/item/metal/ingot/netherite.png
+ingot/titanium.png = TFC Metallum Overhaul 2.2.1 assets/tfcm/textures/item/metal/ingot/titanium.png
+ingot/tungsten_steel.png = TFC Metallum Overhaul 2.2.1 assets/tfcm/textures/item/metal/ingot/tungsten_steel.png

@@ -165,8 +165,8 @@ public final class ArcFurnaceRecipes extends RecipeProvider
     {
         ResourceLocation loose = id("tfc:rock/loose/andesite");
         ResourceLocation result = id("tfcm:metal/ingot/andesite_alloy");
-        add(output, id("tfie:arcfurnace/alloy/" + path), mode, input(loose, 10),
-                List.of(add(additive, 1)), result, 10, TagOutput.EMPTY, 256000, 500,
+        add(output, id("tfie:arcfurnace/alloy/" + path), mode, input(loose, 1),
+                List.of(tag("nuggets/" + additive, 1)), result, 1, TagOutput.EMPTY, 25600, 50,
                 null, List.of(loose, result), metals("andesite_alloy", additive), null);
     }
 

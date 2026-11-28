@@ -23,22 +23,18 @@
   "type": "tfie:arc_furnace",
   "additives": [
     {
-      "tag": "c:ingots/tin"
+      "tag": "c:nuggets/tin"
     }
   ],
-  "energy": 256000,
+  "energy": 25600,
   "input": {
-    "basePredicate": {
-      "item": "tfc:rock/loose/andesite"
-    },
-    "count": 10
+    "item": "tfc:rock/loose/andesite"
   },
   "mode": 2,
   "results": [
     {
-      "count": 10,
       "id": "tfcm:metal/ingot/andesite_alloy"
     }
   ],
-  "time": 500
+  "time": 50
 }

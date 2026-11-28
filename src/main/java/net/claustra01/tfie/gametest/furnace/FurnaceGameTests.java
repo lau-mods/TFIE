@@ -176,8 +176,8 @@ public final class FurnaceGameTests
             arc("solder", 1, "antimony", 2, 4, 102400, 200),
             arc("hastelloy", 2, "nickel", 7, 14, 358400, 700),
             arc("high_speed_steel", 2, "steel", 10, 14, 358400, 700),
-            arc("andesite_alloy_from_zinc", 1, "andesite", 10, 10, 256000, 500),
-            arc("andesite_alloy_from_tin", 2, "andesite", 10, 10, 256000, 500));
+            arc("andesite_alloy_from_zinc", 1, "andesite", 1, 1, 25600, 50),
+            arc("andesite_alloy_from_tin", 2, "andesite", 1, 1, 25600, 50));
 
     private FurnaceGameTests()
     {
@@ -1781,10 +1781,10 @@ public final class FurnaceGameTests
                         "tfcm:metal/ingot/electrum", 2),
                 new AlloyExpected("invar", "tfc:metal/ingot/wrought_iron", 2,
                         "tfc:metal/ingot/nickel", 1, "tfcm:metal/ingot/invar", 3),
-                new AlloyExpected("andesite_alloy_from_zinc", "tfc:rock/loose/andesite", 10,
-                        "tfc:metal/ingot/zinc", 1, "tfcm:metal/ingot/andesite_alloy", 10),
-                new AlloyExpected("andesite_alloy_from_tin", "tfc:rock/loose/andesite", 10,
-                        "tfc:metal/ingot/tin", 1, "tfcm:metal/ingot/andesite_alloy", 10),
+                new AlloyExpected("andesite_alloy_from_zinc", "tfc:rock/loose/andesite", 1,
+                        "tfc:metal/nugget/zinc", 1, "tfcm:metal/ingot/andesite_alloy", 1),
+                new AlloyExpected("andesite_alloy_from_tin", "tfc:rock/loose/andesite", 1,
+                        "tfc:metal/nugget/tin", 1, "tfcm:metal/ingot/andesite_alloy", 1),
                 new AlloyExpected("insulating_glass", "minecraft:glass", 2,
                         "tfcm:metal/dust/wrought_iron", 1, "immersiveengineering:insulating_glass", 2)};
         for(AlloyExpected row : rows)
@@ -1880,8 +1880,8 @@ public final class FurnaceGameTests
                     "tungsten", 1);
             case "high_speed_steel" -> additives("tungsten", 1, "vanadium", 1, "molybdenum", 1,
                     "manganese", 1);
-            case "andesite_alloy_from_zinc" -> additives("zinc", 1);
-            case "andesite_alloy_from_tin" -> additives("tin", 1);
+            case "andesite_alloy_from_zinc" -> additives("zinc_nugget", 1);
+            case "andesite_alloy_from_tin" -> additives("tin_nugget", 1);
             default -> List.of();
         };
     }
@@ -1896,6 +1896,8 @@ public final class FurnaceGameTests
 
     private static ItemStack arcMetalInput(String metal)
     {
+        if(metal.endsWith("_nugget"))
+            return item("tfc:metal/nugget/" + metal.substring(0, metal.length() - "_nugget".length()));
         if(metal.equals("chromium"))
             return item("firmalife:metal/ingot/chromium");
         if(List.of("copper", "gold", "cast_iron", "silver", "tin", "bismuth", "nickel", "zinc",

@@ -3,7 +3,7 @@
   "gui.tfie.arc_furnace.duplicate_recipe": "Conflicting Arc Furnace recipes",
   "gui.tfie.arc_furnace.invalid_blueprints": "Multiple Arc Furnace Blueprints",
   "gui.tfie.arc_furnace.invalid_mode": "Invalid Arc Furnace Blueprint mode",
-  "item.tfie.arc_furnace_blueprint": "Arc Furnace Blueprint",
+  "item.tfie.arc_furnace_blueprint": "Engineer's Blueprint",
   "item.tfie.drillhead_black_steel": "Black Steel Drill Head",
   "item.tfie.drillhead_blue_steel": "Blue Steel Drill Head",
   "item.tfie.drillhead_invar": "Invar Drill Head",
@@ -17,6 +17,7 @@
   "item.tfie.treated_wood_lumber": "Treated Wood Lumber",
   "message.tfie.arc_furnace_blueprint.mode": "Arc Furnace mode: %s",
   "tfie.creative_tab.main": "TFC x IE",
+  "tooltip.tfie.arc_furnace_blueprint.category": "Arc Furnace",
   "tooltip.tfie.arc_furnace_blueprint.mode": "Mode %s",
   "tooltip.tfie.arc_furnace_blueprint.use": "Use in the main hand to change mode"
 }

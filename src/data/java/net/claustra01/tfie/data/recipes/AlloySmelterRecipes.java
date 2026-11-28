@@ -56,8 +56,8 @@ public final class AlloySmelterRecipes extends RecipeProvider
     private static void andesite(RecipeOutput output, String metal)
     {
         String result = "tfcm:metal/ingot/andesite_alloy";
-        add(output, "andesite_alloy_from_" + metal, direct("tfc:rock/loose/andesite", 10),
-                tag("ingots/" + metal, 1), result, 10, metals(metal, "andesite_alloy"),
+        add(output, "andesite_alloy_from_" + metal, direct("tfc:rock/loose/andesite", 1),
+                tag("nuggets/" + metal, 1), result, 1, metals(metal, "andesite_alloy"),
                 List.of(id("tfc:rock/loose/andesite"), id(result)));
     }
 
